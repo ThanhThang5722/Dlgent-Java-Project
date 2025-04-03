@@ -15,7 +15,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         if (response.ok) {
             let data = await response.json();
             document.cookie = `token=${data.token}; path=/; HttpOnly`;
-            window.location.href = 'http://localhost:8080/' + username + '/role';
+            window.location.href = 'http://localhost:8080/role/' + username;
         } else {
             // Handle error responses
             const errorText = await response.text();

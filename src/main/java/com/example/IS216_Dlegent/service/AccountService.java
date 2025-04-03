@@ -89,7 +89,7 @@ public class AccountService {
         accountToken.setTokenValue(token);
         accountToken.setIssuedAt(new Date(System.currentTimeMillis()));
         accountToken.setExpiresAt(new Date(System.currentTimeMillis() + duration.toMillis()));
-        accountToken.setIsRevoked("N"); // 0 = active, 1 = revoked
+        accountToken.setIsRevoked(0); // 0 = active, 1 = revoked
 
         accountTokenRepository.save(accountToken);
     }
@@ -97,14 +97,17 @@ public class AccountService {
     public boolean isTokenValid(String token) {
         Optional<AccountToken> accountToken = accountTokenRepository.findByTokenValue(token);
         return accountToken.isPresent() && 
-               "N".equals(accountToken.get().getIsRevoked()) &&
+               (accountToken.get().getIsRevoked() == 0) &&
                accountToken.get().getExpiresAt().after(new Date());
     }
 
     public List<RoleGroup> getRoleGroupsByUsername(String username) {
         Optional<Account> accountOpt = accountRepository.findByUsername(username);
         if (accountOpt.isPresent()) {
-            return new ArrayList<>(accountOpt.get().getRoleGroups()); // Convert Set to List
+            Account account = accountOpt.get();
+            Logger logger = LoggerFactory.getLogger(getClass());
+            logger.info("account id: {}", account.getAccountId());
+            return new ArrayList<>(account.getRoleGroups()); // Convert Set to List
         } else {
             return new ArrayList<>(); // Return empty list
         }

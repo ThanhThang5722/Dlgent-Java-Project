@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vn">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="${bootstrapUrl}"/>
+    <link rel="stylesheet" th:href="@{/css/PartnerDashboard/ResortListStyle.css}"/>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <title>Partner Dash board</title>
+    
+</head>
+<body>
+    <div class="sidebar">
+        <h4 class="text-center text-white">Partner Dashboard</h4>
+        <ul class="list-unstyled">
+            <li><a href="/resort-list">Danh sách khu nghỉ dưỡng</a></li>
+            <li><a href="/roomtype-list">Danh sách loại phòng</a></li>
+            <li><a href="/income-report">Báo cáo doanh thu</a></li>
+            <li><a href="/withdraw">Rút tiền</a></li>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="row">
+            <!-- Tools Zone (always stacked) -->
+            <div class="col-12">
+                <div class="tools">
+                    <h5>Tools</h5>
+    
+                    <!-- Search by Name -->
+                    <div class="mb-3">
+                        <label for="searchName" class="form-label">Search by Name</label>
+                        <input type="text" id="searchName" class="form-control" placeholder="Enter name...">
+                    </div>
+    
+                    <!-- Insert, Update, Delete Buttons -->
+                    <button class="btn btn-primary mb-2" id="insertBtn">Insert</button>
+                    <button class="btn btn-warning mb-2">Update</button>
+                    <button class="btn btn-danger mb-2" id="deleteBtn">Delete Selected</button>
+                </div>
+            </div>
+    
+            <!-- Insert Form Container (hidden initially) -->
+            <div class="col-12 form-container" id="insertFormContainer" style="display: none;">
+                <h5>Insert New Resort</h5>
+                <form id="insertForm">
+                    <div class="mb-3">
+                        <label for="resortName" class="form-label">Tên khu nghỉ dưỡng</label>
+                        <input type="text" id="resortName" class="form-control" placeholder="Enter resort name" required>
+                    </div>
+    
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Địa chỉ</label>
+                        <input type="text" id="address" class="form-control" placeholder="Enter address" required>
+                    </div>
+    
+                    <div class="mb-3">
+                        <label for="city" class="form-label">Chọn thành phố</label>
+                        <select id="city" class="form-select" required>
+                            <option value="">Select City</option>
+                            <!-- Dynamic city options will go here -->
+                        </select>
+                    </div>
+    
+                    <div class="mb-3">
+                        <label for="district" class="form-label">Chọn quận, huyện</label>
+                        <select id="district" class="form-select" required>
+                            <option value="">Select District</option>
+                            <!-- Dynamic district options will go here -->
+                        </select>
+                    </div>
+    
+                    <div class="mb-3">
+                        <label for="province" class="form-label">Chọn tỉnh</label>
+                        <select id="province" class="form-select" required>
+                            <option value="">Select Province</option>
+                            <!-- Dynamic province options will go here -->
+                        </select>
+                    </div>
+    
+                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                </form>
+            </div>
+
+            <!-- Form cập nhật thông tin Resort -->
+            <div class="col-12 form-container" id="updateFormContainer" style="display: none;">
+                <h5>Update Resort</h5>
+                <form id="updateForm">
+                    <div class="mb-3">
+                        <label for="updateResortName" class="form-label">Tên khu nghỉ dưỡng</label>
+                        <input type="text" id="updateResortName" class="form-control" placeholder="Enter resort name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="updateAddress" class="form-label">Địa chỉ</label>
+                        <input type="text" id="updateAddress" class="form-control" placeholder="Enter address" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="button" class="btn btn-secondary" id="cancelUpdateBtn">Cancel</button>
+                </form>
+            </div>
+
+    
+            <!-- List Zone (always stacked) -->
+            <div class="col-12">
+                <div class="list">
+                    <h5>List of Resorts</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAll"> Select All</th>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Rating</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resortList">
+                            <!-- Loop through the list of resorts (dynamic content) -->
+                            <tr th:each="resort : ${khuNghiDuongs}">
+                                <td><input type="checkbox" class="selectResort" th:data-id="${resort.id}"></td>
+                                <td th:text="${resort.ten}"></td>
+                                <td th:text="${resort.diaChi}"></td>
+                                <td th:text="${resort.danhGia}"></td>
+                                <td>
+                                    <a class="btn btn-info" th:href="@{/resortList/{id}(id=${resort.id})}">View</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer or additional sections can go here -->
+    
+    
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+    // Chuyển form Thêm Khu nghỉ dưỡng từ ẩn sang hiện
+        $('#insertBtn').click(function() {
+            $('#insertFormContainer').show();  // Hiển thị form thêm mới
+        });
+
+        // Hủy thao tác thêm mới
+        $('#cancelBtn').click(function() {
+            $('#insertFormContainer').hide();  // Ẩn form thêm mới
+        });
+
+        // Tìm kiếm tên khu nghỉ dưỡng
+        $('#searchName').on('input', function() {
+            var searchTerm = $(this).val().toLowerCase();
+            $('#resortList tr').each(function() {
+                var resortName = $(this).find('td:eq(1)').text().toLowerCase();
+                if (resortName.indexOf(searchTerm) !== -1) {
+                    $(this).show();  // Hiển thị dòng nếu có khớp
+                } else {
+                    $(this).hide();  // Ẩn dòng nếu không có khớp
+                }
+            });
+        });
+
+        // Select all checkboxes
+        $('#selectAll').click(function() {
+            var isChecked = $(this).prop('checked');
+            $('.selectResort').prop('checked', isChecked);
+        });
+    });
+
+    </script>
+    <script th:src="@{/js/resort-list.js?version=1.0}"></script>
+</body>
+</html>

@@ -21,7 +21,7 @@ public class RoleGroupController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    @GetMapping("/{username}/role")
+    @GetMapping("/role/{username}")
     public String getRoleView(@PathVariable String username, Model model) {
         List<RoleGroup> roleGroups = accountService.getRoleGroupsByUsername(username);
         logger.info("Test List: {}", roleGroups);

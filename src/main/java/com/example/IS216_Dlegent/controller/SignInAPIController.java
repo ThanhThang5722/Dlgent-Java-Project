@@ -1,5 +1,6 @@
 package com.example.IS216_Dlegent.controller;
 
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
 
@@ -39,7 +40,10 @@ public class SignInAPIController {
             
             if(isValid) {
                 // Create new token valid for 10 minutes and save to database
-                String token = Sha256PasswordEncoder.encode(userLogin.getUsername() + new Date(System.currentTimeMillis()));
+                Date currentTime = new Date(System.currentTimeMillis());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+                String formattedDate = dateFormat.format(currentTime);
+                String token = userLogin.getUsername() + '_' + formattedDate;
                 logger.info("Generated token for userc: {}", userLogin.getUsername());
                 
                 try {

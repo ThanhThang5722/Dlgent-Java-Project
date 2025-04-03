@@ -1,4 +1,4 @@
-package com.example.IS216_Dlegent.controller;
+package com.example.IS216_Dlegent.controller.SSR;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

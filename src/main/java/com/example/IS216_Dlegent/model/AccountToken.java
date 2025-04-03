@@ -30,7 +30,7 @@ public class AccountToken {
     private Date issuedAt;
 
     @Column(name = "IS_REVOKED", length = 1)
-    private String isRevoked;
+    private int isRevoked;
 
     // Getters and Setters
     public Long getId() {
@@ -73,11 +73,11 @@ public class AccountToken {
         this.issuedAt = issuedAt;
     }
 
-    public String getIsRevoked() {
+    public int getIsRevoked() {
         return isRevoked;
     }
 
-    public void setIsRevoked(String isRevoked) {
+    public void setIsRevoked(int isRevoked) {
         this.isRevoked = isRevoked;
     }
 }
