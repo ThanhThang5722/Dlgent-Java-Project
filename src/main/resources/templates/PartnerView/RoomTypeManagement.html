@@ -22,25 +22,21 @@
     
     <div class="content">
         <div class="row">
-            <!-- Tools Zone (always stacked) -->
             <div class="col-12">
                 <div class="tools">
                     <h5>Tools</h5>
-    
-                    <!-- Search by Name -->
                     <div class="mb-3">
-                        <label for="searchName" class="form-label">Search by Name</label>
-                        <input type="text" id="searchName" class="form-control" placeholder="Enter name...">
+                        <label for="searchName" class="form-label">Chọn khu nghỉ dưỡng</label>
+                        <select id="searchName" class="form-select">
+                            <option value="">Tất cả</option>
+                            <option th:each="ten : ${tenKhuNghiDuongs}" th:value="${resort.id}" th:text="${ten}"></option>
+                        </select>
                     </div>
-    
-                    <!-- Insert, Update, Delete Buttons -->
                     <button class="btn btn-primary mb-2" id="insertBtn">Insert</button>
                     <button class="btn btn-warning mb-2">Update</button>
                     <button class="btn btn-danger mb-2" id="deleteBtn">Delete Selected (Hard delete)</button>
                 </div>
             </div>
-    
-            <!-- Insert Form Container (hidden initially) -->
             <div class="col-12 form-container" id="insertFormContainer" style="display: none;">
                 <h5>Insert New Resort</h5>
                 <form id="insertForm">
@@ -58,7 +54,6 @@
                         <label for="city" class="form-label">Chọn thành phố</label>
                         <select id="city" class="form-select" required>
                             <option value="">Select City</option>
-                            <!-- Dynamic city options will go here -->
                         </select>
                     </div>
     
@@ -66,7 +61,6 @@
                         <label for="district" class="form-label">Chọn quận, huyện</label>
                         <select id="district" class="form-select" required>
                             <option value="">Select District</option>
-                            <!-- Dynamic district options will go here -->
                         </select>
                     </div>
     
@@ -74,7 +68,6 @@
                         <label for="province" class="form-label">Chọn tỉnh</label>
                         <select id="province" class="form-select" required>
                             <option value="">Select Province</option>
-                            <!-- Dynamic province options will go here -->
                         </select>
                     </div>
     
@@ -83,7 +76,6 @@
                 </form>
             </div>
 
-            <!-- Form cập nhật -->
             <div class="col-12 form-container" id="updateFormContainer" style="display: none;">
                 <h5>Update Resort</h5>
                 <form id="updateForm">
@@ -102,9 +94,6 @@
                 </form>
             </div>
 
-
-    
-            <!-- List Zone (always stacked) -->
             <div class="col-12">
                 <div class="list">
                     <h5>List of Resorts</h5>
@@ -112,21 +101,27 @@
                         <thead>
                             <tr>
                                 <th><input type="checkbox" id="selectAll"> Select All</th>
-                                <th>Name</th>
-                                <th>Address</th>
-                                <th>Rating</th>
-                                <th>Action</th>
+                                <th>Loại phòng</th>
+                                <th>Diện tích</th>
+                                <th>Tiêu chuẩn</th>
+                                <th>Loại số lượng</th>
+                                <th>Số giường</th>
+                                <th>Số người ở tối đa</th>
+                                <th>Giá</th>
+
                             </tr>
                         </thead>
                         <tbody id="resortList">
-                            <!-- Loop through the list of resorts (dynamic content) -->
-                            <tr th:each="resort : ${khuNghiDuongs}">
-                                <td><input type="checkbox" class="selectResort" th:data-id="${resort.id}"></td>
-                                <td th:text="${resort.ten}"></td>
-                                <td th:text="${resort.diaChi}"></td>
-                                <td th:text="${resort.danhGia}"></td>
-                                <td>
-                                    <a class="btn btn-info" th:href="@{/resortList/{id}(id=${resort.id})}">View</a>
+                            <tr th:each="roomType : ${loaiPhongs}">
+                                <td><input type="checkbox" class="selectResort" th:data-id="${roomType.id}"></td>
+                                <td th:text="${roomType.ten}"></td>
+                                <td th:text="${roomType.dienTich}"></td>
+                                <td th:text="${roomType.loaiPhongTheoSoLuong}"></td>
+                                <td th:text="${roomType.tieuChuan}"></td>
+                                <td th:text="${roomType.soGiuong}"></td>
+                                <td th:text="${roomType.gia}"></td>
+
+                                <td style="display: none;" th:data-id="${roomType.ID_KHU_NGHI_DUONG}"> 
                                 </td>
                             </tr>
                         </tbody>

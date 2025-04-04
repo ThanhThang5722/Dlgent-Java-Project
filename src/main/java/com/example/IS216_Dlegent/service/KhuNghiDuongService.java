@@ -3,6 +3,8 @@ package com.example.IS216_Dlegent.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -51,5 +53,26 @@ public class KhuNghiDuongService {
 
     public KhuNghiDuong save(KhuNghiDuong khuNghiDuong) {
         return khuNghiDuongRepo.save(khuNghiDuong);
+    }
+
+    public boolean updateKhuNghiDuong(Long id, String ten, String diaChi) {
+        try {
+            Logger logger = LoggerFactory.getLogger(getClass());
+            logger.info("It run until here!!!!");
+
+            int rowsUpdated = khuNghiDuongRepo.updateTenAndDiaChiById(id, ten, diaChi);
+            return rowsUpdated > 0;
+        } catch (Exception e){
+            return false;
+        }
+    }
+
+    public boolean hardDeleteKhuNghiDuong(List<Long> ids) {
+        try {
+            khuNghiDuongRepo.deleteAllById(ids);
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
     }
 }
