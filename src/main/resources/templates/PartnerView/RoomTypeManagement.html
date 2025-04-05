@@ -29,7 +29,7 @@
                         <label for="searchName" class="form-label">Chọn khu nghỉ dưỡng</label>
                         <select id="searchName" class="form-select">
                             <option value="">Tất cả</option>
-                            <option th:each="ten : ${tenKhuNghiDuongs}" th:value="${resort.id}" th:text="${ten}"></option>
+                            <option th:each="resort : ${listKhuNghiDuong}" th:value="${resort.id}" th:text="${resort.ten}"></option>
                         </select>
                     </div>
                     <button class="btn btn-primary mb-2" id="insertBtn">Insert</button>
@@ -41,36 +41,37 @@
                 <h5>Insert New Resort</h5>
                 <form id="insertForm">
                     <div class="mb-3">
-                        <label for="resortName" class="form-label">Tên khu nghỉ dưỡng</label>
-                        <input type="text" id="resortName" class="form-control" placeholder="Enter resort name" required>
+                        <label for="roomTypeName" class="form-label">Tên loại phòng</label>
+                        <input type="text" id="roomTypeName" class="form-control" placeholder="Enter room type name" required>
                     </div>
-    
                     <div class="mb-3">
-                        <label for="address" class="form-label">Địa chỉ</label>
-                        <input type="text" id="address" class="form-control" placeholder="Enter address" required>
+                        <label for="acreage" class="form-label">Diện tích</label>
+                        <input type="text" id="acreage" class="form-control" placeholder="Enter acreage name" required>
                     </div>
-    
                     <div class="mb-3">
-                        <label for="city" class="form-label">Chọn thành phố</label>
-                        <select id="city" class="form-select" required>
-                            <option value="">Select City</option>
+                        <label for="qualityStandard" class="form-label">Tiêu chuẩn</label>
+                        <select id="qualityStandard" class="form-select" required>
+                            <option value="">Chọn tiêu chuẩn chất lượng phòng</option>
                         </select>
                     </div>
-    
                     <div class="mb-3">
-                        <label for="district" class="form-label">Chọn quận, huyện</label>
-                        <select id="district" class="form-select" required>
-                            <option value="">Select District</option>
+                        <label for="quantityStandard" class="form-label">Loại phòng theo số lượng</label>
+                        <select id="quantityStandard" class="form-select" required>
+                            <option value="">Chọn tiêu chuẩn số người ở</option>
                         </select>
                     </div>
-    
                     <div class="mb-3">
-                        <label for="province" class="form-label">Chọn tỉnh</label>
-                        <select id="province" class="form-select" required>
-                            <option value="">Select Province</option>
-                        </select>
+                        <label for="numberOfBed" class="form-label">Số giường</label>
+                        <input type="text" id="numberOfBed" class="form-control" placeholder="Enter number of bed" required>
                     </div>
-    
+                    <div class="mb-3">
+                        <label for="numberOfPeoPle" class="form-label">Số người ở tối đa</label>
+                        <input type="text" id="numberOfPeoPle" class="form-control" placeholder="Enter maximum number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="roomTypePrice" class="form-label">Giá</label>
+                        <input type="text" id="roomTypePrice" class="form-control" placeholder="Enter room type price" required>
+                    </div>
                     <button type="submit" class="btn btn-success">Submit</button>
                     <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
                 </form>
@@ -114,14 +115,15 @@
                         <tbody id="resortList">
                             <tr th:each="roomType : ${loaiPhongs}">
                                 <td><input type="checkbox" class="selectResort" th:data-id="${roomType.id}"></td>
-                                <td th:text="${roomType.ten}"></td>
+                                <td th:text="${roomType.tenLoaiPhong}"></td>
                                 <td th:text="${roomType.dienTich}"></td>
                                 <td th:text="${roomType.loaiPhongTheoSoLuong}"></td>
-                                <td th:text="${roomType.tieuChuan}"></td>
+                                <td th:text="${roomType.loaiPhongTheoTieuChuan}"></td>
                                 <td th:text="${roomType.soGiuong}"></td>
+                                <td th:text="${roomType.soNguoi}"></td>
                                 <td th:text="${roomType.gia}"></td>
 
-                                <td style="display: none;" th:data-id="${roomType.ID_KHU_NGHI_DUONG}"> 
+                                <td style="display: none;" th:data-id="${roomType.khuNghiDuong.id}"> 
                                 </td>
                             </tr>
                         </tbody>
@@ -172,6 +174,6 @@
     });
 
     </script>
-    <script th:src="@{/js/resort-list.js?version=1.0}"></script>
+    <script th:src="@{/js/room-type.js?version=1.0}"></script>
 </body>
 </html>

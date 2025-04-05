@@ -40,10 +40,10 @@ public class PartnerViewController {
         model.addAttribute("doiTacId", doiTacId);
 
         // Lấy danh sách Resort
-        
-        List<LoaiPhong> listLoaiPhong = loaiPhongService.getRoomTypeByPartnerID(doiTacId);
-        // Lấy danh sách các loại phòng.
-
+        List<KhuNghiDuong> listKhuNghiDuong = khuNghiDuongService.getKhuNghiDuongsByDoiTacId(doiTacId);
+        model.addAttribute("listKhuNghiDuong", listKhuNghiDuong);
+        List<LoaiPhong> listLoaiPhong = loaiPhongService.getRoomTypesByPartnerId(doiTacId);
+        model.addAttribute("loaiPhongs", listLoaiPhong);
 
         return "/PartnerView/RoomTypeManagement";
     }
