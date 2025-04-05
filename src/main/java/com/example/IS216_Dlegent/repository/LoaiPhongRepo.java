@@ -9,5 +9,5 @@ import com.example.IS216_Dlegent.model.LoaiPhong;
 
 @Repository
 public interface LoaiPhongRepo extends JpaRepository<LoaiPhong, Long> {
-    List<LoaiPhong> findByDoiTacId(Long idKhuNghiDuong);
+    List<LoaiPhong> findByKhuNghiDuong_IdIn(List<Long> khuNghiDuongIds);
 }

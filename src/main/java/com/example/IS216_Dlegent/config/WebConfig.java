@@ -20,11 +20,11 @@ public class WebConfig implements WebMvcConfigurer {
     }
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor)
+        /*registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/role/**") // Apply to all routes
                 .excludePathPatterns("/signin", "/signup", "/api/signin", "/partner/**"); // Skip auth for login/register
         
-        /*registry.addInterceptor(partnerInterceptor)
+        registry.addInterceptor(partnerInterceptor)
                 .addPathPatterns("/partner/**");*/
     }
 }
