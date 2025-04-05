@@ -100,91 +100,143 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error(error);
         });
     });
-});
 
 
-document.addEventListener("DOMContentLoaded", function() {
-    const updateBtn = document.getElementById("updateBtn");
-    const formContainer = document.getElementById("insertFormContainer");
-    const cancelBtn = document.getElementById("cancelBtn");
-    const submitBtn = document.querySelector("#insertForm button[type='submit']");
-    const table = document.querySelector("table tbody");
-
-    // Hàm kiểm tra và cập nhật trạng thái nút Update
-    function updateButtonState() {
-        const selectedRows = document.querySelectorAll('input[type="checkbox"]:checked');
-        updateBtn.disabled = selectedRows.length !== 1; // Nếu có đúng 1 checkbox được chọn, kích hoạt nút Update
-    }
-
-    // Cập nhật trạng thái nút "Update" mỗi khi người dùng chọn hoặc bỏ chọn checkbox
-    table.addEventListener("change", function() {
-        updateButtonState();
+    /*const updateBtn = document.querySelector(".btn-warning");
+    const updateFormContainer = document.getElementById("updateFormContainer");
+    const cancelUpdateBtn = document.getElementById("cancelUpdateBtn");
+    updateBtn.addEventListener("click", function () {
+        updateFormContainer.style.display = "block";
     });
+    cancelUpdateBtn.addEventListener("click", function () {
+        updateFormContainer.style.display = "none";
+    });*/
 
-    // Hiển thị form insert khi bấm "Update"
-    updateBtn.addEventListener("click", function() {
-        const selectedRows = document.querySelectorAll('input[type="checkbox"]:checked');
+    
+    // Lấy các phần tử cần thiết
+    const updateBtn = document.querySelector(".btn-warning");
+    const updateFormContainer = document.getElementById("updateFormContainer");
+    const cancelUpdateBtn = document.getElementById("cancelUpdateBtn");
+    const updateResortName = document.getElementById("updateResortName");
+    const updateAddress = document.getElementById("updateAddress");
 
-        if (selectedRows.length === 1) {
-            const row = selectedRows[0].closest("tr");
-            const resortName = row.querySelector("td:nth-child(2)").textContent.trim();
-            const address = row.querySelector("td:nth-child(3)").textContent.trim();
-            const rating = row.querySelector("td:nth-child(4)").textContent.trim();
-            const resortId = row.querySelector('input[type="checkbox"]').getAttribute("data-id");
+    // Khi bấm vào nút Update
+    updateBtn.addEventListener("click", function () {
+        // Tìm tất cả checkbox đang được chọn
+        const checkedBoxes = document.querySelectorAll(".selectResort:checked");
 
-            // Hiển thị form và điền thông tin vào các trường
-            formContainer.style.display = 'block';
-            document.getElementById("resortName").value = resortName;
-            document.getElementById("address").value = address;
-            document.getElementById("rating").value = rating;
-
-            // Cập nhật thông tin khi người dùng nhấn submit
-            submitBtn.addEventListener("click", function(e) {
-                e.preventDefault(); // Ngừng form submit tự động
-
-                const updatedResort = {
-                    ten: document.getElementById("resortName").value,
-                    diaChi: document.getElementById("address").value,
-                    danhGia: parseInt(document.getElementById("rating").value)
-                };
-
-                // Gửi PATCH request để cập nhật resort
-                fetch(`/khuNghiDuong/${resortId}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(updatedResort)
-                })
-                .then(response => response.json())
-                .then(updatedData => {
-                    if (updatedData) {
-                        // Cập nhật lại dữ liệu trong bảng
-                        row.querySelector("td:nth-child(2)").textContent = updatedData.ten;
-                        row.querySelector("td:nth-child(3)").textContent = updatedData.diaChi;
-                        row.querySelector("td:nth-child(4)").textContent = updatedData.danhGia;
-
-                        // Ẩn form insert
-                        formContainer.style.display = 'none';
-                    } else {
-                        alert("Cập nhật không thành công.");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error updating resort:", error);
-                    alert("Đã có lỗi xảy ra.");
-                });
-            });
-        } else {
-            alert("Vui lòng chọn chỉ 1 resort để cập nhật.");
+        // Kiểm tra xem có đúng 1 checkbox được chọn không
+        if (checkedBoxes.length !== 1) {
+            alert("Vui lòng chọn một khu nghỉ dưỡng để cập nhật.");
+            return;
         }
+
+        // Lấy hàng (row) chứa thông tin của khu nghỉ dưỡng được chọn
+        const selectedRow = checkedBoxes[0].closest("tr");
+
+        // Lấy thông tin từ hàng đó
+        const name = selectedRow.children[1].textContent.trim(); // Cột thứ 2: Tên khu nghỉ dưỡng
+        const address = selectedRow.children[2].textContent.trim(); // Cột thứ 3: Địa chỉ
+
+        // Điền thông tin vào form cập nhật
+        updateResortName.value = name;
+        updateAddress.value = address;
+
+        // Hiển thị form cập nhật
+        updateFormContainer.style.display = "block";
     });
 
-    // Hủy bỏ và ẩn form insert
-    cancelBtn.addEventListener("click", function() {
-        formContainer.style.display = 'none';
+    // Khi bấm vào nút Cancel trong form cập nhật
+    cancelUpdateBtn.addEventListener("click", function () {
+        updateFormContainer.style.display = "none"; // Ẩn form cập nhật
     });
 
-    // Ban đầu, kiểm tra trạng thái của nút Update
-    updateButtonState();
+    const updateForm = document.getElementById("updateForm");
+
+    updateForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Ngăn chặn load lại trang
+
+        // Lấy checkbox được chọn
+        const checkedBox = document.querySelector(".selectResort:checked");
+        if (!checkedBox) {
+            alert("Vui lòng chọn một khu nghỉ dưỡng để cập nhật.");
+            return;
+        }
+
+        // Lấy ID của khu nghỉ dưỡng từ thuộc tính data-id của checkbox
+        const resortId = checkedBox.getAttribute("data-id");
+
+        // Lấy thông tin từ form cập nhật
+        const updatedData = {
+            ten: document.getElementById("updateResortName").value.trim(),
+            diaChi: document.getElementById("updateAddress").value.trim(),
+        };
+
+        console.log(updatedData);
+
+        // Gửi PUT request đến API
+        fetch(`http://localhost:8080/api/resort/${resortId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedData),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Cập nhật thất bại!");
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert("Cập nhật thành công!");
+            location.reload(); // Làm mới trang sau khi cập nhật
+        })
+        .catch(error => {
+            alert("Có lỗi xảy ra: " + error.message);
+        });
+    });
+
+
+    const deleteBtn = document.getElementById("deleteBtn");
+
+    deleteBtn.addEventListener("click", function () {
+        // Lấy tất cả checkbox được chọn
+        const checkedBoxes = document.querySelectorAll(".selectResort:checked");
+
+        if (checkedBoxes.length === 0) {
+            alert("Vui lòng chọn ít nhất một khu nghỉ dưỡng để xóa.");
+            return;
+        }
+
+        // Xác nhận trước khi xóa
+        if (!confirm("Bạn có chắc chắn muốn xóa các khu nghỉ dưỡng đã chọn?")) {
+            return;
+        }
+
+        // Lấy danh sách ID từ checkbox
+        const resortIds = Array.from(checkedBoxes).map(checkbox => checkbox.getAttribute("data-id"));
+
+        // Gửi DELETE request đến API
+        fetch("http://localhost:8080/api/resort", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(resortIds), // Gửi danh sách ID dưới dạng JSON
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Xóa thất bại!");
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert("Xóa thành công!");
+            location.reload(); // Làm mới trang sau khi xóa
+        })
+        .catch(error => {
+            alert("Có lỗi xảy ra: " + error.message);
+        });
+    });
 });
