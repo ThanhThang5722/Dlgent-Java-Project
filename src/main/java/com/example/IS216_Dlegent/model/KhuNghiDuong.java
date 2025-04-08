@@ -98,4 +98,11 @@ public class KhuNghiDuong {
     public void setDanhGia(int danhGia) {
         this.danhGia = danhGia;
     }
+
+    @Override
+    public String toString() {
+        return "KhuNghiDuong [id=" + id + ", doiTac=" + doiTac + ", ten=" + ten + ", diaChi=" + diaChi + ", phuong="
+                + phuong + ", img360Url=" + img360Url + ", danhGia=" + danhGia + "]";
+    }
+    
 }

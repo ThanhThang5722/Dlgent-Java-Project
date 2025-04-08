@@ -6,8 +6,7 @@
     <link rel="stylesheet" th:href="${bootstrapUrl}"/>
     <link rel="stylesheet" th:href="@{/css/PartnerDashboard/ResortListStyle.css}"/>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <title>Partner Dash board</title>
-    
+    <title>Room Type Management</title>
 </head>
 <body>
     <div class="sidebar">
@@ -15,6 +14,7 @@
         <ul class="list-unstyled">
             <li><a href="/resort-list">Danh sách khu nghỉ dưỡng</a></li>
             <li><a href="/roomtype-list">Danh sách loại phòng</a></li>
+            <li><a href="/income-report">Gói đặt phòng</a></li>
             <li><a href="/income-report">Báo cáo doanh thu</a></li>
             <li><a href="/withdraw">Rút tiền</a></li>
         </ul>
@@ -38,58 +38,107 @@
                 </div>
             </div>
             <div class="col-12 form-container" id="insertFormContainer" style="display: none;">
-                <h5>Insert New Resort</h5>
+                <h5>Insert Room Type</h5>
                 <form id="insertForm">
                     <div class="mb-3">
-                        <label for="roomTypeName" class="form-label">Tên loại phòng</label>
-                        <input type="text" id="roomTypeName" class="form-control" placeholder="Enter room type name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="acreage" class="form-label">Diện tích</label>
-                        <input type="text" id="acreage" class="form-control" placeholder="Enter acreage name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="qualityStandard" class="form-label">Tiêu chuẩn</label>
-                        <select id="qualityStandard" class="form-select" required>
-                            <option value="">Chọn tiêu chuẩn chất lượng phòng</option>
+                        <label for="resortId" class="form-label">Chọn khu nghỉ dưỡng</label>
+                        <select id="resortId" name="resortId" class="form-select" required>
+                            <option value="">Chọn khu nghỉ dưỡng</option>
+                            <option th:each="resort : ${listKhuNghiDuong}" th:value="${resort.id}" th:text="${resort.ten}"></option>
                         </select>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="roomTypeName" class="form-label">Tên loại phòng</label>
+                        <input type="text" id="roomTypeName" name="roomTypeName" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="acreage" class="form-label">Diện tích (m2)</label>
+                        <input type="number" step="0.1" id="acreage" name="acreage" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="qualityStandard" class="form-label">Loại tiêu chuẩn</label>
+                        <select id="qualityStandard" name="qualityStandard" class="form-select" required>
+                            <option value="">Chọn tiêu chuẩn chất lượng phòng</option>
+                            <option th:each="item : ${danhSachTieuChuan}" th:value="${item}" th:text="${item}"></option>
+                        </select>
+                    </div>
+
                     <div class="mb-3">
                         <label for="quantityStandard" class="form-label">Loại phòng theo số lượng</label>
-                        <select id="quantityStandard" class="form-select" required>
+                        <select id="quantityStandard" name="quantityStandard" class="form-select" required>
                             <option value="">Chọn tiêu chuẩn số người ở</option>
+                            <option th:each="item : ${danhSachSoLuong}" th:value="${item}" th:text="${item}"></option>
                         </select>
                     </div>
+
                     <div class="mb-3">
                         <label for="numberOfBed" class="form-label">Số giường</label>
-                        <input type="text" id="numberOfBed" class="form-control" placeholder="Enter number of bed" required>
+                        <input type="number" id="numberOfBed" name="numberOfBed" class="form-control" required>
                     </div>
+
                     <div class="mb-3">
-                        <label for="numberOfPeoPle" class="form-label">Số người ở tối đa</label>
-                        <input type="text" id="numberOfPeoPle" class="form-control" placeholder="Enter maximum number" required>
+                        <label for="numberOfPeople" class="form-label">Số người ở tối đa</label>
+                        <input type="number" id="numberOfPeople" name="numberOfPeople" class="form-control" required>
                     </div>
+
                     <div class="mb-3">
                         <label for="roomTypePrice" class="form-label">Giá</label>
-                        <input type="text" id="roomTypePrice" class="form-control" placeholder="Enter room type price" required>
+                        <input type="number" step="0.01" id="roomTypePrice" name="roomTypePrice" class="form-control" required>
                     </div>
+
                     <button type="submit" class="btn btn-success">Submit</button>
                     <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
                 </form>
+
             </div>
 
             <div class="col-12 form-container" id="updateFormContainer" style="display: none;">
                 <h5>Update Resort</h5>
                 <form id="updateForm">
                     <div class="mb-3">
-                        <label for="updateResortName" class="form-label">Tên khu nghỉ dưỡng</label>
-                        <input type="text" id="updateResortName" class="form-control" placeholder="Enter resort name" required>
+                        <label for="updateResortID" class="form-label">Chọn khu nghỉ dưỡng</label>
+                        <select id="updateResortID" name="updateResortID" class="form-select" required>
+                            <option value="">Chọn khu nghỉ dưỡng</option>
+                            <option th:each="resort : ${listKhuNghiDuong}" th:value="${resort.id}" th:text="${resort.ten}"></option>
+                        </select>
                     </div>
-
                     <div class="mb-3">
-                        <label for="updateAddress" class="form-label">Địa chỉ</label>
-                        <input type="text" id="updateAddress" class="form-control" placeholder="Enter address" required>
+                        <label for="updateRoomTypeName" class="form-label">Tên loại phòng</label>
+                        <input type="text" id="updateRoomTypeName" class="form-control" placeholder="Enter resort name" required>
                     </div>
-
+                    <div class="mb-3">
+                        <label for="updateAcreage" class="form-label">Diện tích</label>
+                        <input type="number" id="updateAcreage" class="form-control" placeholder="Enter Acreage" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateQualityStandard" class="form-label">Loại tiêu chuẩn</label>
+                        <select id="updateQualityStandard" class="form-select" required>
+                            <option value="">Chọn tiêu chuẩn chất lượng phòng</option>
+                            <option th:each="item : ${danhSachTieuChuan}" th:value="${item}" th:text="${item}"></option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateQuantityStandard" class="form-label">Loại phòng theo số lượng</label>
+                        <select id="updateQuantityStandard" class="form-select" required>
+                            <option value="">Chọn tiêu chuẩn số người ở</option>
+                            <option th:each="item : ${danhSachSoLuong}" th:value="${item}" th:text="${item}"></option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateNumberOfBed" class="form-label">Số giường</label>
+                        <input type="number" id="updateNumberOfBed" class="form-control" placeholder="Enter maximum number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateNumberOfPeople" class="form-label">Số người ở tối đa</label>
+                        <input type="number" id="updateNumberOfPeople" class="form-control" placeholder="Enter maximum number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateRoomTypePrice" class="form-label">Giá</label>
+                        <input type="number" id="updateRoomTypePrice" class="form-control" placeholder="Enter room type price" required>
+                    </div>
                     <button type="submit" class="btn btn-success">Submit</button>
                     <button type="button" class="btn btn-secondary" id="cancelUpdateBtn">Cancel</button>
                 </form>
@@ -109,7 +158,7 @@
                                 <th>Số giường</th>
                                 <th>Số người ở tối đa</th>
                                 <th>Giá</th>
-
+                                <th>Thêm chi tiết</th>
                             </tr>
                         </thead>
                         <tbody id="resortList">
@@ -117,17 +166,86 @@
                                 <td><input type="checkbox" class="selectResort" th:data-id="${roomType.id}"></td>
                                 <td th:text="${roomType.tenLoaiPhong}"></td>
                                 <td th:text="${roomType.dienTich}"></td>
-                                <td th:text="${roomType.loaiPhongTheoSoLuong}"></td>
                                 <td th:text="${roomType.loaiPhongTheoTieuChuan}"></td>
+                                <td th:text="${roomType.loaiPhongTheoSoLuong}"></td>
                                 <td th:text="${roomType.soGiuong}"></td>
                                 <td th:text="${roomType.soNguoi}"></td>
                                 <td th:text="${roomType.gia}"></td>
-
-                                <td style="display: none;" th:data-id="${roomType.khuNghiDuong.id}"> 
+                                <td>
+                                    <!--<a class="btn btn-info" th:href="@{/roomType/{id}(id=${roomType.id})}">Thêm ảnh</a>-->
+                                    <a class="btn btn-info" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#imageModal"
+                                        th:attr="data-room-type-id=${roomType.id}, data-room-type-name=${roomType.tenLoaiPhong}, data-room-type-name=${roomType.tenLoaiPhong}">
+                                        Thêm ảnh
+                                    </a>
+                                    <a class="btn btn-secondary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#tienIchModal"
+                                        th:attr="data-room-type-id=${roomType.id}, data-room-type-name=${roomType.tenLoaiPhong}"
+                                        onclick="openTienIchModal(this)">
+                                        Tiện ích
+                                    </a>
                                 </td>
+                                <td style="display: none;" th:data-id="${roomType.khuNghiDuong.id}"></td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <!-- Modal hiển thị ảnh -->
+            <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="imageModalLabel">Thêm ảnh cho: <span id="roomTypeName"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                    <div class="row" id="imageGrid">
+                        <!-- Ảnh sẽ được load bằng JS -->
+                    </div>
+                    <!-- Thẻ input file ẩn -->
+                    <input type="file" id="uploadInput" accept="image/*" style="display: none;" onchange="uploadImage()" />
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- Modal Tiện Ích -->
+            <div class="modal fade" id="tienIchModal" tabindex="-1" aria-labelledby="tienIchModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Tiện ích cho loại phòng: <span id="roomTypeNameTienIch"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                    <form id="tienIchForm">
+                        <div class="row" id="tienIchCheckboxContainer">
+                        <!-- Render tất cả tiện ích bằng Thymeleaf -->
+                        <div class="col-6 mb-2"
+                            th:each="tienIch : ${danhSachTienIch}">
+                            <div class="form-check">
+                            <input class="form-check-input tienIchCheckbox"
+                                    type="checkbox"
+                                    th:id="'tienIch_' + ${tienIch.id}"
+                                    th:name="tienIchIds"
+                                    th:value="${tienIch.id}"
+                                    data-tien-ich-id = "${tienIch.id}" />
+                            <label class="form-check-label"
+                                    th:for="'tienIch_' + ${tienIch.id}"
+                                    th:text="${tienIch.loaiTienIch}">Tên tiện ích</label>
+                            </div>
+                        </div>
+                        </div>
+                        <input type="hidden" id="selectedRoomTypeId" name="roomTypeId" />
+                    </form>
+                    </div>
+                    <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="submitTienIch()">Lưu thay đổi</button>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -141,39 +259,200 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-    // Chuyển form Thêm Khu nghỉ dưỡng từ ẩn sang hiện
-        $('#insertBtn').click(function() {
-            $('#insertFormContainer').show();  // Hiển thị form thêm mới
-        });
+        <script>
+            $(document).ready(function() {
+        // Chuyển form Thêm Khu nghỉ dưỡng từ ẩn sang hiện
+            $('#insertBtn').click(function() {
+                $('#insertFormContainer').show();  // Hiển thị form thêm mới
+            });
 
-        // Hủy thao tác thêm mới
-        $('#cancelBtn').click(function() {
-            $('#insertFormContainer').hide();  // Ẩn form thêm mới
-        });
+            // Hủy thao tác thêm mới
+            $('#cancelBtn').click(function() {
+                $('#insertFormContainer').hide();  // Ẩn form thêm mới
+            });
 
-        // Tìm kiếm tên khu nghỉ dưỡng
-        $('#searchName').on('input', function() {
-            var searchTerm = $(this).val().toLowerCase();
-            $('#resortList tr').each(function() {
-                var resortName = $(this).find('td:eq(1)').text().toLowerCase();
-                if (resortName.indexOf(searchTerm) !== -1) {
-                    $(this).show();  // Hiển thị dòng nếu có khớp
-                } else {
-                    $(this).hide();  // Ẩn dòng nếu không có khớp
-                }
+            // Tìm kiếm tên khu nghỉ dưỡng
+            $('#searchName').on('input', function() {
+                var searchTerm = $(this).val().toLowerCase();
+                $('#resortList tr').each(function() {
+                    var resortName = $(this).find('td:eq(1)').text().toLowerCase();
+                    if (resortName.indexOf(searchTerm) !== -1) {
+                        $(this).show();  // Hiển thị dòng nếu có khớp
+                    } else {
+                        $(this).hide();  // Ẩn dòng nếu không có khớp
+                    }
+                });
+            });
+
+            // Select all checkboxes
+            $('#selectAll').click(function() {
+                var isChecked = $(this).prop('checked');
+                $('.selectResort').prop('checked', isChecked);
             });
         });
+        </script>
+        <script>
+            const imageModal = document.getElementById('imageModal');
+            // Biến toàn cục để lưu ID của loại phòng được chọn
+            let selectedRoomTypeId = null;
+        
+            imageModal.addEventListener('show.bs.modal', async function (event) {
+                const button = event.relatedTarget;
+            
+                const roomTypeId = button.getAttribute('data-room-type-id');
+                const roomTypeName = button.getAttribute('data-room-type-name');
+            
+                selectedRoomTypeId = roomTypeId; // Lưu ID vào biến toàn cục
+            
+                // Hiển thị thông tin
+                document.getElementById('roomTypeName').textContent = roomTypeName;
+                document.getElementById('imageModalLabel').textContent = "Thêm ảnh cho: " + roomTypeName;
 
-        // Select all checkboxes
-        $('#selectAll').click(function() {
-            var isChecked = $(this).prop('checked');
-            $('.selectResort').prop('checked', isChecked);
-        });
-    });
+                try {
+                    const response = await fetch(`/api/resort/room-type/images/${roomTypeId}`);
+                    if (!response.ok) throw new Error("Lỗi khi lấy ảnh từ server");
 
-    </script>
-    <script th:src="@{/js/room-type.js?version=1.0}"></script>
+                    const images = await response.json();
+                    renderImages(images);
+                } catch (err) {
+                    console.error(err);
+                    alert("Không thể tải ảnh phòng.");
+                }
+            });
+            function renderImages(images) {
+                const imageGrid = document.getElementById('imageGrid');
+                imageGrid.innerHTML = ''; // Xóa cũ
+
+                images.forEach(img => {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-2 mb-3';
+                    col.innerHTML = `
+                    <div class="position-relative border rounded bg-success text-center p-2">
+                        <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-warning text-dark"
+                                style="cursor: pointer;"
+                                data-image-id="${img.id}"
+                                onclick="deleteImage(this)">×</span>
+                        <img src="${img.url}" alt="Ảnh" class="img-fluid" />
+                    </div>`;
+                    imageGrid.appendChild(col);
+                });
+
+                // Thêm ô upload cuối cùng
+                const uploadCol = document.createElement('div');
+                uploadCol.className = 'col-md-2 mb-3';
+                uploadCol.innerHTML = `
+                    <div class="border rounded bg-success d-flex justify-content-center align-items-center"
+                        style="height: 100px; cursor: pointer;"
+                        onclick="document.getElementById('uploadInput').click();">
+                    <span style="font-size: 2rem;">+</span>
+                    </div>`;
+                imageGrid.appendChild(uploadCol);
+            }
+
+            // Upload ảnh
+            function uploadImage() {
+                const input = document.getElementById('uploadInput');
+                const file = input.files[0];
+                if (!file || !selectedRoomTypeId) return;
+            
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("roomTypeId", selectedRoomTypeId);
+            
+                fetch('/api/partner/roomType-images/upload-image', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                if (!response.ok) throw new Error("Upload thất bại");
+                    return response.json();
+                })
+                .then(data => {
+                    alert("Tải ảnh thành công!");
+                    console.log("Server trả về:", data);
+                    // TODO: Thêm ảnh vừa upload vào giao diện nếu muốn
+                })
+                .catch(error => {
+                    console.error("Lỗi khi upload:", error);
+                    alert("Đã có lỗi xảy ra khi tải ảnh.");
+                });
+                // Reset input
+                input.value = "";
+            }
+            // Soft Delete image
+            function deleteImage(spanElement) {
+                const imageId = spanElement.getAttribute("data-image-id");
+                if (!imageId) return;
+
+                if (!confirm("Bạn có chắc muốn xoá ảnh này không?")) return;
+
+                fetch(`/api/resort/room-type/images/${imageId}`, {
+                    method: "PUT"
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("Xoá ảnh thất bại");
+                    // Gỡ ảnh ra khỏi giao diện
+                    const imageCard = spanElement.closest(".col-md-2");
+                    if (imageCard) imageCard.remove();
+                })
+                .catch(error => {
+                    console.error("Lỗi khi xoá ảnh:", error);
+                    alert("Đã có lỗi khi xoá ảnh.");
+                });
+            }
+        </script>
+
+        <script>
+            function openTienIchModal(button) {
+                const roomTypeId = button.getAttribute("data-room-type-id");
+                const roomTypeName = button.getAttribute("data-room-type-name");
+
+                document.getElementById("selectedRoomTypeId").value = roomTypeId;
+                document.getElementById("roomTypeNameTienIch").innerText = roomTypeName;
+                // Clear hết check trước khi fetch
+                document.querySelectorAll(".tienIchCheckbox").forEach(cb => cb.checked = false);
+
+                // Gọi API để lấy tiện ích của loại phòng này
+                fetch(`/api/resort/room-type/${roomTypeId}/utilities`)
+                    .then(response => response.json())
+                    .then(data => {
+                    const selectedIds = new Set(data.map(ti => ti.id));
+                    document.querySelectorAll(".tienIchCheckbox").forEach(cb => {
+                        //const id = parseInt(cb.getAttribute("data-tien-ich-id"));
+                        const id = parseInt(cb.value);
+                        cb.checked = selectedIds.has(id);
+                    });
+                    })
+                    .catch(error => {
+                    console.error("Lỗi khi lấy tiện ích của loại phòng:", error);
+                    });
+                }
+        </script>
+        <script>
+            function submitTienIch() {
+                const roomTypeId = document.getElementById("selectedRoomTypeId").value;
+                const selectedTienIchIds = Array.from(
+                    document.querySelectorAll(".tienIchCheckbox:checked")
+                ).map(cb => parseInt(cb.value));
+
+                fetch(`/api/resort/room-type/${roomTypeId}/utilities`, {
+                    method: "POST",
+                    headers: {
+                    "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(selectedTienIchIds)
+                })
+                .then(response => {
+                    if (response.ok) {
+                    alert("Cập nhật tiện ích thành công!");
+                    bootstrap.Modal.getInstance(document.getElementById("tienIchModal")).hide();
+                    } else {
+                    alert("Đã có lỗi khi cập nhật tiện ích.");
+                    }
+                })
+                .catch(error => console.error("Lỗi gửi dữ liệu tiện ích:", error));
+            }
+        </script>
+    <script th:src="@{/js/room-type.js?version=1.1}"></script>
 </body>
 </html>
