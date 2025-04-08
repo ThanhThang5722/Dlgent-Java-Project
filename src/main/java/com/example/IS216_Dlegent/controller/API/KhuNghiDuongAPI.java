@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.IS216_Dlegent.payload.request.InsertResortRequest;
 import com.example.IS216_Dlegent.payload.request.KhuNghiDuongRequest;
 import com.example.IS216_Dlegent.service.KhuNghiDuongService;
+import com.example.IS216_Dlegent.service.LoaiPhongService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -46,15 +49,6 @@ public class KhuNghiDuongAPI {
                 }
             }
         }
-
-        /*boolean success = khuNghiDuongService.insertResort(
-                authToken,
-                resortRequest.getResortName(),
-                resortRequest.getAddress(),
-                resortRequest.getCity(),
-                resortRequest.getDistrict(),
-                resortRequest.getProvince()
-        );*/
         boolean success = khuNghiDuongService.insertResort(authToken, resortRequest);
 
         if (success) {

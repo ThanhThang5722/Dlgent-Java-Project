@@ -2,6 +2,7 @@ package com.example.IS216_Dlegent.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Entity
 @Table(name = "LOAI_PHONG")
@@ -36,6 +37,14 @@ public class LoaiPhong {
 
     @Column(name = "GIA")
     private BigDecimal gia;
+
+    @ManyToMany
+    @JoinTable(
+        name = "TIEN_ICH_PHONG",
+        joinColumns = @JoinColumn(name = "ID_PHONG"),
+        inverseJoinColumns = @JoinColumn(name = "ID_TIEN_ICH")
+    )
+    private Set<TienIch> tienIchSet;
 
     // Getters and Setters
 
@@ -110,4 +119,21 @@ public class LoaiPhong {
     public void setGia(BigDecimal gia) {
         this.gia = gia;
     }
+
+    @Override
+    public String toString() {
+        return "LoaiPhong [id=" + id + ", khuNghiDuong=" + khuNghiDuong + ", tenLoaiPhong=" + tenLoaiPhong
+                + ", dienTich=" + dienTich + ", loaiPhongTheoSoLuong=" + loaiPhongTheoSoLuong
+                + ", loaiPhongTheoTieuChuan=" + loaiPhongTheoTieuChuan + ", soGiuong=" + soGiuong + ", soNguoi="
+                + soNguoi + ", gia=" + gia + "]";
+    }
+
+    public Set<TienIch> getTienIchSet() {
+        return tienIchSet;
+    }
+
+    public void setTienIchSet(Set<TienIch> tienIchSet) {
+        this.tienIchSet = tienIchSet;
+    }
+    
 }
