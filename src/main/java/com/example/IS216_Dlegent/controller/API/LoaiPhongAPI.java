@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RestController
 @RequestMapping("/api/resort/room-type")
 public class LoaiPhongAPI {
-
+    @Autowired
     private final TienIchService tienIchService;
     @Autowired
     private final LoaiPhongService loaiPhongService;

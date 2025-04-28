@@ -42,6 +42,10 @@ public class KhuNghiDuong {
         this.danhGia = danhGia;
     }
 
+    public KhuNghiDuong(Long resortId) {
+        //TODO Auto-generated constructor stub
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;
