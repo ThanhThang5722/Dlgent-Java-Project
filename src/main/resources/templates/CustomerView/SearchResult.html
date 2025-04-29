@@ -7,22 +7,43 @@
     <title>Kết quả tìm kiếm khu nghỉ dưỡng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/CustomerView/SearchResult.css}">
+    <link rel="stylesheet" href="/src/main/resources/static/css/CustomerView/SearchResult.css">
+    <link rel="stylesheet" href="https://unpkg.com/@coreui/coreui/dist/css/coreui.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+    <script src="https://unpkg.com/@coreui/coreui/dist/js/coreui.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #f5f5f5;
+        /* Custom styles cho daterangepicker */
+        .daterangepicker td.in-range {
+            background-color: #9cc4ee;
+            /* Màu nền nhạt cho khoảng từ ngày bắt đầu đến ngày kết thúc */
         }
 
-        .search-bar {
-            background-color: #1a294d;
-            padding: 15px 0;
+        .daterangepicker td.active,
+        .daterangepicker td.active:hover {
+            background-color: #0071c2;
+            /* Màu đậm cho ngày được chọn */
+            color: #ffffff;
         }
 
-        .search-input {
-            border-radius: 4px;
-            padding: 10px 15px;
-            border: none;
-            font-size: 14px;
+        /* Style cho ngày trước ngày hiện tại hoặc ngày đã chọn */
+        .daterangepicker td.disabled {
+            color: #ccc !important;
+            text-decoration: line-through;
+            background-color: #f8f8f8;
+            cursor: not-allowed;
+        }
+
+        /* Style cho ngày đã được chọn */
+        .daterangepicker td.start-date {
+            border-radius: 4px 0 0 4px;
+        }
+
+        .daterangepicker td.end-date {
+            border-radius: 0 4px 4px 0;
         }
 
         .search-btn {
@@ -33,290 +54,8 @@
             padding: 10px 25px;
             font-weight: bold;
             font-size: 14px;
-        }
-
-        .search-btn:hover {
-            background-color: #1a53c5;
-        }
-
-        .resort-card {
-            border-radius: 4px;
-            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
-            background-color: white;
-            overflow: hidden;
-            border: 1px solid #e7e7e7;
-        }
-
-        .resort-img {
-            height: 200px;
-            width: 100%;
-            object-fit: cover;
-        }
-
-        .small-images {
-            display: flex;
-            margin-top: 5px;
-        }
-
-        .small-img {
-            width: 55px;
-            height: 42px;
-            object-fit: cover;
-            margin-right: 5px;
-            cursor: pointer;
-            border-radius: 2px;
-        }
-
-        .rating-badge {
-            background-color: #003580;
-            color: white;
-            padding: 6px 8px;
-            border-radius: 6px 6px 6px 0;
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        .rating-text {
-            color: #003580;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .reviews-count {
-            color: #6b6b6b;
-            font-size: 13px;
-        }
-
-        .discount-badge {
-            background-color: #eb5050;
-            color: white;
-            padding: 3px 6px;
-            border-radius: 3px;
-            font-weight: bold;
-            margin-left: 5px;
-            font-size: 13px;
-        }
-
-        .original-price {
-            text-decoration: line-through;
-            color: #6b6b6b;
-            font-size: 13px;
-        }
-
-        .current-price {
-            color: #eb5050;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .service-badge {
-            background-color: #f5f5f5;
-            color: #333;
-            padding: 3px 8px;
-            border-radius: 3px;
-            margin-right: 4px;
-            font-size: 12px;
-            display: inline-block;
-            margin-bottom: 4px;
-        }
-
-        .summer-badge {
-            color: #e21a8c;
-            background-color: #f9e6f1;
-        }
-
-        .filter-card {
-            background-color: white;
-            border-radius: 4px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e7e7e7;
-        }
-
-        .filter-title {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 12px;
-            color: #333;
-        }
-
-        .filter-item {
-            margin-bottom: 8px;
-        }
-
-        .filter-item label {
-            font-size: 13px;
-        }
-
-        .sort-btn {
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 15px;
-            padding: 6px 15px;
-            margin-right: 8px;
-            color: #333;
-            font-size: 13px;
-        }
-
-        .sort-btn.active {
-            background-color: #0071c2;
-            color: white;
-            border-color: #0071c2;
-        }
-
-        .location-icon {
-            color: #0071c2;
-            margin-right: 5px;
-        }
-
-        .only-left {
-            background-color: #eb5050;
-            color: white;
-            font-weight: bold;
-            padding: 3px 6px;
-            border-radius: 3px;
-            font-size: 12px;
-            display: inline-block;
-        }
-
-        .free-service {
-            color: #008009;
-            font-weight: 500;
-            font-size: 13px;
-        }
-
-        .deal-banner {
-            background-color: #fff8e6;
-            border: 1px solid #ffe6b3;
-            border-radius: 4px;
-            padding: 10px 15px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .deal-banner-text {
-            color: #b3810d;
-            font-weight: 500;
-        }
-
-        .deal-banner-btn {
-            background-color: #ff6d2e;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 5px 15px;
-            font-weight: bold;
-            font-size: 13px;
-        }
-
-        .map-search {
-            background-color: white;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 15px;
-            border: 1px solid #e7e7e7;
-        }
-
-        .map-img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-        }
-
-        .map-overlay {
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 8px;
-            position: absolute;
-            top: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 4px;
-            color: #333;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .map-icon {
-            color: #e21a8c;
-            font-size: 24px;
-        }
-
-        .search-text {
-            border: 1px solid #e7e7e7;
-            border-radius: 4px;
-            padding: 8px 15px;
-            width: 100%;
-            font-size: 14px;
-        }
-
-        .budget-slider {
-            margin: 20px 0;
-        }
-
-        .price-range {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 8px;
-            font-size: 13px;
-            color: #666;
-        }
-
-        .property-name {
-            font-weight: 600;
-            font-size: 17px;
-            color: #333;
-        }
-
-        .address-text {
-            font-size: 13px;
-            color: #333;
-        }
-
-        .room-type {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .price-details {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .award-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: #003580;
-            color: white;
-            font-size: 12px;
-            padding: 3px 8px;
-            border-radius: 3px;
-        }
-
-        .heart-icon {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: rgba(255, 255, 255, 0.7);
-            color: #666;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .special-offer {
-            margin-top: 10px;
-            padding: 10px 0;
-            border-top: 1px solid #e7e7e7;
-            border-bottom: 1px solid #e7e7e7;
-            font-size: 13px;
+            position: relative;
+            z-index: 1;
         }
     </style>
 </head>
@@ -330,24 +69,28 @@
                     <input type="text" class="form-control search-input" id="searchTerm" name="searchTerm"
                         th:value="${searchTerm}" placeholder="Điểm đến của bạn?">
                 </div>
-                <div class="col-md-2">
-                    <input type="date" class="form-control search-input" id="checkIn" name="checkIn"
-                        th:value="${#temporals.format(checkIn, 'yyyy-MM-dd')}" required>
-                </div>
-                <div class="col-md-2">
-                    <input type="date" class="form-control search-input" id="checkOut" name="checkOut"
-                        th:value="${#temporals.format(checkOut, 'yyyy-MM-dd')}" required>
+                <div class="col-md-4">
+                    <div class="position-relative" style="z-index: 1;">
+                        <input type="text" class="form-control date-range-picker" id="dateRange" name="dateRange"
+                            th:value="${checkIn != null ? #temporals.format(checkIn, 'dd/MM/yyyy') + ' - ' + #temporals.format(checkOut, 'dd/MM/yyyy') : ''}"
+                            placeholder="Chọn ngày đến - ngày đi">
+                        <!-- Hidden inputs for compatibility -->
+                        <input type="hidden" id="checkIn" name="checkIn"
+                            th:value="${checkIn != null ? #temporals.format(checkIn, 'yyyy-MM-dd') : ''}">
+                        <input type="hidden" id="checkOut" name="checkOut"
+                            th:value="${checkOut != null ? #temporals.format(checkOut, 'yyyy-MM-dd') : ''}">
+                    </div>
                 </div>
                 <div class="col-md-3">
                     <select class="form-select search-input" id="soNguoi" name="soNguoi">
-                        <option value="1" th:selected="${soNguoi == 1}">1 người - 1 phòng</option>
-                        <option value="2" th:selected="${soNguoi == 2}">2 người - 1 phòng</option>
-                        <option value="3" th:selected="${soNguoi == 3}">3 người - 1 phòng</option>
-                        <option value="4" th:selected="${soNguoi == 4}">4 người - 1 phòng</option>
-                        <option value="5" th:selected="${soNguoi == 5}">5 người - 1 phòng</option>
-                        <option value="6" th:selected="${soNguoi == 6}">6 người - 1 phòng</option>
-                        <option value="8" th:selected="${soNguoi == 8}">8 người - 1 phòng</option>
-                        <option value="10" th:selected="${soNguoi == 10}">10 người - 1 phòng</option>
+                        <option value="1" th:selected="${soNguoi == 1}">1 người</option>
+                        <option value="2" th:selected="${soNguoi == 2}">2 người</option>
+                        <option value="3" th:selected="${soNguoi == 3}">3 người</option>
+                        <option value="4" th:selected="${soNguoi == 4}">4 người</option>
+                        <option value="5" th:selected="${soNguoi == 5}">5 người</option>
+                        <option value="6" th:selected="${soNguoi == 6}">6 người</option>
+                        <option value="8" th:selected="${soNguoi == 8}">8 người</option>
+                        <option value="10" th:selected="${soNguoi == 10}">10 người</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -358,15 +101,6 @@
     </div>
 
     <div class="container">
-        <!-- Deal Banner -->
-        <div class="deal-banner mb-3">
-            <div class="deal-banner-text">
-                <i class="bi bi-ticket-perforated-fill me-2"></i>
-                Chúc mừng! Bạn được giảm thêm 5% hôm nay. Hãy kích hoạt mã giảm giá ngay.
-            </div>
-            <button class="deal-banner-btn">Kích hoạt ngay</button>
-        </div>
-
         <div class="row">
             <!-- Filter Column -->
             <div class="col-md-3">
@@ -516,9 +250,6 @@
                     <div class="row g-0">
                         <!-- Resort Image -->
                         <div class="col-md-3 position-relative">
-                            <span class="award-badge">
-                                <i class="bi bi-trophy-fill me-1"></i>2024 Award
-                            </span>
                             <div class="heart-icon">
                                 <i class="bi bi-heart"></i>
                             </div>
@@ -527,80 +258,58 @@
                             <img th:if="${resort.imageUrl == null}"
                                 src="https://cf.bstatic.com/xdata/images/hotel/square600/261707778.webp?k=fa6b6128468ec15e81f7d076b6f2473fa3a80c255582f155cae35f9edbffdd78"
                                 class="resort-img" alt="Resort Image">
-
-                            <div class="small-images">
-                                <img src="https://cf.bstatic.com/xdata/images/hotel/max500/261708693.jpg?k=6f497e82b863b9c947e1816844a35c4b64aaddac27d5445b3e15ffb1719b2bc1"
-                                    class="small-img" alt="Room">
-                                <img src="https://cf.bstatic.com/xdata/images/hotel/max500/261707389.jpg?k=52ce1a4d01a67c3f863bc264fd6b834154120bed6edfb648b5cce2fe46fdfeaa"
-                                    class="small-img" alt="Lobby">
-                                <img src="https://cf.bstatic.com/xdata/images/hotel/max500/261707778.jpg?k=a82b66270aeff4dbe1eec1eefa91c541631b9c6e5f25e6c44acdbede4007a3ee"
-                                    class="small-img" alt="Pool">
-                            </div>
                         </div>
 
                         <!-- Resort Info -->
-                        <div class="col-md-7 p-3">
-                            <h5 th:text="${resort.tenResort}" class="property-name mb-1">Tên resort</h5>
-                            <p class="mb-2 address-text">
-                                <i class="bi bi-geo-alt-fill location-icon"></i>
-                                <span th:text="${resort.diaChi}">Địa chỉ</span>
-                                <span class="ms-1 text-muted">- 4.1km từ trung tâm</span>
-                            </p>
-
-                            <!-- Services -->
-                            <div class="mb-2">
-                                <span class="service-badge">Bữa sáng</span>
-                                <span class="service-badge">Fitness miễn phí</span>
-                                <span class="service-badge">+4</span>
+                        <div class="col-md-7 p-3 d-flex flex-column justify-content-between">
+                            <div class="d-flex flex-column justify-content-between">
+                                <h5 th:text="${resort.tenResort}" class="property-name mb-1">Tên resort</h5>
+                                <div class="">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                    <span th:text="${resort.diaChi}" class="ms-1 address-text">Địa chỉ</span>
+                                </div>
+                                <!-- Services -->
+                                <div class="my-2">
+                                    <span class="service-badge">Bữa sáng</span>
+                                    <span class="service-badge">Fitness miễn phí</span>
+                                    <span class="service-badge">+4</span>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <span class="service-badge">Boosted</span>
-                                <span class="service-badge summer-badge"><i class="bi bi-patch-check-fill"></i>
-                                    SUMMER</span>
-                                <span class="service-badge"><i class="bi bi-binoculars-fill"></i> Sea View</span>
+                            <div>
+                                <p class="mb-2 free-service"><i class="bi bi-check-circle-fill"></i> FREE cancellation
+                                </p>
+
+                                <a th:href="@{'/resort-detail/' + ${resort.tenResort}}"
+                                    class="btn btn-outline-primary btn-sm w-25">Xem
+                                    chi tiết</a>
                             </div>
-
-                            <!-- Special Offer -->
-                            <div class="special-offer">
-                                <div class="fw-bold mb-1">Ưu đãi đặc biệt</div>
-                                <p class="m-0">Đặt sớm & Tiết kiệm 15%! Hạn cuối: 31/12.</p>
-                            </div>
-
-                            <!-- Room type -->
-                            <p class="mt-2 mb-1 room-type">Phòng Deluxe, 1 giường đôi</p>
-                            <p class="mb-2 free-service"><i class="bi bi-check-circle-fill"></i> FREE cancellation</p>
-
-                            <a th:href="@{'/resort-detail/' + ${resort.tenResort}}"
-                                class="btn btn-outline-primary btn-sm">Xem
-                                chi tiết</a>
                         </div>
 
                         <!-- Price & Rating -->
-                        <div class="col-md-2 p-3 text-end">
+                        <div class="col-md-2 p-3 text-end d-flex flex-column justify-content-between">
                             <!-- Rating -->
                             <div class="mb-3 d-flex flex-column align-items-end">
                                 <div class="d-flex align-items-center mb-1">
                                     <span class="rating-text me-2" th:if="${resort.rate != null}"
                                         th:text="${resort.rate}">8.9</span>
-                                    <span class="rating-text me-2" th:if="${resort.rate == null}">8.9</span>
+                                    <span class="rating-text me-2" th:if="${resort.rate == null}">0</span>
                                     <span class="rating-badge">Tuyệt vời</span>
                                 </div>
                                 <span class="reviews-count">2,356 đánh giá</span>
                             </div>
 
-                            <!-- Only X left alert -->
-                            <div class="only-left mb-2">ONLY 4 LEFT</div>
-
                             <!-- Price -->
-                            <div class="mb-1 original-price">đ5,893,162</div>
-                            <div class="d-flex align-items-center justify-content-end">
-                                <div class="current-price"
-                                    th:text="${#numbers.formatDecimal(resort.giaThapNhat, 0, 'COMMA', 0, 'POINT')} + '₫'">
-                                    2,015,207₫</div>
-                                <span class="discount-badge">-66%</span>
+                            <div>
+                                <div class="mb-1 original-price">đ5,893,162</div>
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <div class="current-price"
+                                        th:text="${#numbers.formatDecimal(resort.giaThapNhat, 0, 'COMMA', 0, 'POINT')} + '₫'">
+                                        2,015,207₫</div>
+                                    <span class="discount-badge">-66%</span>
+                                </div>
+                                <div class="price-details">Per night before taxes and fees</div>
                             </div>
-                            <div class="price-details">Per night before taxes and fees</div>
                         </div>
                     </div>
                 </div>
@@ -609,6 +318,86 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/@coreui/coreui/dist/js/coreui.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendar = document.querySelector('[data-coreui-toggle="calendar"]');
+            const checkInInput = document.getElementById('checkIn');
+            const checkOutInput = document.getElementById('checkOut');
+
+            calendar.addEventListener('change', function (e) {
+                const dates = e.detail;
+                if (dates.startDate && dates.endDate) {
+                    checkInInput.value = dates.startDate.toISOString().split('T')[0];
+                    checkOutInput.value = dates.endDate.toISOString().split('T')[0];
+                }
+            });
+        });
+
+        $('#dateRange').daterangepicker({
+            autoUpdateInput: false,
+            minDate: moment(), // Chỉ cho phép chọn từ ngày hiện tại trở đi
+            showDropdowns: true, // Hiển thị dropdown chọn tháng/năm
+            linkedCalendars: false, // Hiển thị 2 lịch độc lập nhau
+            drops: 'down', // Buộc hiển thị xuống dưới
+            opens: 'center', // Căn giữa
+            isInvalidDate: function (date) {
+                // Vô hiệu hóa những ngày trước ngày hiện tại
+                return date.isBefore(moment(), 'day');
+            },
+            locale: {
+                format: 'DD/MM/YYYY',
+                applyLabel: 'Áp dụng',
+                cancelLabel: 'Hủy',
+                fromLabel: 'Từ',
+                toLabel: 'Đến',
+                customRangeLabel: 'Tùy chọn',
+                daysOfWeek: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                firstDay: 1
+            }
+        });
+
+        // Cập nhật giá trị input khi chọn xong ngày
+        $('#dateRange').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+
+            // Cập nhật giá trị cho hidden inputs
+            $('#checkIn').val(picker.startDate.format('YYYY-MM-DD'));
+            $('#checkOut').val(picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        // Xóa giá trị input khi cancel
+        $('#dateRange').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        // Xử lý sự kiện khi chọn ngày bắt đầu, cập nhật lại minDate cho ngày kết thúc
+        $('#dateRange').on('show.daterangepicker', function (ev, picker) {
+            picker.container.on('mousedown.daterangepicker', '.calendar-table', function () {
+                setTimeout(function () {
+                    if (picker.startDate && !picker.endDate) {
+                        // Nếu đã chọn ngày bắt đầu nhưng chưa chọn ngày kết thúc
+                        // Vô hiệu hóa tất cả các ngày trước ngày bắt đầu
+                        $('.daterangepicker td.available').each(function () {
+                            var date = moment($(this).attr('data-date'), 'YYYY-MM-DD');
+                            if (date.isBefore(picker.startDate, 'day')) {
+                                $(this).addClass('disabled');
+                            }
+                        });
+                    }
+                }, 0);
+            });
+        });
+
+        // Đảm bảo nút tìm kiếm luôn hiển thị
+        $(document).ready(function () {
+            $('.search-btn').css({
+                'position': 'relative',
+                'z-index': '2'
+            });
+        });
+    </script>
 </body>
 
 </html>

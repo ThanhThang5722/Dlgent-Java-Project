@@ -7,6 +7,8 @@
     <title>Tìm kiếm khu nghỉ dưỡng</title>
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DateRangePicker CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <!-- Custom Styles -->
     <style>
         body {
@@ -74,6 +76,36 @@
         .row {
             margin-bottom: 15px;
         }
+
+        /* Custom styles cho daterangepicker */
+        .daterangepicker td.in-range {
+            background-color: #9cc4ee;
+            /* Màu nền nhạt cho khoảng từ ngày bắt đầu đến ngày kết thúc */
+        }
+
+        .daterangepicker td.active,
+        .daterangepicker td.active:hover {
+            background-color: #0071c2;
+            /* Màu đậm cho ngày được chọn */
+            color: #ffffff;
+        }
+
+        /* Style cho ngày trước ngày hiện tại hoặc ngày đã chọn */
+        .daterangepicker td.disabled {
+            color: #ccc !important;
+            text-decoration: line-through;
+            background-color: #f8f8f8;
+            cursor: not-allowed;
+        }
+
+        /* Style cho ngày đã được chọn */
+        .daterangepicker td.start-date {
+            border-radius: 4px 0 0 4px;
+        }
+
+        .daterangepicker td.end-date {
+            border-radius: 0 4px 4px 0;
+        }
     </style>
 </head>
 
@@ -93,19 +125,15 @@
                                     placeholder="Nhập tên khu nghỉ dưỡng hoặc địa chỉ">
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="checkIn" class="form-label">Ngày nhận phòng:</label>
-                                    <input type="date" class="form-control" id="checkIn" name="checkIn"
-                                        th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" required>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="checkOut" class="form-label">Ngày trả phòng:</label>
-                                    <input type="date" class="form-control" id="checkOut" name="checkOut"
-                                        th:value="${#temporals.format(#temporals.createNow().plusDays(1), 'yyyy-MM-dd')}"
-                                        required>
-                                </div>
+                            <div class="mb-3">
+                                <label for="dateRange" class="form-label">Chọn ngày:</label>
+                                <input type="text" class="form-control" id="dateRange" name="dateRange"
+                                    placeholder="Chọn ngày đến - ngày đi">
+                                <!-- Ẩn input checkIn và checkOut để tương thích với form hiện tại -->
+                                <input type="hidden" id="checkIn" name="checkIn"
+                                    th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                                <input type="hidden" id="checkOut" name="checkOut"
+                                    th:value="${#temporals.format(#temporals.createNow().plusDays(1), 'yyyy-MM-dd')}">
                             </div>
 
                             <div class="mb-3">
@@ -133,8 +161,78 @@
 
     </div>
 
+    <!-- jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+    <!-- Moment.js -->
+    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+    <!-- DateRangePicker -->
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <!-- Bootstrap 5.3 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Cấu hình daterangepicker
+            $('#dateRange').daterangepicker({
+                autoUpdateInput: false,
+                minDate: moment(), // Chỉ cho phép chọn từ ngày hiện tại trở đi
+                startDate: moment(),
+                endDate: moment().add(1, 'days'),
+                showDropdowns: true, // Hiển thị dropdown chọn tháng/năm
+                linkedCalendars: false, // Hiển thị 2 lịch độc lập nhau
+                isInvalidDate: function (date) {
+                    // Vô hiệu hóa những ngày trước ngày hiện tại
+                    return date.isBefore(moment(), 'day');
+                },
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    applyLabel: 'Áp dụng',
+                    cancelLabel: 'Hủy',
+                    fromLabel: 'Từ',
+                    toLabel: 'Đến',
+                    customRangeLabel: 'Tùy chọn',
+                    daysOfWeek: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                    monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                    firstDay: 1
+                }
+            });
+
+            // Hiển thị ngày mặc định khi trang tải lên
+            $('#dateRange').val(moment().format('DD/MM/YYYY') + ' - ' + moment().add(1, 'days').format('DD/MM/YYYY'));
+
+            // Cập nhật giá trị input khi chọn xong ngày
+            $('#dateRange').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+
+                // Cập nhật giá trị cho checkIn và checkOut
+                $('#checkIn').val(picker.startDate.format('YYYY-MM-DD'));
+                $('#checkOut').val(picker.endDate.format('YYYY-MM-DD'));
+            });
+
+            // Xóa giá trị input khi cancel
+            $('#dateRange').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+
+            // Xử lý sự kiện khi chọn ngày bắt đầu, cập nhật lại minDate cho ngày kết thúc
+            $('#dateRange').on('show.daterangepicker', function (ev, picker) {
+                picker.container.on('mousedown.daterangepicker', '.calendar-table', function () {
+                    setTimeout(function () {
+                        if (picker.startDate && !picker.endDate) {
+                            // Nếu đã chọn ngày bắt đầu nhưng chưa chọn ngày kết thúc
+                            // Vô hiệu hóa tất cả các ngày trước ngày bắt đầu
+                            $('.daterangepicker td.available').each(function () {
+                                var date = moment($(this).attr('data-date'), 'YYYY-MM-DD');
+                                if (date.isBefore(picker.startDate, 'day')) {
+                                    $(this).addClass('disabled');
+                                }
+                            });
+                        }
+                    }, 0);
+                });
+            });
+        });
+    </script>
 
 </body>
 
