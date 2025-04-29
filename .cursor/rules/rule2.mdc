@@ -1,0 +1,64 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Database procedure:
+
+- Search function:
+CREATE OR REPLACE PROCEDURE TimResortVaPhong (
+    p_tu_khoa IN VARCHAR2,
+    p_ngay_nhan IN TIMESTAMP,
+    p_ngay_tra IN TIMESTAMP,
+    p_so_nguoi IN NUMBER,
+    p_output OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+    OPEN p_output FOR
+        SELECT 
+            knd.TEN AS ten_resort,
+            knd.DIA_CHI AS dia_chi,
+            MIN(gdp.TONG_GIATIEN) AS gia_thap_nhat, 
+            (
+                CASE WHEN LOWER(p_tu_khoa) LIKE '%' || LOWER(p_ph.TEN_PHUONG) || '%' THEN 3 ELSE 0 END +
+                CASE WHEN LOWER(p_tu_khoa) LIKE '%' || LOWER(p_quan.TEN_QUAN) || '%' THEN 2 ELSE 0 END +
+                CASE WHEN LOWER(p_tu_khoa) LIKE '%' || LOWER(p_tp.TEN_THANH_PHO) || '%' THEN 1 ELSE 0 END +
+                CASE WHEN LOWER(p_tu_khoa) LIKE '%' || LOWER(knd.TEN) || '%' THEN 2 ELSE 0 END +
+                CASE WHEN LOWER(p_tu_khoa) LIKE '%' || LOWER(knd.DIA_CHI) || '%' THEN 2 ELSE 0 END
+            ) AS relevance_score
+        FROM 
+            KHU_NGHI_DUONG knd
+            JOIN PHUONG p_ph ON knd.PHUONG_ID = p_ph.ID
+            JOIN QUAN p_quan ON p_ph.ID_QUAN = p_quan.ID
+            JOIN THANH_PHO p_tp ON p_quan.ID_THANH_PHO = p_tp.ID
+            JOIN PHONG p ON p.ID_KHU_NGHI_DUONG = knd.ID
+            JOIN LOAI_PHONG lp ON p.ID_LOAI_PHONG = lp.ID 
+            LEFT JOIN GOI_DAT_PHONG gdp ON gdp.ID_LOAI_PHONG = lp.ID 
+        WHERE 
+            (
+                LOWER(p_tu_khoa) LIKE '%' || LOWER(p_ph.TEN_PHUONG) || '%'
+                OR LOWER(p_tu_khoa) LIKE '%' || LOWER(p_quan.TEN_QUAN) || '%'
+                OR LOWER(p_tu_khoa) LIKE '%' || LOWER(p_tp.TEN_THANH_PHO) || '%'
+                OR LOWER(p_tu_khoa) LIKE '%' || LOWER(knd.TEN) || '%'
+                OR LOWER(p_tu_khoa) LIKE '%' || LOWER(knd.DIA_CHI) || '%'
+            )
+            AND p.TINH_TRANG = 'Available'
+            AND lp.SO_NGUOI >= p_so_nguoi 
+            AND NOT EXISTS (
+                SELECT 1
+                FROM THOIGIAN_PHONG_BAN tpb
+                WHERE tpb.ID_PHONG = p.ID
+                AND (
+                    (tpb.NGAY_BAT_DAU < p_ngay_tra AND tpb.NGAY_KET_THUC > p_ngay_nhan)
+                )
+            )
+        GROUP BY 
+            knd.TEN, 
+            knd.DIA_CHI, 
+            p_ph.TEN_PHUONG, 
+            p_quan.TEN_QUAN, 
+            p_tp.TEN_THANH_PHO
+        ORDER BY 
+            relevance_score DESC;
+END;
