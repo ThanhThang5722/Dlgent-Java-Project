@@ -136,4 +136,8 @@ public class LoaiPhong {
         this.tienIchSet = tienIchSet;
     }
     
+    public LoaiPhong(){}
+    public LoaiPhong(Long id) {
+        this.id = id;
+    }
 }

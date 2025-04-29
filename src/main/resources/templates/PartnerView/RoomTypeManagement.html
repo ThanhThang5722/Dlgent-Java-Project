@@ -12,11 +12,11 @@
     <div class="sidebar">
         <h4 class="text-center text-white">Partner Dashboard</h4>
         <ul class="list-unstyled">
-            <li><a href="/resort-list">Danh sách khu nghỉ dưỡng</a></li>
-            <li><a href="/roomtype-list">Danh sách loại phòng</a></li>
-            <li><a href="/income-report">Gói đặt phòng</a></li>
-            <li><a href="/income-report">Báo cáo doanh thu</a></li>
-            <li><a href="/withdraw">Rút tiền</a></li>
+            <li><a th:href="@{/partner/{doiTacId}(doiTacId=${doiTacId})}">Danh sách khu nghỉ dưỡng</a></li>
+            <li><a th:href="@{/partner/room-type-list/{doiTacId}(doiTacId=${doiTacId})}">Danh sách loại phòng</a></li>
+            <li><a th:href="@{/partner/booking-offer?doiTacId={doiTacId}(doiTacId=${doiTacId})}">Gói đặt phòng</a></li>
+            <li><a th:href="@{/partner/report?doiTacId={doiTacId}(doiTacId=${doiTacId})}">Báo cáo doanh thu</a></li>
+            <li><a th:href="@{/partner/WithDraw/{doiTacId}(doiTacId=${doiTacId})}">Rút tiền</a></li>
         </ul>
     </div>
     
@@ -151,9 +151,9 @@
                         <thead>
                             <tr>
                                 <th><input type="checkbox" id="selectAll"> Select All</th>
+                                <th>Tên loại phòng</th>
+                                <th>Khu Nghỉ Dưỡng</th>
                                 <th>Loại phòng</th>
-                                <th>Diện tích</th>
-                                <th>Tiêu chuẩn</th>
                                 <th>Loại số lượng</th>
                                 <th>Số giường</th>
                                 <th>Số người ở tối đa</th>
@@ -177,7 +177,7 @@
                                         data-bs-toggle="modal" 
                                         data-bs-target="#imageModal"
                                         th:attr="data-room-type-id=${roomType.id}, data-room-type-name=${roomType.tenLoaiPhong}, data-room-type-name=${roomType.tenLoaiPhong}">
-                                        Thêm ảnh
+                                        Ảnh
                                     </a>
                                     <a class="btn btn-secondary"
                                         data-bs-toggle="modal"
@@ -186,6 +186,7 @@
                                         onclick="openTienIchModal(this)">
                                         Tiện ích
                                     </a>
+                                    <a th:href="@{/partner/booking-offer?(roomTypeId=${roomType.id})}" class="btn btn-primary">Gói đặt phòng</a>
                                 </td>
                                 <td style="display: none;" th:data-id="${roomType.khuNghiDuong.id}"></td>
                             </tr>

@@ -13,11 +13,11 @@
     <div class="sidebar">
         <h4 class="text-center text-white">Partner Dashboard</h4>
         <ul class="list-unstyled">
-            <li><a href="/resort-list">Danh sách khu nghỉ dưỡng</a></li>
-            <li><a href="/roomtype-list">Danh sách loại phòng</a></li>
-            <li><a href="/income-report">Gói đặt phòng</a></li>
-            <li><a href="/income-report">Báo cáo doanh thu</a></li>
-            <li><a href="/withdraw">Rút tiền</a></li>
+            <li><a th:href="@{/partner/{doiTacId}(doiTacId=${doiTacId})}">Danh sách khu nghỉ dưỡng</a></li>
+            <li><a th:href="@{/partner/room-type-list/{doiTacId}(doiTacId=${doiTacId})}">Danh sách loại phòng</a></li>
+            <li><a th:href="@{/partner/booking-offer?doiTacId={doiTacId}(doiTacId=${doiTacId})}">Gói đặt phòng</a></li>
+            <li><a th:href="@{/partner/report?doiTacId={doiTacId}(doiTacId=${doiTacId})}">Báo cáo doanh thu</a></li>
+            <li><a th:href="@{/partner/WithDraw/{doiTacId}(doiTacId=${doiTacId})}">Rút tiền</a></li>
         </ul>
     </div>
     
@@ -127,12 +127,52 @@
                                 <td th:text="${resort.diaChi}"></td>
                                 <td th:text="${resort.danhGia}"></td>
                                 <td>
-                                    <a class="btn btn-info" th:href="@{/resortList/{id}(id=${resort.id})}">View</a>
+                                    <a class="btn btn-info" th:href="@{/resortList/{id}(id=${resort.id})}">Xem chi tiết</a>
+                                    <a href="#"
+                                    class="btn btn-secondary"
+                                    th:data-resort-id="${resort.id}"
+                                    th:data-resort-name="${resort.ten}"
+                                    onclick="openServiceModal(this)">
+                                    Thêm dịch vụ
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="serviceModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="serviceModalLabel">Tên khu nghỉ dưỡng</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Loại DV</th>
+                            <th>Giá</th>
+                            <th>Sử dụng</th>
+                          </tr>
+                        </thead>
+                        <tbody id="serviceTableBody">
+                          <!-- Dịch vụ sẽ được render ở đây -->
+                        </tbody>
+                      </table>
+                      <div class="alert alert-info">Hiển thị tất cả dịch vụ - dù có hay không</div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" onclick="saveServices()">Lưu</button>
+                    </div>
+                  </div>
+                </div>
+              </div>              
             </div>
         </div>
     </div>
@@ -178,6 +218,95 @@
     });
 
     </script>
+
+    <script>
+        function openServiceModal(button) {
+        const resortId = button.getAttribute("data-resort-id");
+        const resortName = button.getAttribute("data-resort-name");
+    
+        document.getElementById("serviceModalLabel").textContent = `Dịch vụ - ${resortName}`;
+    
+        // Clear table body
+        const tbody = document.getElementById("serviceTableBody");
+        tbody.innerHTML = "";
+    
+        fetch(`/api/services-of-resort/${resortId}`)
+            .then(res => res.json())
+            .then(data => {
+            data.forEach(service => {
+                const row = document.createElement("tr");
+    
+                // Tên dịch vụ
+                const nameCell = document.createElement("td");
+                nameCell.textContent = service.serviceName;
+    
+                // Input giá
+                const priceCell = document.createElement("td");
+                const priceInput = document.createElement("input");
+                priceInput.type = "number";
+                priceInput.min = 0;
+                priceInput.value = service.price;
+                priceInput.classList.add("form-control");
+                priceInput.name = "price";
+                row.appendChild(nameCell);
+                priceCell.appendChild(priceInput);
+                row.appendChild(priceCell);
+    
+                // Checkbox
+                const checkCell = document.createElement("td");
+                checkCell.classList.add("text-center");
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.checked = service.daCo;
+                checkbox.name = "useService";
+                row.appendChild(checkCell);
+                checkCell.appendChild(checkbox);
+    
+                // Gắn thêm thuộc tính ẩn để lấy sau khi bấm Lưu
+                row.dataset.serviceId = service.serviceId;
+    
+                tbody.appendChild(row);
+            });
+    
+            // Lưu resortId để dùng lúc gửi
+            document.getElementById("serviceModal").dataset.resortId = resortId;
+    
+            // Mở modal (Bootstrap 4)
+            $('#serviceModal').modal('show');
+            });
+        }
+    
+        function saveServices() {
+        const modal = document.getElementById("serviceModal");
+        const resortId = modal.dataset.resortId;
+        const rows = modal.querySelectorAll("tbody tr");
+    
+        const services = Array.from(rows).map(row => {
+            return {
+            serviceId: row.dataset.serviceId,
+            price: parseFloat(row.querySelector("input[name='price']").value),
+            daCo: row.querySelector("input[name='useService']").checked
+            };
+        });
+    
+        fetch(`/api/services-of-resort/${resortId}`, {
+            method: "PUT",
+            headers: {
+            "Content-Type": "application/json"
+            },
+            body: JSON.stringify(services)
+        })
+        .then(res => {
+            if (res.ok) {
+            alert("Lưu thành công!");
+            $('#serviceModal').modal('hide');
+            } else {
+            alert("Lỗi khi lưu!");
+            }
+        });
+        }
+    </script>
+    
     <script th:src="@{/js/resort-list.js?version=1.3}"></script>
 </body>
 </html>
