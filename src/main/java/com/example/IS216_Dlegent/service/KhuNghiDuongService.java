@@ -1,6 +1,5 @@
 package com.example.IS216_Dlegent.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
 import com.example.IS216_Dlegent.payload.request.InsertResortRequest;
 import com.example.IS216_Dlegent.repository.KhuNghiDuongRepo;
-
 import com.example.IS216_Dlegent.repository.jdbc.JdbcResortRepository;
 import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
+
 
 @Service
 public class KhuNghiDuongService {
@@ -46,6 +45,9 @@ public class KhuNghiDuongService {
 
     @Autowired
     private KhuNghiDuongRepo khuNghiDuongRepo;
+
+    @Autowired
+    private JdbcResortRepository jdbcResortRepository;
 
     public List<KhuNghiDuong> getKhuNghiDuongsByDoiTacId(Long doiTacId) {
         return khuNghiDuongRepo.findByDoiTac_Id(doiTacId);
@@ -84,9 +86,6 @@ public class KhuNghiDuongService {
             return false;
         }
     }
-
-    @Autowired
-    private JdbcResortRepository jdbcResortRepository;
 
     public List<ResortSearchResponse> searchResorts(String tenResort, LocalDateTime checkIn, LocalDateTime checkOut,
             int soNguoi) {

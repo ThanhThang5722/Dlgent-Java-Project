@@ -12,16 +12,28 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.IS216_Dlegent.model.KhuNghiDuong;
+import com.example.IS216_Dlegent.model.LoaiPhong;
 import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
+import com.example.IS216_Dlegent.service.DichVuMacDinhService;
+import com.example.IS216_Dlegent.service.GoiDatPhongService;
 import com.example.IS216_Dlegent.service.KhuNghiDuongService;
+import com.example.IS216_Dlegent.service.LoaiPhongService;
 
 @Controller
 public class KhachHangViewController {
 
     @Autowired
     private KhuNghiDuongService khuNghiDuongService;
+
+    @Autowired
+    private LoaiPhongService loaiPhongService;
+
+    @Autowired
+    private GoiDatPhongService goiDatPhongService;
 
     @GetMapping("/tim-kiem-resort")
     public String timKiemResortPage(Model model) {

@@ -61,7 +61,7 @@
 </head>
 
 <body>
-    <!-- Search Bar -->
+    <!-- Thanh tìm kiếm -->
     <div class="search-bar mb-3">
         <div class="container">
             <form th:action="@{/tim-kiem-resort/ket-qua}" method="get" class="row g-2 align-items-center">
@@ -74,7 +74,7 @@
                         <input type="text" class="form-control date-range-picker" id="dateRange" name="dateRange"
                             th:value="${checkIn != null ? #temporals.format(checkIn, 'dd/MM/yyyy') + ' - ' + #temporals.format(checkOut, 'dd/MM/yyyy') : ''}"
                             placeholder="Chọn ngày đến - ngày đi">
-                        <!-- Hidden inputs for compatibility -->
+                        <!-- Các input ẩn để tương thích -->
                         <input type="hidden" id="checkIn" name="checkIn"
                             th:value="${checkIn != null ? #temporals.format(checkIn, 'yyyy-MM-dd') : ''}">
                         <input type="hidden" id="checkOut" name="checkOut"
@@ -102,36 +102,36 @@
 
     <div class="container">
         <div class="row">
-            <!-- Filter Column -->
+            <!-- Cột bộ lọc -->
             <div class="col-md-3">
-                <!-- Map Search -->
+                <!-- Tìm kiếm trên bản đồ -->
                 <div class="map-search position-relative mb-3">
                     <img src="https://maps.googleapis.com/maps/api/staticmap?center=VungTau,Vietnam&zoom=13&size=400x150&maptype=roadmap&key=YOUR_API_KEY"
-                        class="map-img" alt="Map">
+                        class="map-img" alt="Bản đồ">
                     <div class="map-overlay">
                         <i class="bi bi-geo-alt-fill map-icon d-block"></i>
                         TÌM TRÊN BẢN ĐỒ
                     </div>
                 </div>
 
-                <!-- Text Search -->
+                <!-- Tìm kiếm văn bản -->
                 <div class="mb-3">
                     <input type="text" class="search-text" placeholder="Tìm kiếm">
                 </div>
 
-                <!-- Budget Slider -->
+                <!-- Thanh trượt ngân sách -->
                 <div class="filter-card">
                     <div class="filter-title">Ngân sách của bạn (mỗi đêm)</div>
                     <div class="budget-slider">
                         <input type="range" class="form-range" min="0" max="5000000" step="100000" id="priceRange">
                         <div class="price-range">
                             <span>0₫</span>
-                            <span>5,000,000₫</span>
+                            <span>5.000.000₫</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Popular Filters -->
+                <!-- Bộ lọc phổ biến -->
                 <div class="filter-card">
                     <div class="filter-title">Bộ lọc phổ biến cho Vũng Tàu</div>
                     <div class="filter-item">
@@ -184,7 +184,7 @@
                     </div>
                 </div>
 
-                <!-- Star Rating -->
+                <!-- Xếp hạng sao -->
                 <div class="filter-card">
                     <div class="filter-title">Xếp hạng sao</div>
                     <div class="filter-item">
@@ -223,9 +223,9 @@
                 </div>
             </div>
 
-            <!-- Results Column -->
+            <!-- Cột kết quả -->
             <div class="col-md-9">
-                <!-- Sort options -->
+                <!-- Tùy chọn sắp xếp -->
                 <div class="d-flex mb-3 flex-wrap">
                     <div class="me-2 mb-2" style="font-size: 13px;">Sắp xếp theo:</div>
                     <button class="sort-btn active mb-2">Phù hợp nhất</button>
@@ -235,32 +235,32 @@
                     <button class="sort-btn mb-2">Ưu đãi hot</button>
                 </div>
 
-                <!-- Welcome Message -->
+                <!-- Thông báo chào mừng -->
                 <div class="alert alert-primary mb-3" style="font-size: 13px;">
                     Chào mừng bạn! Hãy nhập ngày ở vào ô tìm kiếm để tiếp tục đặt phòng tại khu nghỉ dưỡng.
                 </div>
 
-                <!-- Results alert if empty -->
+                <!-- Thông báo kết quả nếu trống -->
                 <div th:if="${ketQuaTimKiem.empty}" class="alert alert-info">
                     Không tìm thấy kết quả phù hợp. Vui lòng thử lại với từ khóa khác.
                 </div>
 
-                <!-- Results list -->
+                <!-- Danh sách kết quả -->
                 <div th:each="resort : ${ketQuaTimKiem}" class="resort-card">
                     <div class="row g-0">
-                        <!-- Resort Image -->
+                        <!-- Hình ảnh resort -->
                         <div class="col-md-3 position-relative">
                             <div class="heart-icon">
                                 <i class="bi bi-heart"></i>
                             </div>
                             <img th:if="${resort.imageUrl != null}" th:src="${resort.imageUrl}" class="resort-img"
-                                alt="Resort Image">
+                                alt="Hình ảnh Resort">
                             <img th:if="${resort.imageUrl == null}"
                                 src="https://cf.bstatic.com/xdata/images/hotel/square600/261707778.webp?k=fa6b6128468ec15e81f7d076b6f2473fa3a80c255582f155cae35f9edbffdd78"
-                                class="resort-img" alt="Resort Image">
+                                class="resort-img" alt="Hình ảnh Resort">
                         </div>
 
-                        <!-- Resort Info -->
+                        <!-- Thông tin resort -->
                         <div class="col-md-7 p-3 d-flex flex-column justify-content-between">
                             <div class="d-flex flex-column justify-content-between">
                                 <h5 th:text="${resort.tenResort}" class="property-name mb-1">Tên resort</h5>
@@ -268,16 +268,16 @@
                                     <i class="bi bi-geo-alt-fill"></i>
                                     <span th:text="${resort.diaChi}" class="ms-1 address-text">Địa chỉ</span>
                                 </div>
-                                <!-- Services -->
+                                <!-- Dịch vụ -->
                                 <div class="my-2">
-                                    <span class="service-badge">Bữa sáng</span>
-                                    <span class="service-badge">Fitness miễn phí</span>
-                                    <span class="service-badge">+4</span>
+                                    <tr th:each="service: ${resort.dichVuMacDinhs}">
+                                        <span th:text="${service.tenDichVu}" class="badge text-bg-secondary fw-medium">Dịch vụ</span>
+                                    </tr>
                                 </div>
                             </div>
 
                             <div>
-                                <p class="mb-2 free-service"><i class="bi bi-check-circle-fill"></i> FREE cancellation
+                                <p class="mb-2 free-service"><i class="bi bi-check-circle-fill"></i> Hủy miễn phí
                                 </p>
 
                                 <a th:href="@{'/resort-detail/' + ${resort.tenResort}}"
@@ -286,9 +286,9 @@
                             </div>
                         </div>
 
-                        <!-- Price & Rating -->
+                        <!-- Giá & Đánh giá -->
                         <div class="col-md-2 p-3 text-end d-flex flex-column justify-content-between">
-                            <!-- Rating -->
+                            <!-- Đánh giá -->
                             <div class="mb-3 d-flex flex-column align-items-end">
                                 <div class="d-flex align-items-center mb-1">
                                     <span class="rating-text me-2" th:if="${resort.rate != null}"
@@ -296,19 +296,19 @@
                                     <span class="rating-text me-2" th:if="${resort.rate == null}">0</span>
                                     <span class="rating-badge">Tuyệt vời</span>
                                 </div>
-                                <span class="reviews-count">2,356 đánh giá</span>
+                                <span class="reviews-count">2.356 đánh giá</span>
                             </div>
 
-                            <!-- Price -->
+                            <!-- Giá -->
                             <div>
-                                <div class="mb-1 original-price">đ5,893,162</div>
+                                <div class="mb-1 original-price">5.893.162đ</div>
                                 <div class="d-flex align-items-center justify-content-end">
                                     <div class="current-price"
                                         th:text="${#numbers.formatDecimal(resort.giaThapNhat, 0, 'COMMA', 0, 'POINT')} + '₫'">
-                                        2,015,207₫</div>
+                                        2.015.207₫</div>
                                     <span class="discount-badge">-66%</span>
                                 </div>
-                                <div class="price-details">Per night before taxes and fees</div>
+                                <div class="price-details">Mỗi đêm trước thuế và phí</div>
                             </div>
                         </div>
                     </div>

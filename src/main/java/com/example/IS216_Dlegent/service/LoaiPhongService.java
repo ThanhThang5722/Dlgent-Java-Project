@@ -169,4 +169,25 @@ public class LoaiPhongService {
     public List<LoaiPhong> getLoaiPhongByKhuNghiDuongId(Long khuNghiDuongId) {
         return loaiPhongRepository.findByKhuNghiDuong_Id(khuNghiDuongId);
     }
+    
+    /**
+     * Lấy danh sách loại phòng theo khu nghỉ dưỡng và số người
+     * @param khuNghiDuongId ID của khu nghỉ dưỡng
+     * @param soNguoi Số người tối thiểu của loại phòng
+     * @return Danh sách các loại phòng phù hợp
+     */
+    public List<LoaiPhong> getLoaiPhongByResortIdAndSoNguoi(Long khuNghiDuongId, int soNguoi) {
+        try {
+            // Sử dụng JPQL để lấy các loại phòng phù hợp
+            String jpql = "SELECT lp FROM LoaiPhong lp WHERE lp.khuNghiDuong.id = :resortId AND lp.soNguoi >= :soNguoi";
+            Query query = entityManager.createQuery(jpql, LoaiPhong.class);
+            query.setParameter("resortId", khuNghiDuongId);
+            query.setParameter("soNguoi", soNguoi);
+            
+            return query.getResultList();
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy danh sách loại phòng theo resort và số người: {}", e.getMessage());
+            return List.of(); // Trả về danh sách rỗng nếu có lỗi
+        }
+    }
 }
