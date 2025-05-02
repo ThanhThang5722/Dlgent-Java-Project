@@ -1,6 +1,7 @@
 package com.example.IS216_Dlegent.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,8 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
 import com.example.IS216_Dlegent.model.LoaiPhong;
+import com.example.IS216_Dlegent.payload.dto.RoomTypeDTO;
 import com.example.IS216_Dlegent.repository.KhuNghiDuongRepo;
 import com.example.IS216_Dlegent.repository.LoaiPhongRepo;
+import com.example.IS216_Dlegent.repository.jdbc.JdbcRoomType;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -189,5 +193,22 @@ public class LoaiPhongService {
             logger.error("Lỗi khi lấy danh sách loại phòng theo resort và số người: {}", e.getMessage());
             return List.of(); // Trả về danh sách rỗng nếu có lỗi
         }
+    }
+
+    //Call PROCEDURE
+    @Autowired
+    private JdbcRoomType jdbcRoomType;
+
+    public List<RoomTypeDTO> getRoomByResort(Long resortId, LocalDateTime checkIn, LocalDateTime checkOut,
+        int soNguoi) {
+        if (checkIn == null) {
+            checkIn = LocalDateTime.now();
+        }
+
+        if (checkOut == null) {
+            checkOut = checkIn.plusDays(1); // mac dinh checkout sau 1 ngay
+        }
+
+        return jdbcRoomType.getRoomByResort(resortId, checkIn, checkOut, soNguoi);
     }
 }

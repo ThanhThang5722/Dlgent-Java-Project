@@ -57,6 +57,19 @@
             position: relative;
             z-index: 1;
         }
+
+        /* Custom width classes */
+        .w-70 {
+            width: 70% !important;
+        }
+
+        /* Custom styles cho resort image */
+        .resort-img {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            border-radius: 5px 0 0 5px;
+        }
     </style>
 </head>
 
@@ -100,27 +113,19 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container w-70">
         <div class="row">
             <!-- Cột bộ lọc -->
-            <div class="col-md-3">
-                <!-- Tìm kiếm trên bản đồ -->
-                <div class="map-search position-relative mb-3">
-                    <img src="https://maps.googleapis.com/maps/api/staticmap?center=VungTau,Vietnam&zoom=13&size=400x150&maptype=roadmap&key=YOUR_API_KEY"
-                        class="map-img" alt="Bản đồ">
-                    <div class="map-overlay">
-                        <i class="bi bi-geo-alt-fill map-icon d-block"></i>
-                        TÌM TRÊN BẢN ĐỒ
+            <div class="col-md-3 text-dark p-3">
+                <!-- Bản đồ vị trí resort -->
+                <div class="map-container position-relative mb-3" style="cursor: pointer;" id="mapPreviewContainer">
+                    <div style="overflow: hidden; border-radius: 8px; height: 200px;">
+                        <div id="staticMapPreview" style="width: 100%; height: 200px;"></div>
                     </div>
                 </div>
 
-                <!-- Tìm kiếm văn bản -->
-                <div class="mb-3">
-                    <input type="text" class="search-text" placeholder="Tìm kiếm">
-                </div>
-
                 <!-- Thanh trượt ngân sách -->
-                <div class="filter-card">
+                <div class="filter-card" style="background-color: #e6e3e3;">
                     <div class="filter-title">Ngân sách của bạn (mỗi đêm)</div>
                     <div class="budget-slider">
                         <input type="range" class="form-range" min="0" max="5000000" step="100000" id="priceRange">
@@ -133,7 +138,7 @@
 
                 <!-- Bộ lọc phổ biến -->
                 <div class="filter-card">
-                    <div class="filter-title">Bộ lọc phổ biến cho Vũng Tàu</div>
+                    <div class="filter-title">Bộ lọc phổ biến</div>
                     <div class="filter-item">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" id="freeCancel">
@@ -235,83 +240,76 @@
                     <button class="sort-btn mb-2">Ưu đãi hot</button>
                 </div>
 
-                <!-- Thông báo chào mừng -->
-                <div class="alert alert-primary mb-3" style="font-size: 13px;">
-                    Chào mừng bạn! Hãy nhập ngày ở vào ô tìm kiếm để tiếp tục đặt phòng tại khu nghỉ dưỡng.
-                </div>
-
                 <!-- Thông báo kết quả nếu trống -->
                 <div th:if="${ketQuaTimKiem.empty}" class="alert alert-info">
                     Không tìm thấy kết quả phù hợp. Vui lòng thử lại với từ khóa khác.
                 </div>
 
                 <!-- Danh sách kết quả -->
-                <div th:each="resort : ${ketQuaTimKiem}" class="resort-card">
-                    <div class="row g-0">
-                        <!-- Hình ảnh resort -->
-                        <div class="col-md-3 position-relative">
-                            <div class="heart-icon">
-                                <i class="bi bi-heart"></i>
-                            </div>
-                            <img th:if="${resort.imageUrl != null}" th:src="${resort.imageUrl}" class="resort-img"
-                                alt="Hình ảnh Resort">
-                            <img th:if="${resort.imageUrl == null}"
-                                src="https://cf.bstatic.com/xdata/images/hotel/square600/261707778.webp?k=fa6b6128468ec15e81f7d076b6f2473fa3a80c255582f155cae35f9edbffdd78"
-                                class="resort-img" alt="Hình ảnh Resort">
-                        </div>
-
-                        <!-- Thông tin resort -->
-                        <div class="col-md-7 p-3 d-flex flex-column justify-content-between">
-                            <div class="d-flex flex-column justify-content-between">
-                                <h5 th:text="${resort.tenResort}" class="property-name mb-1">Tên resort</h5>
-                                <div class="">
-                                    <i class="bi bi-geo-alt-fill"></i>
-                                    <span th:text="${resort.diaChi}" class="ms-1 address-text">Địa chỉ</span>
+                <div th:each="resort : ${ketQuaTimKiem}" class="resort-card" style="cursor: pointer; text-align: left;">
+                    <a th:href="@{/resort-detail/{id}(id=${resort.id}, 
+                        checkIn=${checkIn != null ? #temporals.format(checkIn, 'yyyy-MM-dd') : #temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}, 
+                        checkOut=${checkOut != null ? #temporals.format(checkOut, 'yyyy-MM-dd') : #temporals.format(#temporals.createNow().plusDays(1), 'yyyy-MM-dd')}, 
+                        soNguoi=${soNguoi != null ? soNguoi : 2})}"
+                        style="text-decoration: none; color: inherit; display: block;">
+                        <div class="row g-0">
+                            <!-- Hình ảnh resort -->
+                            <div class="col-md-3 position-relative">
+                                <div class="heart-icon">
+                                    <i class="bi bi-heart"></i>
                                 </div>
-                                <!-- Dịch vụ -->
-                                <div class="my-2">
-                                    <tr th:each="service: ${resort.dichVuMacDinhs}">
-                                        <span th:text="${service.tenDichVu}" class="badge text-bg-secondary fw-medium">Dịch vụ</span>
-                                    </tr>
-                                </div>
+                                <img th:if="${resort.imageUrl != null}" th:src="${resort.imageUrl}" class="resort-img"
+                                    alt="Hình ảnh Resort">
+                                <img th:if="${resort.imageUrl == null}"
+                                    src="https://cf.bstatic.com/xdata/images/hotel/square600/261707778.webp?k=fa6b6128468ec15e81f7d076b6f2473fa3a80c255582f155cae35f9edbffdd78"
+                                    class="resort-img" alt="Hình ảnh Resort">
                             </div>
 
-                            <div>
-                                <p class="mb-2 free-service"><i class="bi bi-check-circle-fill"></i> Hủy miễn phí
-                                </p>
-
-                                <a th:href="@{'/resort-detail/' + ${resort.tenResort}}"
-                                    class="btn btn-outline-primary btn-sm w-25">Xem
-                                    chi tiết</a>
-                            </div>
-                        </div>
-
-                        <!-- Giá & Đánh giá -->
-                        <div class="col-md-2 p-3 text-end d-flex flex-column justify-content-between">
-                            <!-- Đánh giá -->
-                            <div class="mb-3 d-flex flex-column align-items-end">
-                                <div class="d-flex align-items-center mb-1">
-                                    <span class="rating-text me-2" th:if="${resort.rate != null}"
-                                        th:text="${resort.rate}">8.9</span>
-                                    <span class="rating-text me-2" th:if="${resort.rate == null}">0</span>
-                                    <span class="rating-badge">Tuyệt vời</span>
+                            <!-- Thông tin resort -->
+                            <div class="col-md-7 p-3 d-flex flex-column justify-content-between">
+                                <div class="d-flex flex-column justify-content-between">
+                                    <h5 th:text="${resort.tenResort}" class="property-name mb-1 fs-2">Tên resort</h5>
+                                    <div class="">
+                                        <i class="bi bi-geo-alt-fill"></i>
+                                        <span th:text="${resort.diaChi}" class="ms-1 address-text">Địa chỉ</span>
+                                    </div>
+                                    <!-- Dịch vụ -->
+                                    <div class="my-2 fs-5">
+                                        <tr th:each="service: ${resort.dichVuMacDinhs}">
+                                            <span th:text="${service.tenDichVu}"
+                                                class="badge text-bg-secondary fw-medium">Dịch vụ</span>
+                                        </tr>
+                                    </div>
                                 </div>
-                                <span class="reviews-count">2.356 đánh giá</span>
                             </div>
 
-                            <!-- Giá -->
-                            <div>
-                                <div class="mb-1 original-price">5.893.162đ</div>
-                                <div class="d-flex align-items-center justify-content-end">
-                                    <div class="current-price"
-                                        th:text="${#numbers.formatDecimal(resort.giaThapNhat, 0, 'COMMA', 0, 'POINT')} + '₫'">
-                                        2.015.207₫</div>
-                                    <span class="discount-badge">-66%</span>
+                            <!-- Giá & Đánh giá -->
+                            <div class="col-md-2 p-3 text-end d-flex flex-column justify-content-between">
+                                <!-- Đánh giá -->
+                                <div class="mb-3 d-flex flex-column align-items-end">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <span class="rating-text me-2" th:if="${resort.rate != null}"
+                                            th:text="${resort.rate}">8.9</span>
+                                        <span class="rating-text me-2" th:if="${resort.rate == null}">0</span>
+                                        <span class="rating-badge">Tuyệt vời</span>
+                                    </div>
+                                    <span class="reviews-count">2.356 đánh giá</span>
                                 </div>
-                                <div class="price-details">Mỗi đêm trước thuế và phí</div>
+
+                                <!-- Giá -->
+                                <div>
+                                    <div class="mb-1 original-price">5.893.162đ</div>
+                                    <div class="d-flex align-items-center justify-content-end">
+                                        <div class="current-price"
+                                            th:text="${#numbers.formatDecimal(resort.giaThapNhat, 0, 'COMMA', 0, 'POINT')} + '₫'">
+                                            2.015.207₫</div>
+                                        <span class="discount-badge">-66%</span>
+                                    </div>
+                                    <div class="price-details">Mỗi đêm trước thuế và phí</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -397,7 +395,263 @@
                 'z-index': '2'
             });
         });
+
+        // Google Maps API initialization
+        let map;
+        let searchBox;
+        let markers = [];
+        let staticMap;
+        let staticMarkers = [];
+
+        function initMap() {
+            // Khởi tạo bản đồ tĩnh cho phần preview
+            staticMap = new google.maps.Map(document.getElementById("staticMapPreview"), {
+                center: { lat: 10.346, lng: 107.084 }, // Tọa độ Vũng Tàu
+                zoom: 11,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                disableDefaultUI: true,
+                scrollwheel: false,
+                clickableIcons: false
+            });
+
+            // Khởi tạo bản đồ tại vị trí mặc định (Việt Nam)
+            map = new google.maps.Map(document.getElementById("mapContainer"), {
+                center: { lat: 10.8231, lng: 106.6297 }, // Tọa độ TP.HCM
+                zoom: 7,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            // Tạo searchbox cho bản đồ
+            const input = document.getElementById("searchTerm");
+            searchBox = new google.maps.places.SearchBox(input);
+
+            // Hiển thị tất cả các resort trên cả hai bản đồ
+            displayResortsOnMaps();
+
+            // Thêm sự kiện khi người dùng chọn địa điểm từ suggestions
+            searchBox.addListener("places_changed", () => {
+                const places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+
+                // Xóa markers cũ
+                clearMarkers();
+
+                // Thêm marker mới cho kết quả tìm được
+                const bounds = new google.maps.LatLngBounds();
+                places.forEach((place) => {
+                    if (!place.geometry || !place.geometry.location) {
+                        console.log("Không tìm thấy thông tin địa điểm");
+                        return;
+                    }
+
+                    // Tạo marker mới
+                    markers.push(
+                        new google.maps.Marker({
+                            map,
+                            title: place.name,
+                            position: place.geometry.location,
+                        })
+                    );
+
+                    if (place.geometry.viewport) {
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
+                });
+                map.fitBounds(bounds);
+            });
+
+            // Xử lý sự kiện click vào bản đồ tĩnh
+            document.getElementById('mapPreviewContainer').addEventListener('click', function () {
+                $('#mapModal').modal('show');
+                // Khởi tạo lại bản đồ khi modal hiển thị
+                $('#mapModal').on('shown.bs.modal', function () {
+                    google.maps.event.trigger(map, 'resize');
+                });
+            });
+        }
+
+        // Hàm hiển thị tất cả các resort trên cả hai bản đồ
+        function displayResortsOnMaps() {
+            // Xóa tất cả markers hiện tại
+            clearAllMarkers();
+
+            // Tạo bounds để điều chỉnh zoom của bản đồ
+            const bounds = new google.maps.LatLngBounds();
+            const staticBounds = new google.maps.LatLngBounds();
+            const infoWindow = new google.maps.InfoWindow();
+
+            // Lấy thông tin resort từ dữ liệu trên trang
+            const resortElements = document.querySelectorAll('.resort-card');
+
+            if (resortElements.length === 0) {
+                return; // Không có resort nào để hiển thị
+            }
+
+            resortElements.forEach(function (resortElement) {
+                // Lấy thông tin cần thiết từ phần tử resort
+                const resortId = resortElement.getAttribute('data-resort-id');
+                const resortName = resortElement.querySelector('.property-name').textContent;
+                const resortAddress = resortElement.querySelector('.address-text').textContent;
+                const resortPrice = resortElement.querySelector('.current-price').textContent;
+                const resortImage = resortElement.querySelector('.resort-img').getAttribute('src');
+
+                // Lấy tọa độ từ địa chỉ sử dụng Geocoding service
+                const geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ 'address': resortAddress }, function (results, status) {
+                    if (status === 'OK' && results[0]) {
+                        const position = results[0].geometry.location;
+
+                        // Tạo marker cho bản đồ lớn
+                        const marker = new google.maps.Marker({
+                            position: position,
+                            map: map,
+                            title: resortName,
+                            animation: google.maps.Animation.DROP
+                        });
+
+                        // Tạo marker cho bản đồ tĩnh
+                        const staticMarker = new google.maps.Marker({
+                            position: position,
+                            map: staticMap,
+                            title: resortName
+                        });
+
+                        // Thêm marker vào mảng để quản lý
+                        markers.push(marker);
+                        staticMarkers.push(staticMarker);
+
+                        // Mở rộng bounds để bao gồm marker này
+                        bounds.extend(position);
+                        staticBounds.extend(position);
+
+                        // Tạo nội dung cho infowindow
+                        const content = `
+                            <div style="max-width: 300px;">
+                                <h5 style="margin-bottom: 8px;">${resortName}</h5>
+                                <div style="display: flex; margin-bottom: 8px;">
+                                    <img src="${resortImage}" style="width: 80px; height: 60px; object-fit: cover; margin-right: 10px;">
+                                    <div>
+                                        <p style="margin: 0; font-size: 12px;"><i class="bi bi-geo-alt-fill"></i> ${resortAddress}</p>
+                                        <p style="margin: 5px 0; font-weight: bold; color: #0071c2;">${resortPrice}</p>
+                                    </div>
+                                </div>
+                                <a href="/resort-detail/${resortId}" class="btn btn-sm btn-primary" style="width: 100%;">Xem chi tiết</a>
+                            </div>
+                        `;
+
+                        // Thêm sự kiện click cho marker
+                        marker.addListener('click', function () {
+                            infoWindow.setContent(content);
+                            infoWindow.open(map, marker);
+                        });
+
+                        staticMarker.addListener('click', function () {
+                            // Khi click vào marker trên bản đồ tĩnh, mở modal và focus vào marker tương ứng
+                            $('#mapModal').modal('show');
+                            setTimeout(function () {
+                                infoWindow.setContent(content);
+                                infoWindow.open(map, marker);
+                                map.setCenter(position);
+                                map.setZoom(15);
+                            }, 500);
+                        });
+
+                        // Điều chỉnh zoom và trung tâm của bản đồ
+                        if (resortElements.length > 1) {
+                            map.fitBounds(bounds);
+                            staticMap.fitBounds(staticBounds);
+                        } else {
+                            map.setCenter(position);
+                            map.setZoom(15);
+                            staticMap.setCenter(position);
+                            staticMap.setZoom(15);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Hàm xóa tất cả markers
+        function clearAllMarkers() {
+            // Xóa markers trên bản đồ chính
+            markers.forEach(marker => {
+                marker.setMap(null);
+            });
+            markers = [];
+
+            // Xóa markers trên bản đồ tĩnh
+            staticMarkers.forEach(marker => {
+                marker.setMap(null);
+            });
+            staticMarkers = [];
+        }
+
+        // Xử lý sự kiện khi người dùng nhấn vào địa chỉ resort để xem trên bản đồ
+        $(document).ready(function () {
+            // Xử lý click vào địa chỉ resort
+            $('.address-text').on('click', function (e) {
+                e.stopPropagation(); // Ngăn không cho sự kiện click lan đến thẻ cha
+
+                const resortCard = $(this).closest('.resort-card');
+                const resortId = resortCard.data('resort-id');
+                const resortAddress = $(this).text();
+
+                // Mở modal bản đồ
+                $('#mapModal').modal('show');
+
+                // Sau khi modal hiển thị, tìm và focus vào marker của resort được chọn
+                $('#mapModal').on('shown.bs.modal', function () {
+                    google.maps.event.trigger(map, 'resize');
+
+                    // Tìm marker dựa trên resort ID
+                    const geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({ 'address': resortAddress }, function (results, status) {
+                        if (status === 'OK' && results[0]) {
+                            const position = results[0].geometry.location;
+                            map.setCenter(position);
+                            map.setZoom(15);
+
+                            // Tìm marker tương ứng và kích hoạt sự kiện click
+                            markers.forEach(function (marker) {
+                                if (marker.getPosition().equals(position)) {
+                                    google.maps.event.trigger(marker, 'click');
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        });
     </script>
+
+    <!-- Google Maps API -->
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&libraries=places&callback=initMap"
+        async defer></script>
+
+    <!-- Modal hiển thị bản đồ -->
+    <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mapModalLabel">Vị trí khu nghỉ dưỡng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Container chứa bản đồ -->
+                    <div id="mapContainer" style="height: 500px; width: 100%;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

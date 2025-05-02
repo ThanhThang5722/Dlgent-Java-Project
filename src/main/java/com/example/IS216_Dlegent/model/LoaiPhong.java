@@ -39,11 +39,7 @@ public class LoaiPhong {
     private BigDecimal gia;
 
     @ManyToMany
-    @JoinTable(
-        name = "TIEN_ICH_PHONG",
-        joinColumns = @JoinColumn(name = "ID_PHONG"),
-        inverseJoinColumns = @JoinColumn(name = "ID_TIEN_ICH")
-    )
+    @JoinTable(name = "TIEN_ICH_PHONG", joinColumns = @JoinColumn(name = "ID_PHONG"), inverseJoinColumns = @JoinColumn(name = "ID_TIEN_ICH"))
     private Set<TienIch> tienIchSet;
 
     // Getters and Setters
@@ -135,8 +131,10 @@ public class LoaiPhong {
     public void setTienIchSet(Set<TienIch> tienIchSet) {
         this.tienIchSet = tienIchSet;
     }
-    
-    public LoaiPhong(){}
+
+    public LoaiPhong() {
+    }
+
     public LoaiPhong(Long id) {
         this.id = id;
     }

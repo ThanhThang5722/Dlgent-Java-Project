@@ -29,8 +29,6 @@ import org.slf4j.LoggerFactory;
 
 @Repository
 public class JdbcResortRepository {
-        private static final Logger logger = LoggerFactory.getLogger(JdbcResortRepository.class);
-
         private final JdbcTemplate jdbcTemplate;
 
         @Autowired

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
 import com.example.IS216_Dlegent.model.LoaiPhong;
+import com.example.IS216_Dlegent.payload.dto.RoomTypeDTO;
 import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
 import com.example.IS216_Dlegent.service.DichVuMacDinhService;
 import com.example.IS216_Dlegent.service.GoiDatPhongService;
@@ -76,5 +78,46 @@ public class KhachHangViewController {
         model.addAttribute("soNguoi", soNguoi);
 
         return "CustomerView/SearchResult";
+    }
+
+    @GetMapping("/resort-detail/{id}")
+    public String resortDetail(@PathVariable Long id,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkIn,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOut,
+            @RequestParam(defaultValue = "2") int soNguoi,
+            Model model) {
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+
+        // Set default dates if not provided
+        if (checkIn == null) {
+            checkIn = LocalDate.now();
+        }
+
+        if (checkOut == null) {
+            checkOut = checkIn.plusDays(2);
+        }
+
+        LocalDateTime checkInDateTime = checkIn.atStartOfDay();
+        LocalDateTime checkOutDateTime = checkOut.atStartOfDay();
+
+        // Lấy thông tin khu nghỉ dưỡng
+        KhuNghiDuong khuNghiDuong = khuNghiDuongService.findById(id);
+        if (khuNghiDuong == null) {
+            // Xử lý khi không tìm thấy khu nghỉ dưỡng
+            return "redirect:/tim-kiem-resort";
+        }
+
+        List<RoomTypeDTO> result = loaiPhongService.getRoomByResort(id, checkInDateTime, checkOutDateTime,
+                soNguoi);
+
+        model.addAttribute("resort", khuNghiDuong);
+        model.addAttribute("result", result);
+        model.addAttribute("resortId", id);
+        model.addAttribute("checkIn", checkIn);
+        model.addAttribute("checkOut", checkOut);
+        model.addAttribute("soNguoi", soNguoi);
+
+        return "CustomerView/ResortDetail";
     }
 }

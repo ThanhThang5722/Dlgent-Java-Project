@@ -32,9 +32,11 @@ public class DoiTac {
     private BigDecimal soDu = BigDecimal.ZERO;
 
     // Constructors
-    public DoiTac() {}
+    public DoiTac() {
+    }
 
-    public DoiTac(Account account, String diaChi, String taiKhoanNganHang, String tenTaiKhoanNganHang, String tenNganHang, BigDecimal soDu) {
+    public DoiTac(Account account, String diaChi, String taiKhoanNganHang, String tenTaiKhoanNganHang,
+            String tenNganHang, BigDecimal soDu) {
         this.account = account;
         this.diaChi = diaChi;
         this.taiKhoanNganHang = taiKhoanNganHang;
@@ -103,4 +105,3 @@ public class DoiTac {
         this.soDu = soDu;
     }
 }
-
