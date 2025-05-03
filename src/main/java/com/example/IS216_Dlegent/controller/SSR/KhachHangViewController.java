@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
 import com.example.IS216_Dlegent.model.LoaiPhong;
+import com.example.IS216_Dlegent.payload.dto.DanhGiaDTO;
 import com.example.IS216_Dlegent.payload.dto.RoomTypeDTO;
 import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
+import com.example.IS216_Dlegent.repository.DanhGiaRepository;
+import com.example.IS216_Dlegent.service.DanhGiaService;
 import com.example.IS216_Dlegent.service.DichVuMacDinhService;
 import com.example.IS216_Dlegent.service.GoiDatPhongService;
 import com.example.IS216_Dlegent.service.KhuNghiDuongService;
@@ -36,6 +39,9 @@ public class KhachHangViewController {
 
     @Autowired
     private GoiDatPhongService goiDatPhongService;
+
+    @Autowired
+    private DanhGiaService danhGiaService;
 
     @GetMapping("/tim-kiem-resort")
     public String timKiemResortPage(Model model) {
@@ -108,15 +114,18 @@ public class KhachHangViewController {
             return "redirect:/tim-kiem-resort";
         }
 
-        List<RoomTypeDTO> result = loaiPhongService.getRoomByResort(id, checkInDateTime, checkOutDateTime,
+        List<RoomTypeDTO> roomtypes = loaiPhongService.getRoomByResort(id, checkInDateTime, checkOutDateTime,
                 soNguoi);
 
+        List<DanhGiaDTO> danhGias = danhGiaService.getDanhGiaDTOs(id);
+
         model.addAttribute("resort", khuNghiDuong);
-        model.addAttribute("result", result);
+        model.addAttribute("result", roomtypes);
         model.addAttribute("resortId", id);
         model.addAttribute("checkIn", checkIn);
         model.addAttribute("checkOut", checkOut);
         model.addAttribute("soNguoi", soNguoi);
+        model.addAttribute("danhGias", danhGias);
 
         return "CustomerView/ResortDetail";
     }

@@ -2,6 +2,7 @@ package com.example.IS216_Dlegent.payload.dto;
 
 import java.util.List;
 
+import com.example.IS216_Dlegent.model.DanhGia;
 import com.example.IS216_Dlegent.model.GoiDatPhong;
 import com.example.IS216_Dlegent.model.HinhPhong;
 import com.example.IS216_Dlegent.model.TienIch;

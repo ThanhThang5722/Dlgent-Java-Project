@@ -30,6 +30,7 @@ public class KhuNghiDuong {
     @Column(name = "DANH_GIA", nullable = false)
     private Integer danhGia;
 
+    
     // Constructors
     public KhuNghiDuong() {
     }

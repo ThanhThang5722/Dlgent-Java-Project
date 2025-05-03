@@ -18,6 +18,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
+import com.example.IS216_Dlegent.model.DanhGia;
 import com.example.IS216_Dlegent.model.GoiDatPhong;
 import com.example.IS216_Dlegent.model.HinhPhong;
 import com.example.IS216_Dlegent.model.TienIch;
@@ -25,6 +26,7 @@ import com.example.IS216_Dlegent.model.UtilitiesOfRoomType;
 import com.example.IS216_Dlegent.payload.dto.RoomTypeDTO;
 import com.example.IS216_Dlegent.payload.dto.GoiDatPhongDTO;
 import com.example.IS216_Dlegent.repository.HinhPhongRepo;
+import com.example.IS216_Dlegent.repository.DanhGiaRepository;
 import com.example.IS216_Dlegent.repository.GoiDaiPhongRepository;
 import com.example.IS216_Dlegent.repository.UtilitiesOfRoomTypeRepository;
 
@@ -38,6 +40,8 @@ public class JdbcRoomType {
         private UtilitiesOfRoomTypeRepository utilitiesOfRoomTypeRepository;
         @Autowired
         private GoiDaiPhongRepository goiDatPhongRepo;
+        @Autowired
+        private DanhGiaRepository danhGiaRepo;
 
         public JdbcRoomType(JdbcTemplate jdbcTemplate) {
                 this.jdbcTemplate = jdbcTemplate;
@@ -68,10 +72,12 @@ public class JdbcRoomType {
 
                 for (RoomTypeDTO roomtype : roomTypes) {
                         List<HinhPhong> hinhPhongs = hinhPhongRepo.findByRoomTypeID(roomtype.getId());
+
                         List<GoiDatPhongDTO> goiDatPhongs = (goiDatPhongRepo.findByLoaiPhong_Id(roomtype.getId())
                                         .stream()
                                         .map(GoiDatPhongDTO::new)
                                         .collect(Collectors.toList()));
+
                         List<UtilitiesOfRoomType> tienIchs = utilitiesOfRoomTypeRepository
                                         .findByLoaiPhong_Id(roomtype.getId());
 

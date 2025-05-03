@@ -18,7 +18,6 @@ import com.example.IS216_Dlegent.repository.KhuNghiDuongRepo;
 import com.example.IS216_Dlegent.repository.jdbc.JdbcResortRepository;
 import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
 
-
 @Service
 public class KhuNghiDuongService {
     @Autowired

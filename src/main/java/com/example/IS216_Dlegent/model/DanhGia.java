@@ -9,7 +9,7 @@ public class DanhGia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "ID", insertable = false, updatable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

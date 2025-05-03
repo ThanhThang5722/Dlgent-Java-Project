@@ -22,26 +22,26 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 
-
 @Service
 public class LoaiPhongService {
     private static final Logger logger = LoggerFactory.getLogger(LoaiPhongService.class);
 
     private final LoaiPhongRepo loaiPhongRepository;
     private final KhuNghiDuongRepo khuNghiDuongRepository;
-    
+
     @PersistenceContext
     private EntityManager entityManager;
-    
+
     @Autowired
     private final KhuNghiDuongService khuNghiDuongService;
 
-    public LoaiPhongService(LoaiPhongRepo loaiPhongRepository, KhuNghiDuongService khuNghiDuongService, KhuNghiDuongRepo khuNghiDuongRepository) {
+    public LoaiPhongService(LoaiPhongRepo loaiPhongRepository, KhuNghiDuongService khuNghiDuongService,
+            KhuNghiDuongRepo khuNghiDuongRepository) {
         this.loaiPhongRepository = loaiPhongRepository;
         this.khuNghiDuongService = khuNghiDuongService;
         this.khuNghiDuongRepository = khuNghiDuongRepository;
     }
-    
+
     public LoaiPhong getLoaiPhongById(Long id) {
         logger.info("Starting getLoaiPhongById with id: {}", id);
         try {
@@ -49,7 +49,7 @@ public class LoaiPhongService {
             String jpql = "SELECT lp FROM LoaiPhong lp JOIN FETCH lp.khuNghiDuong WHERE lp.id = :id";
             Query query = entityManager.createQuery(jpql);
             query.setParameter("id", id);
-            
+
             LoaiPhong loaiPhong = null;
             try {
                 loaiPhong = (LoaiPhong) query.getSingleResult();
@@ -60,30 +60,30 @@ public class LoaiPhongService {
                 // Nếu có lỗi với JPQL, sử dụng cách thông thường
                 logger.info("Falling back to regular findById");
             }
-            
+
             // Nếu không có kết quả từ JPQL, sử dụng cách thông thường
             loaiPhong = loaiPhongRepository.findById(id).orElse(null);
-            
+
             if (loaiPhong == null) {
                 logger.warn("LoaiPhong not found with id: {}", id);
                 return null;
             }
-            
+
             // Nếu KhuNghiDuong là null, cần tải KhuNghiDuong theo ID từ cột FK
             if (loaiPhong.getKhuNghiDuong() == null) {
                 logger.warn("KhuNghiDuong is null for LoaiPhong with id: {}, attempting to manually load", id);
-                
+
                 // Lấy ID của KhuNghiDuong từ database trực tiếp
                 String nativeQuery = "SELECT ID_KHU_NGHI_DUONG FROM LOAI_PHONG WHERE ID = ?";
                 Query nativeQ = entityManager.createNativeQuery(nativeQuery);
                 nativeQ.setParameter(1, id);
-                
+
                 try {
                     Object kndId = nativeQ.getSingleResult();
                     if (kndId != null) {
                         Long khuNghiDuongId = ((Number) kndId).longValue();
                         logger.info("Found KhuNghiDuong ID: {} for LoaiPhong ID: {}", khuNghiDuongId, id);
-                        
+
                         // Lấy KhuNghiDuong từ ID
                         KhuNghiDuong khuNghiDuong = khuNghiDuongRepository.findById(khuNghiDuongId).orElse(null);
                         if (khuNghiDuong != null) {
@@ -101,7 +101,7 @@ public class LoaiPhongService {
             } else {
                 logger.info("LoaiPhong has KhuNghiDuong with id: {}", loaiPhong.getKhuNghiDuong().getId());
             }
-            
+
             return loaiPhong;
         } catch (Exception e) {
             logger.error("Error in getLoaiPhongById for id: {}", id, e);
@@ -116,8 +116,9 @@ public class LoaiPhongService {
     }
 
     @Transactional
-    public LoaiPhong saveLoaiPhong(Long idKhuNghiDuong, String tenLoaiPhong, Double dienTich, String loaiPhongTheoSoLuong,
-                                    String loaiPhongTheoTieuChuan, Integer soGiuong, Integer soNguoi, BigDecimal gia) {
+    public LoaiPhong saveLoaiPhong(Long idKhuNghiDuong, String tenLoaiPhong, Double dienTich,
+            String loaiPhongTheoSoLuong,
+            String loaiPhongTheoTieuChuan, Integer soGiuong, Integer soNguoi, BigDecimal gia) {
 
         KhuNghiDuong khuNghiDuong = khuNghiDuongRepository.findById(idKhuNghiDuong)
                 .orElseThrow(() -> new IllegalArgumentException("Khu Nghỉ Dưỡng không tồn tại"));
@@ -136,19 +137,20 @@ public class LoaiPhongService {
     }
 
     @Transactional
-    public LoaiPhong updateLoaiPhong(Long id, Long idKhuNghiDuong, String tenLoaiPhong, Double dienTich, String loaiPhongTheoSoLuong,
-                                     String loaiPhongTheoTieuChuan, Integer soGiuong, Integer soNguoi, BigDecimal gia) throws Exception{
+    public LoaiPhong updateLoaiPhong(Long id, Long idKhuNghiDuong, String tenLoaiPhong, Double dienTich,
+            String loaiPhongTheoSoLuong,
+            String loaiPhongTheoTieuChuan, Integer soGiuong, Integer soNguoi, BigDecimal gia) throws Exception {
         LoaiPhong loaiPhong = loaiPhongRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Loại phòng không tồn tại"));
         Logger logger = LoggerFactory.getLogger(getClass());
         logger.info("Test Loai Phong: {}", loaiPhong);
-        
+
         KhuNghiDuong khuNghiDuong = khuNghiDuongRepository.findById(idKhuNghiDuong)
                 .orElseThrow(() -> new IllegalArgumentException("Khu Nghỉ Dưỡng không tồn tại"));
-        
+
         logger.info("Test Loai khuNghiDuong: {}", khuNghiDuong);
-        
-                loaiPhong.setKhuNghiDuong(khuNghiDuong);
+
+        loaiPhong.setKhuNghiDuong(khuNghiDuong);
         loaiPhong.setTenLoaiPhong(tenLoaiPhong);
         loaiPhong.setDienTich(dienTich);
         loaiPhong.setLoaiPhongTheoSoLuong(loaiPhongTheoSoLuong);
@@ -156,7 +158,7 @@ public class LoaiPhongService {
         loaiPhong.setSoGiuong(soGiuong);
         loaiPhong.setSoNguoi(soNguoi);
         loaiPhong.setGia(gia);
-        
+
         return loaiPhongRepository.save(loaiPhong);
     }
 
@@ -164,20 +166,22 @@ public class LoaiPhongService {
     public void deleteAllById(List<Long> ids) {
         loaiPhongRepository.deleteAllById(ids);
     }
-    
+
     /**
      * Lấy danh sách loại phòng theo khu nghỉ dưỡng
+     * 
      * @param khuNghiDuongId ID của khu nghỉ dưỡng
      * @return Danh sách các loại phòng thuộc khu nghỉ dưỡng
      */
     public List<LoaiPhong> getLoaiPhongByKhuNghiDuongId(Long khuNghiDuongId) {
         return loaiPhongRepository.findByKhuNghiDuong_Id(khuNghiDuongId);
     }
-    
+
     /**
      * Lấy danh sách loại phòng theo khu nghỉ dưỡng và số người
+     * 
      * @param khuNghiDuongId ID của khu nghỉ dưỡng
-     * @param soNguoi Số người tối thiểu của loại phòng
+     * @param soNguoi        Số người tối thiểu của loại phòng
      * @return Danh sách các loại phòng phù hợp
      */
     public List<LoaiPhong> getLoaiPhongByResortIdAndSoNguoi(Long khuNghiDuongId, int soNguoi) {
@@ -187,7 +191,7 @@ public class LoaiPhongService {
             Query query = entityManager.createQuery(jpql, LoaiPhong.class);
             query.setParameter("resortId", khuNghiDuongId);
             query.setParameter("soNguoi", soNguoi);
-            
+
             return query.getResultList();
         } catch (Exception e) {
             logger.error("Lỗi khi lấy danh sách loại phòng theo resort và số người: {}", e.getMessage());
@@ -195,12 +199,12 @@ public class LoaiPhongService {
         }
     }
 
-    //Call PROCEDURE
+    // Call PROCEDURE
     @Autowired
     private JdbcRoomType jdbcRoomType;
 
     public List<RoomTypeDTO> getRoomByResort(Long resortId, LocalDateTime checkIn, LocalDateTime checkOut,
-        int soNguoi) {
+            int soNguoi) {
         if (checkIn == null) {
             checkIn = LocalDateTime.now();
         }
