@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="vn">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="${bootstrapUrl}"/>
+    <link rel="stylesheet" th:href="@{/css/PartnerDashboard/ResortListStyle.css}"/>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <title>Room Type Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+</head>
+<body>
+    <div class="sidebar">
+        <h4 class="text-center text-white">Partner Dashboard</h4>
+        <ul class="list-unstyled">
+            <li><a th:href="@{/partner/{doiTacId}(doiTacId=${doiTacId})}">Danh sách khu nghỉ dưỡng</a></li>
+            <li><a th:href="@{/partner/room-type-list/{doiTacId}(doiTacId=${doiTacId})}">Danh sách loại phòng</a></li>
+            <li><a th:href="@{/partner/booking-offer?doiTacId={doiTacId}(doiTacId=${doiTacId})}">Gói đặt phòng</a></li>
+            <li><a th:href="@{/partner/report?doiTacId={doiTacId}(doiTacId=${doiTacId})}">Báo cáo doanh thu</a></li>
+            <li><a th:href="@{/partner/WithDraw/{doiTacId}(doiTacId=${doiTacId})}">Rút tiền</a></li>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="tools">
+                    <h5>Tools</h5>
+                    <form id="searchForm" class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label for="batDau" class="form-label">Thời gian bắt đầu:</label>
+                            <input type="datetime-local" id="batDau" name="batDau" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="ketThuc" class="form-label">Thời gian kết thúc:</label>
+                            <input type="datetime-local" id="ketThuc" name="ketThuc" class="form-control" required>
+                        </div>
+                        <div class="col-md-4 align-self-end">
+                            <button type="submit" class="btn btn-primary">Tìm phòng</button>
+                        </div>
+                    </form>
+                    <div class="mb-2">
+                        <label for="filterResort" class="form-label">Chọn khu nghỉ dưỡng</label>
+                        <select id="filterResort" class="form-select">
+                            <option value="">Tất cả khu nghỉ dưỡng</option>
+                            <option th:each="resort : ${listKhuNghiDuong}" 
+                                    th:value="${resort.id}" 
+                                    th:text="${resort.ten}"></option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label for="filterRoomType" class="form-label">Chọn loại phòng</label>
+                        <select id="filterRoomType" class="form-select">
+                            <option value="">Tất cả loại phòng</option>
+                            <option th:each="loaiPhong : ${listLoaiPhong}" 
+                                    th:value="${loaiPhong.id}" 
+                                    th:text="${loaiPhong.tenLoaiPhong}"
+                                    th:attr="data-resort-id=${loaiPhong.khuNghiDuong != null ? loaiPhong.khuNghiDuong.id : ''}"></option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary mb-2" id="insertBtn">Tạo phòng mới</button>
+                    <button class="btn btn-warning mb-2" id = "updateTinhTrangBtn">Cập nhật tình trạng phòng</button>
+                    <button class="btn btn-danger mb-2" id="deleteBtn">Xóa phòng</button>
+                </div>
+            </div>
+
+            <div id="insertFormContainer" style="display:none;" class="container mt-4 border p-3 bg-light">
+                <h5>Thêm Phòng Mới</h5>
+                <form id="insertPhongForm">
+                    <div class="mb-3">
+                        <label for="khuNghiDuongSelect" class="form-label">Khu nghỉ dưỡng</label>
+                        <select class="form-select" id="khuNghiDuongSelect" name="khuNghiDuongId" required>
+                            <option value="">-- Chọn khu nghỉ dưỡng --</option>
+                            <option th:each="resort : ${listKhuNghiDuong}"
+                                    th:value="${resort.id}"
+                                    th:text="${resort.ten}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="loaiPhongSelect" class="form-label">Loại phòng</label>
+                        <select class="form-select" id="loaiPhongSelect" name="loaiPhongId" required>
+                            <option value="">-- Chọn loại phòng --</option>
+                            <option th:each="lp : ${listLoaiPhong}"
+                                    th:value="${lp.id}"
+                                    th:text="${lp.tenLoaiPhong}"
+                                    th:attr="data-resort-id=${lp.khuNghiDuong != null ? lp.khuNghiDuong.id : ''}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label for="maSo" class="form-label">Mã Số Phòng:</label>
+                        <input type="number" class="form-control" id="maSo" required />
+                    </div>
+                    <div class="mb-2">
+                        <label for="tinhTrang" class="form-label">Tình Trạng:</label>
+                        <select class="form-select" id="tinhTrang" required>
+                            <option value="active">Sẵn sàng</option>
+                            <option value="inactive">Không khả dụng</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Tạo</button>
+                    <button type="button" id="cancelBtn" class="btn btn-secondary">Hủy</button>
+                </form>
+            </div>
+            <!--Update tình trạng phòng-->
+            <div class="modal fade" id="updateTinhTrangModal" tabindex="-1" aria-labelledby="updateTinhTrangLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="updateTinhTrangForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateTinhTrangLabel">Cập nhật tình trạng phòng</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                        <label for="selectTinhTrang" class="form-label">Chọn tình trạng mới:</label>
+                        <select id="selectTinhTrang" class="form-select" required>
+                            <option value="active">Sẵn sàng</option>
+                            <option value="inactive">Không khả dụng</option>
+                        </select>
+                        <input type="hidden" id="hiddenUpdatePhongId">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+
+            <div class="container mt-5">
+                <!-- Bảng 1: Thông tin phòng đơn giản -->
+                <div class="table-responsive mb-5">
+                    <h5>Danh sách phòng</h5>
+                    <table class="table table-bordered table-striped align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Chọn phòng</th>
+                                <th>Mã số phòng</th>
+                                <th>Loại phòng</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="phongTableBody">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            
+                <!-- Bảng 2: Có thời gian bắt đầu / kết thúc -->
+                <div class="table-responsive">
+                    <h5>Chi tiết thời gian phòng</h5>
+                    <table class="table table-bordered table-striped align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Mã số phòng</th>
+                                <th>Loại phòng</th>
+                                <th>Bắt đầu</th>
+                                <th>Kết thúc</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id = "phongBanTableBody">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                   
+        </div>
+    </div>
+    
+    <!-- Footer or additional sections can go here -->
+    
+    <script>
+        document.getElementById('insertBtn').addEventListener('click', function() {
+            document.getElementById('insertFormContainer').style.display = 'block';
+        });
+        document.getElementById('cancelBtn').addEventListener('click', function() {
+            document.getElementById('insertFormContainer').style.display = 'none';
+        });
+    </script>
+    <script>
+        function openTienIchModal(button) {
+            const roomTypeId = button.getAttribute("data-room-type-id");
+            const roomTypeName = button.getAttribute("data-room-type-name");
+
+            document.getElementById("selectedRoomTypeId").value = roomTypeId;
+            document.getElementById("roomTypeNameTienIch").innerText = roomTypeName;
+            // Clear hết check trước khi fetch
+            document.querySelectorAll(".tienIchCheckbox").forEach(cb => cb.checked = false);
+
+            // Gọi API để lấy tiện ích của loại phòng này
+            
+            }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const batDau = document.getElementById('batDau').value;
+            const ketThuc = document.getElementById('ketThuc').value;
+
+            fetch('/api/resort/phong/kiem-tra', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ngayBatDau: batDau,
+                    ngayKetThuc: ketThuc
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Danh sách phòng không bận
+                const danhSachPhong = data.phongKhongBan;
+                const tbody = document.getElementById('phongTableBody');
+                tbody.innerHTML = '';
+
+                if (danhSachPhong.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="text-center text-danger">Không có phòng nào sẵn sàng</td>
+                        </tr>`;
+                } else {
+                    danhSachPhong.forEach(phong => {
+                        const row = document.createElement('tr');
+                        const tinhTrangHtml = phong.tinhTrang === 'active'
+                                    ? '<span class="badge bg-success">Sẵn sàng</span>'
+                                    : '<span class="badge bg-secondary">Không khả dụng</span>';
+                        row.innerHTML = `
+                            <td><input type="checkbox" value="${phong.id}" data-loaiphong-id="${phong.loaiPhongId}"  /></td>
+                            <td>${phong.maSo}</td>
+                            <td>${phong.tenLoaiPhong}</td>
+                            <td>${tinhTrangHtml}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+
+                // Danh sách phòng bận
+                const phongBanList = data.phongBan;
+                const tbodyBan = document.getElementById('phongBanTableBody');
+                tbodyBan.innerHTML = '';
+
+                if (!phongBanList.length) {
+                    tbodyBan.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="text-center text-danger">Không có phòng nào bận</td>
+                        </tr>`;
+                } else {
+                    phongBanList.forEach(item => {
+                        const row = document.createElement('tr');
+
+                        const khachHangHtml = item.khachHangId && item.tenTaiKhoan
+                            ? `<a href="/customer/${item.khachHangId}" class="text-dark text-decoration-underline">
+                                    ${item.tenTaiKhoan}
+                            </a>`
+                            : '';
+
+                        row.innerHTML = `
+                            <td>${item.maSoPhong}</td>
+                            <td>${item.tenLoaiPhong}</td>
+                            <td>${formatDateTime(item.ngayBatDau)}</td>
+                            <td>${formatDateTime(item.ngayKetThuc)}</td>
+                            <td>
+                                <span class="badge bg-warning text-dark">
+                                    Đang được thuê bởi 
+                                    <a href="/customer/${item.khachHangId}" class="text-dark text-decoration-underline">
+                                        ${item.tenTaiKhoan}
+                                    </a>
+                                </span>
+                            </td>
+                        `;
+                        row.setAttribute('data-resort-id', item.khuNghiDuongId);
+                        row.setAttribute('data-loai-phong-id', item.loaiPhongId);
+                        tbodyBan.appendChild(row);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi khi gọi API:', error);
+            });
+        });
+
+        // Hàm định dạng ngày giờ ISO → dd/MM/yyyy HH:mm
+        function formatDateTime(isoString) {
+            const date = new Date(isoString);
+            const d = String(date.getDate()).padStart(2, '0');
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const y = date.getFullYear();
+            const h = String(date.getHours()).padStart(2, '0');
+            const min = String(date.getMinutes()).padStart(2, '0');
+            return `${d}/${m}/${y} ${h}:${min}`;
+        }
+    </script>
+
+    <script>
+        document.getElementById('insertPhongForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const khuNghiDuongId = document.getElementById('khuNghiDuongSelect').value;
+            const loaiPhongId = document.getElementById('loaiPhongSelect').value;
+            const maSo = document.getElementById('maSo').value;
+            const tinhTrang = document.getElementById('tinhTrang').value;
+
+            if (!khuNghiDuongId || !loaiPhongId || !maSo || !tinhTrang) {
+                alert("Vui lòng điền đầy đủ thông tin trước khi gửi.");
+                return;
+            }
+
+            const phongData = {
+                khuNghiDuongId: parseInt(khuNghiDuongId),
+                loaiPhongId: parseInt(loaiPhongId),
+                maSo: parseInt(maSo),
+                tinhTrang: tinhTrang
+            };
+
+            fetch('/api/resort/phong', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(phongData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi thêm phòng');
+                }
+                return response.json();
+            })
+            .then(result => {
+                alert("Thêm phòng thành công!");
+                document.getElementById('insertFormContainer').style.display = 'none';
+                document.getElementById('insertPhongForm').reset();
+                console.log(result);
+                themPhongVaoBang(result);
+                
+            })
+            .catch(error => {
+                console.error('Lỗi khi thêm phòng:', error);
+                alert("Đã xảy ra lỗi khi thêm phòng.");
+            });
+        });
+        function themPhongVaoBang(phong) {
+            const tbody = document.getElementById('phongTableBody');
+
+            const row = document.createElement('tr');
+
+            const loaiPhongSelect = document.getElementById('loaiPhongSelect');
+            let tenLoaiPhong = 'Không xác định';
+
+            for (let i = 0; i < loaiPhongSelect.options.length; i++) {
+                const option = loaiPhongSelect.options[i];
+                if (parseInt(option.value) === phong.loaiPhongId) {
+                    tenLoaiPhong = option.text;
+                    break;
+                }
+            }
+            const tinhTrangHtml = phong.tinhTrang === 'active'
+                ? '<span class="badge bg-success">Sẵn sàng</span>'
+                : '<span class="badge bg-secondary">Không khả dụng</span>';
+
+            row.innerHTML = `
+                <td><input type="checkbox" value="${phong.id}" /></td>
+                <td>${phong.maSo}</td>
+                <td>${tenLoaiPhong || 'Không xác định'}</td>
+                <td>${tinhTrangHtml}</td>
+            `;
+            row.setAttribute('data-resort-id', phong.khuNghiDuongId);
+            row.setAttribute('data-loai-phong-id', phong.loaiPhongId);
+            tbody.appendChild(row);
+        }
+    </script>
+    <script>
+        document.getElementById('deleteBtn').addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('#phongTableBody input[type="checkbox"]:checked');
+
+            if (checkboxes.length === 0) {
+                alert("Vui lòng chọn ít nhất một phòng để xóa!");
+                return;
+            }
+
+            const selectedLoaiPhongIds = new Set();
+            checkboxes.forEach(cb => {
+                const loaiPhongId = cb.getAttribute('data-loaiphong-id');
+                if (loaiPhongId) selectedLoaiPhongIds.add(loaiPhongId);
+            });
+
+            if (selectedLoaiPhongIds.size > 1) {
+                alert("Chỉ được xóa các phòng thuộc cùng một loại!");
+                return;
+            }
+
+            if (!confirm("Bạn có chắc chắn muốn xóa các phòng đã chọn không?")) return;
+
+            checkboxes.forEach(cb => {
+                const phongId = parseInt(cb.value);
+
+                fetch('/api/resort/phong', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(phongId)
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error("Không thể xóa");
+                    // Xoá khỏi bảng nếu thành công
+                    cb.closest('tr').remove();
+                })
+                .catch(err => {
+                    console.error(`Lỗi khi xóa phòng ID ${phongId}:`, err);
+                    alert(`Không thể xóa phòng ID ${phongId}`);
+                });
+            });
+        });
+    </script>
+    <script>
+        // Khi bấm nút "Cập nhật tình trạng phòng"
+        document.getElementById('updateTinhTrangBtn').addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('#phongTableBody input[type="checkbox"]:checked');
+            
+            if (checkboxes.length !== 1) {
+                alert('Vui lòng chọn đúng 1 phòng để cập nhật.');
+                return;
+            }
+
+            const phongId = checkboxes[0].value;
+            document.getElementById('hiddenUpdatePhongId').value = phongId;
+
+            // Mở modal
+            const updateModal = new bootstrap.Modal(document.getElementById('updateTinhTrangModal'));
+            updateModal.show();
+        });
+
+        // Khi submit form cập nhật
+        document.getElementById('updateTinhTrangForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const phongId = document.getElementById('hiddenUpdatePhongId').value;
+            const newTinhTrang = document.getElementById('selectTinhTrang').value;
+
+            fetch('/api/resort/phong', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    phongId: parseInt(phongId),
+                    tinhTrang: newTinhTrang
+                })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Lỗi cập nhật");
+            })
+            .then(() => {
+                alert('Cập nhật tình trạng phòng thành công!');
+                capNhatTrangThaiPhongUI(phongId, newTinhTrang);
+                const modal = bootstrap.Modal.getInstance(document.getElementById('updateTinhTrangModal'));
+                modal.hide();
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Cập nhật thất bại.');
+            });
+        });
+        function capNhatTrangThaiPhongUI(phongId, tinhTrang) {
+            const rows = document.querySelectorAll('#phongTableBody tr');
+            rows.forEach(row => {
+                const checkbox = row.querySelector('input[type="checkbox"]');
+                if (checkbox && checkbox.value === phongId.toString()) {
+                    const statusCell = row.children[3];
+                    let badge = tinhTrang === 'active'
+                        ? '<span class="badge bg-success">Sẵn sàng</span>'
+                        : '<span class="badge bg-secondary">Không khả dụng</span>';
+                    statusCell.innerHTML = badge;
+                }
+            });
+        }
+    </script>
+
+    <script>
+        // Lọc loại phòng theo khu nghỉ dưỡng
+        document.getElementById('filterResort').addEventListener('change', function () {
+            const resortId = this.value;
+            const roomTypeSelect = document.getElementById('filterRoomType');
+
+            Array.from(roomTypeSelect.options).forEach(option => {
+                if (!option.value) return; // bỏ qua "Tất cả loại phòng"
+                const dataResortId = option.getAttribute('data-resort-id');
+                option.style.display = !resortId || dataResortId === resortId ? 'block' : 'none';
+            });
+
+            roomTypeSelect.value = ''; // reset chọn loại phòng nếu đã lọc
+            filterTables();
+        });
+
+        // Lọc khi chọn loại phòng
+        document.getElementById('filterRoomType').addEventListener('change', filterTables);
+
+        function filterTables() {
+            const selectedResort = document.getElementById('filterResort').value;
+            const selectedRoomType = document.getElementById('filterRoomType').value;
+
+            // Lọc bảng danh sách phòng
+            const phongRows = document.querySelectorAll('#phongTableBody tr');
+            phongRows.forEach(row => {
+                const resortId = row.getAttribute('data-resort-id');
+                const loaiPhongId = row.getAttribute('data-loai-phong-id');
+                const match =
+                    (!selectedResort || resortId === selectedResort) &&
+                    (!selectedRoomType || loaiPhongId === selectedRoomType);
+                row.style.display = match ? '' : 'none';
+            });
+
+            // Lọc bảng phòng bận
+            const phongBanRows = document.querySelectorAll('#phongBanTableBody tr');
+            phongBanRows.forEach(row => {
+                const resortId = row.getAttribute('data-resort-id');
+                const loaiPhongId = row.getAttribute('data-loai-phong-id');
+                const match =
+                    (!selectedResort || resortId === selectedResort) &&
+                    (!selectedRoomType || loaiPhongId === selectedRoomType);
+                row.style.display = match ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>
