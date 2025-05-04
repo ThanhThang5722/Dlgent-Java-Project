@@ -1,6 +1,9 @@
 package com.example.IS216_Dlegent.controller.SSR;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,6 +26,7 @@ import com.example.IS216_Dlegent.model.DoiTac;
 import com.example.IS216_Dlegent.model.GoiDatPhong;
 import com.example.IS216_Dlegent.model.HinhPhong;
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
+import com.example.IS216_Dlegent.model.LichSuRutTien;
 import com.example.IS216_Dlegent.model.LoaiPhong;
 import com.example.IS216_Dlegent.model.Services;
 import com.example.IS216_Dlegent.model.ServicesOfResort;
@@ -32,6 +36,7 @@ import com.example.IS216_Dlegent.payload.SSR.RoomTypeDetailsDTO;
 import com.example.IS216_Dlegent.payload.dto.DanhGiaDTO;
 import com.example.IS216_Dlegent.repository.DoiTacRepository;
 import com.example.IS216_Dlegent.repository.HoaDonRepository;
+import com.example.IS216_Dlegent.repository.LichSuRutTienRepository;
 import com.example.IS216_Dlegent.service.DanhGiaService;
 import com.example.IS216_Dlegent.service.DoiTacService;
 import com.example.IS216_Dlegent.service.HinhPhongService;
@@ -78,6 +83,9 @@ public class PartnerViewController {
 
     @Autowired
     private HoaDonService hoaDonService;
+
+    @Autowired
+    private LichSuRutTienRepository lichSuRutTienRepository;
 
     @GetMapping("/{doiTacId}")
     public String getPartnerView(@PathVariable Long doiTacId, Model model) {
@@ -168,6 +176,7 @@ public class PartnerViewController {
     public String getRoomView(@RequestParam Long doiTacId, Model model) {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);
+        model.addAttribute("doiTacId", doiTacId);
         // Lấy danh sách khu nghỉ dưỡng để hiển thị trong dropdown
         List<KhuNghiDuong> listKhuNghiDuong = khuNghiDuongService.getKhuNghiDuongsByDoiTacId(doiTacId);
         model.addAttribute("listKhuNghiDuong", listKhuNghiDuong);
@@ -200,7 +209,7 @@ public class PartnerViewController {
         BigDecimal[] doanhThu = hoaDonService.layDoanhThu12ThangHienTai();
         model.addAttribute("doanhThu", doanhThu);
 
-        List<BienDongSoDuDTO> bienDongList = hoaDonService.layLichSuBienDongSoDu(doiTacId);
+        /*List<BienDongSoDuDTO> bienDongList = hoaDonService.layLichSuBienDongSoDu(doiTacId);
 
         List<String> labels = bienDongList.stream()
             .map(item -> item.getNgay().toString()) // hoặc format theo ý
@@ -211,9 +220,25 @@ public class PartnerViewController {
             .collect(Collectors.toList());
 
         model.addAttribute("labels", labels);
-        model.addAttribute("balanceData", balanceData);
+        model.addAttribute("balanceData", balanceData);*/
 
-        model.addAttribute("bienDongList", bienDongList);
+        List<Object[]> bienDong = hoaDonService.getBalanceChanges(doiTacId);
+
+        List<String> labels = new ArrayList<>();
+        List<BigDecimal> balanceData = new ArrayList<>();
+
+        for (Object[] row : bienDong) {
+            Timestamp timestamp = (Timestamp) row[0];
+            LocalDate ngay = timestamp.toLocalDateTime().toLocalDate();
+            BigDecimal thayDoi = (BigDecimal) row[1];
+
+            labels.add(ngay.format(DateTimeFormatter.ofPattern("dd/MM")));
+            balanceData.add(thayDoi);
+        }
+
+        
+        model.addAttribute("labels", labels);
+        model.addAttribute("balanceData", balanceData);
 
 
         // Tỉ lệ Khu nghỉ dưỡng được đặt theo phần %
@@ -239,6 +264,16 @@ public class PartnerViewController {
         model.addAttribute("resortData", percentages);
 
         return "/PartnerView/Report/ReportDashboard";
+    }
+    
+    @GetMapping("/withdraw")
+    public String getMethodName(@RequestParam Long doiTacId, Model model) {
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+        model.addAttribute("doiTacId", doiTacId);
+        List<LichSuRutTien> danhSachRutTien = lichSuRutTienRepository.findByDoiTacIdOrderByThoiGianTaoDesc(doiTacId);
+        model.addAttribute("rutTienList", danhSachRutTien);
+        return "/PartnerView/Withdraw/Withdraw";
     }
     
 
