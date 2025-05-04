@@ -19,8 +19,8 @@ public class ChiTietDatPhong {
     @ManyToOne(optional = false)
     @JoinColumn(name = "ID_GOI_DAT_PHONG", referencedColumnName = "ID")
     private GoiDatPhong goiDatPhong;
-
-    @ManyToOne(optional = false)
+//TODO: GiamGia set lại về NULLABLE để tiện test tính năng add vào giỏ hàng, sau khi clear được GIAMGIA ntn thì sửa lại
+    @ManyToOne(optional = true)
     @JoinColumn(name = "ID_GIAMGIA", referencedColumnName = "ID")
     private GiamGia giamGia;
 

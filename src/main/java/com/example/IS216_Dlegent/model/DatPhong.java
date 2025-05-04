@@ -25,13 +25,13 @@ public class DatPhong {
     @Column(name = "TONG_GIATIEN", nullable = false, precision = 12, scale = 2)
     private BigDecimal tongGiaTien;
 
-    @Column(name = "TAIKHOAN_NGANHANG", nullable = false, length = 15)
+    @Column(name = "TAIKHOAN_NGANHANG", nullable = true, length = 15)
     private String taiKhoanNganHang;
 
-    @Column(name = "TEN_TKNH", nullable = false, length = 255)
+    @Column(name = "TEN_TKNH", nullable = true, length = 255)
     private String tenTKNH;
 
-    @Column(name = "TEN_NGANHANG", nullable = false, length = 255)
+    @Column(name = "TEN_NGANHANG", nullable = true, length = 255)
     private String tenNganHang;
 
     public DatPhong() {}
