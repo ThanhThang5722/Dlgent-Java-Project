@@ -80,7 +80,7 @@ public class JdbcRoomType {
 
                         List<UtilitiesOfRoomType> tienIchs = utilitiesOfRoomTypeRepository
                                         .findByLoaiPhong_Id(roomtype.getId());
-
+                        
                         roomtype.setImages(hinhPhongs);
                         roomtype.setGoiDatPhongDTOs(goiDatPhongs);
                         roomtype.setUtilities(tienIchs.stream()

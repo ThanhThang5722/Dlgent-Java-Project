@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.example.IS216_Dlegent.model.UtilitiesOfRoomType;
 
 @Repository
-public interface UtilitiesOfRoomTypeRepository extends JpaRepository<UtilitiesOfRoomType, Long> {
+public interface UtilitiesOfRoomTypeRepository extends JpaRepository<UtilitiesOfRoomType, UtilitiesOfRoomType.UtilitiesOfRoomTypeId> {
     List<UtilitiesOfRoomType> findByLoaiPhong_Id(Long id);
 }
