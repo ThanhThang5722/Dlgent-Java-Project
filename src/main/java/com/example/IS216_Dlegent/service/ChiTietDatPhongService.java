@@ -68,18 +68,19 @@ public class ChiTietDatPhongService {
     KhachHangRepository khachHangRepository;
     @Autowired
     GoiDatPhongService goiDatPhongService;
+
     public ResponseEntity<?> addToCart(InsertGioHang insertGioHang) {
 
         List<DatPhong> datPhongs = datPhongRepository.findByKhachHang_Id(insertGioHang.getKhachHangId());
 
         DatPhong datPhong = new DatPhong();
-        //tim datphong co tinhtrang pending
+        // tim datphong co tinhtrang pending
         for (DatPhong dp : datPhongs) {
             if (dp.getTinhTrang().equals("Pending")) {
                 datPhong = dp;
             }
         }
-        //neu chua co datphong thi tao moi
+        // neu chua co datphong thi tao moi
         if (datPhong.getId() == null) {
             KhachHang khachHang = khachHangRepository.findById(insertGioHang.getKhachHangId())
                     .orElse(null);
@@ -91,13 +92,13 @@ public class ChiTietDatPhongService {
 
             datPhong = datPhongRepository.save(datPhong);
         }
-        //LAY THONG TIN GOI DAT PHONG
+        // LAY THONG TIN GOI DAT PHONG
         GoiDatPhong goiDatPhong = goiDatPhongService.getGoiDatPhongById(insertGioHang.getGoiDatPhongId());
         if (goiDatPhong == null) {
             return ResponseEntity.badRequest().body("Không tìm thấy gói đặt phòng");
         }
-        
-        //Tao va luu moi chi tiet dat phong
+
+        // Tao va luu moi chi tiet dat phong
         ChiTietDatPhong chiTietDatPhong = new ChiTietDatPhong();
         chiTietDatPhong.setDatPhong(datPhong);
         chiTietDatPhong.setGoiDatPhong(goiDatPhong);
@@ -105,18 +106,18 @@ public class ChiTietDatPhongService {
         // chiTietDatPhong.setSoLuongDichVuYeuCau(insertGioHang.getSoLuongDichVu());
         chiTietDatPhong.setSoLuongPhong(0);
         chiTietDatPhong.setSoLuongDichVuYeuCau(0);
-        
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate ngayBatDau = LocalDate.parse(insertGioHang.getNgayBatDau(), formatter);
         LocalDate ngayKetThuc = LocalDate.parse(insertGioHang.getNgayKetThuc(), formatter);
-        
+
         chiTietDatPhong.setNgayBatDau(ngayBatDau.atStartOfDay());
         chiTietDatPhong.setNgayKetThuc(ngayKetThuc.atStartOfDay());
 
-        //Tính tổng tiền, chưa rõ cách tính nên set zero
+        // Tính tổng tiền, chưa rõ cách tính nên set zero
         chiTietDatPhong.setTongGiaTien(BigDecimal.ZERO);
         chiTietDatPhong.setTinhTrang("Pending");
-        
+
         chiTietDatPhong = chiTietDatPhongRepository.save(chiTietDatPhong);
 
         ChiTietDatPhongDTO dto = new ChiTietDatPhongDTO(
@@ -127,9 +128,13 @@ public class ChiTietDatPhongService {
                 chiTietDatPhong.getTongGiaTien().intValue(),
                 chiTietDatPhong.getNgayBatDau().toString(),
                 chiTietDatPhong.getNgayKetThuc().toString(),
-                chiTietDatPhong.getTinhTrang()
-        );
+                chiTietDatPhong.getTinhTrang());
 
         return ResponseEntity.ok(dto);
+    }
+
+    public ResponseEntity<?> deleteChiTietDatPhong(Long id) {
+        chiTietDatPhongRepository.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 }

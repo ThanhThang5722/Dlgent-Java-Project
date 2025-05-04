@@ -150,39 +150,53 @@
     <!-- Search bar  -->
     <div class="search-bar mb-3" style="background-color: #192655;">
         <div class="container">
-            <form th:action="@{/tim-kiem-resort/ket-qua}" method="get" class="row g-2 align-items-center">
-                <div class="col-md-3">
-                    <input type="text" class="form-control search-input" id="searchTerm" name="searchTerm"
-                        th:value="${searchTerm}" placeholder="Điểm đến của bạn?">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-6">
+                    <form th:action="@{/tim-kiem-resort/ket-qua}" method="get" class="row g-2 align-items-center">
+                        <div class="col-md-5">
+                            <input type="text" class="form-control search-input" id="searchTerm" name="searchTerm"
+                                th:value="${searchTerm}" placeholder="Điểm đến của bạn?">
+                        </div>
+                        <div class="col-md-4">
+                            <div class="position-relative" style="z-index: 1;">
+                                <input type="text" class="form-control date-range-picker" id="dateRange"
+                                    name="dateRange"
+                                    th:value="${checkIn != null ? #temporals.format(checkIn, 'dd/MM/yyyy') + ' - ' + #temporals.format(checkOut, 'dd/MM/yyyy') : ''}"
+                                    placeholder="Chọn ngày đến - ngày đi">
+                                <!-- Các input ẩn để tương thích -->
+                                <input type="hidden" id="checkIn" name="checkIn"
+                                    th:value="${checkIn != null ? #temporals.format(checkIn, 'yyyy-MM-dd') : ''}">
+                                <input type="hidden" id="checkOut" name="checkOut"
+                                    th:value="${checkOut != null ? #temporals.format(checkOut, 'yyyy-MM-dd') : ''}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex">
+                                <select class="form-select search-input me-2" id="soNguoi" name="soNguoi">
+                                    <option value="1" th:selected="${soNguoi == 1}">1 người</option>
+                                    <option value="2" th:selected="${soNguoi == 2}">2 người</option>
+                                    <option value="3" th:selected="${soNguoi == 3}">3 người</option>
+                                    <option value="4" th:selected="${soNguoi == 4}">4 người</option>
+                                    <option value="5" th:selected="${soNguoi == 5}">5 người</option>
+                                    <option value="6" th:selected="${soNguoi == 6}">6 người</option>
+                                    <option value="8" th:selected="${soNguoi == 8}">8 người</option>
+                                    <option value="10" th:selected="${soNguoi == 10}">10 người</option>
+                                </select>
+                                <button type="submit" class="btn search-btn text-uppercase">TÌM</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <div class="col-md-4">
-                    <div class="position-relative" style="z-index: 1;">
-                        <input type="text" class="form-control date-range-picker" id="dateRange" name="dateRange"
-                            th:value="${checkIn != null ? #temporals.format(checkIn, 'dd/MM/yyyy') + ' - ' + #temporals.format(checkOut, 'dd/MM/yyyy') : ''}"
-                            placeholder="Chọn ngày đến - ngày đi">
-                        <!-- Các input ẩn để tương thích -->
-                        <input type="hidden" id="checkIn" name="checkIn"
-                            th:value="${checkIn != null ? #temporals.format(checkIn, 'yyyy-MM-dd') : ''}">
-                        <input type="hidden" id="checkOut" name="checkOut"
-                            th:value="${checkOut != null ? #temporals.format(checkOut, 'yyyy-MM-dd') : ''}">
-                    </div>
+                <div class="col-md-3 text-end">
+                    <a th:href="@{/gio-hang}" class="btn btn-outline-light position-relative">
+                        <i class="bi bi-cart3"></i> Giỏ hàng
+                        <span
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count">
+                            0
+                        </span>
+                    </a>
                 </div>
-                <div class="col-md-3">
-                    <select class="form-select search-input" id="soNguoi" name="soNguoi">
-                        <option value="1" th:selected="${soNguoi == 1}">1 người</option>
-                        <option value="2" th:selected="${soNguoi == 2}">2 người</option>
-                        <option value="3" th:selected="${soNguoi == 3}">3 người</option>
-                        <option value="4" th:selected="${soNguoi == 4}">4 người</option>
-                        <option value="5" th:selected="${soNguoi == 5}">5 người</option>
-                        <option value="6" th:selected="${soNguoi == 6}">6 người</option>
-                        <option value="8" th:selected="${soNguoi == 8}">8 người</option>
-                        <option value="10" th:selected="${soNguoi == 10}">10 người</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn search-btn w-100 text-uppercase">TÌM KIẾM</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -518,8 +532,19 @@
                                                         <div class="text-muted mb-2">
                                                             <small>Include taxes & fees</small>
                                                         </div>
-                                                        <a th:href="@{/dat-phong(resortId=${resortId}, loaiPhongId=${roomType.id}, packageId=${package.id}, checkIn=${checkIn}, checkOut=${checkOut}, soNguoi=${soNguoi})}"
-                                                            class="btn btn-primary">Choose</a>
+                                                        <div class="d-flex gap-2 justify-content-end">
+                                                            <button class="btn btn-outline-primary add-to-cart-btn"
+                                                                th:data-resort-id="${resortId}"
+                                                                th:data-room-type-id="${roomType.id}"
+                                                                th:data-package-id="${package.id}"
+                                                                th:data-check-in="${#temporals.format(checkIn, 'yyyy-MM-dd')}"
+                                                                th:data-check-out="${#temporals.format(checkOut, 'yyyy-MM-dd')}"
+                                                                th:data-so-nguoi="${soNguoi}">
+                                                                <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                                                            </button>
+                                                            <a th:href="@{/dat-phong(resortId=${resortId}, loaiPhongId=${roomType.id}, packageId=${package.id}, checkIn=${checkIn}, checkOut=${checkOut}, soNguoi=${soNguoi})}"
+                                                                class="btn btn-primary">Choose</a>
+                                                        </div>
                                                         <div class="text-danger mt-2">
                                                             <small>2 room(s) left!</small>
                                                         </div>
@@ -528,64 +553,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- Nếu không có gói đặt phòng -->
-                                    <div th:if="${#lists.isEmpty(roomType.goiDatPhongDTOs)}" class="card mb-3 border">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-md-8">
-                                                    <h5 class="card-title">Standard Rate</h5>
-                                                    <div class="mb-2 fw-bold">
-                                                        <span class="text-success">Breakfast Included</span>
-                                                    </div>
-                                                    <div class="d-flex align-items-center mb-1">
-                                                        <i class="bi bi-check text-success me-2"></i>
-                                                        <span>Cancellation Policy Applies</span>
-                                                        <i class="bi bi-info-circle ms-2 text-muted"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4 text-end">
-                                                    <!-- Thông tin khách -->
-                                                    <div class="text-center mb-3">
-                                                        <div class="text-center mb-2">
-                                                            <i class="bi bi-person-fill fs-4"></i>
-                                                        </div>
-                                                        <div class="text-muted">Guest(s)</div>
-                                                    </div>
-
-                                                    <!-- Giá và nút đặt phòng -->
-                                                    <div class="text-end">
-                                                        <div>
-                                                            <span class="badge bg-primary mb-2">Affordable luxury</span>
-                                                        </div>
-                                                        <div class="text-decoration-line-through text-muted">
-                                                            <small
-                                                                th:text="${#numbers.formatDecimal(roomType.price * 1.2, 0, 'COMMA', 0, 'POINT')} + ' VND'">2,821,322
-                                                                VND</small>
-                                                        </div>
-                                                        <div class="text-danger fw-bold fs-5"
-                                                            th:text="${#numbers.formatDecimal(roomType.price, 0, 'COMMA', 0, 'POINT')} + ' VND'">
-                                                            2,115,993 VND
-                                                        </div>
-                                                        <div class="text-muted mb-2">
-                                                            <small>Include taxes & fees</small>
-                                                        </div>
-                                                        <a th:href="@{/dat-phong(resortId=${resortId}, loaiPhongId=${roomType.id}, checkIn=${checkIn}, checkOut=${checkOut}, soNguoi=${soNguoi})}"
-                                                            class="btn btn-primary">Choose</a>
-                                                        <div class="text-danger mt-2">
-                                                            <small>2 room(s) left!</small>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <!-- Policy Section -->
             <!-- <div class="policy-section" id="policy">
@@ -732,7 +699,8 @@
                                             <i class="bi bi-star text-secondary"></i>
                                         </span>
                                     </div>
-                                    <div class="small text-muted" th:text="${review.thoiGianTaoFormatted}">Thời gian</div>
+                                    <div class="small text-muted" th:text="${review.thoiGianTaoFormatted}">Thời gian
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -929,11 +897,92 @@
 
                 $('.rating-text-select').text(ratingText);
             });
+
+            // Cập nhật số lượng mục trong giỏ hàng
+            updateCartCount();
         });
 
         function showAlert() {
             alert("Gửi đánh giá thành công!");
             return true;
+        }
+
+        // Thêm event listener cho tất cả các nút "Thêm vào giỏ"
+        $(document).ready(function () {
+            // Gắn sự kiện click cho tất cả các nút có class add-to-cart-btn
+            $(document).on('click', '.add-to-cart-btn', function (event) {
+                event.preventDefault();
+
+                // Lấy dữ liệu từ thuộc tính data-*
+                const button = $(this);
+                const resortId = button.data('resort-id');
+                const roomTypeId = button.data('room-type-id');
+                let packageId = button.data('package-id');
+                const checkIn = button.data('check-in');
+                const checkOut = button.data('check-out');
+                const soNguoi = button.data('so-nguoi');
+
+                // Nếu packageId là "null" (string), chuyển thành null (object)
+                if (packageId === "null") {
+                    packageId = null;
+                }
+
+                // Tạo đối tượng dữ liệu để gửi đi
+                const data = {
+                    khachHangId: 1, // Mặc định là khách hàng có ID = 1
+                    goiDatPhongId: packageId || roomTypeId, // Nếu không có packageId thì dùng roomTypeId
+                    ngayBatDau: checkIn,
+                    ngayKetThuc: checkOut
+                };
+
+                // Gọi API để thêm vào giỏ hàng
+                fetch('/api/cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Hiển thị thông báo thành công
+                            alert('Đã thêm vào giỏ hàng thành công!');
+                            // Cập nhật số lượng mục trong giỏ hàng
+                            updateCartCount();
+                        } else {
+                            // Hiển thị thông báo lỗi
+                            alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi:', error);
+                        alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
+                    });
+            });
+        });
+
+        // Hàm cập nhật số lượng mục trong giỏ hàng
+        function updateCartCount() {
+            fetch('/gio-hang/count')
+                .then(response => response.json())
+                .then(data => {
+                    // Cập nhật số lượng mục trong giỏ hàng
+                    const cartCountElement = document.querySelector('.cart-count');
+                    if (cartCountElement) {
+                        cartCountElement.textContent = data.count;
+
+                        // Ẩn badge nếu không có mục nào trong giỏ hàng
+                        if (data.count === 0) {
+                            cartCountElement.style.display = 'none';
+                        } else {
+                            cartCountElement.style.display = 'inline-block';
+                        }
+                    }
+                    console.log('Số lượng mục trong giỏ hàng:', data.count);
+                })
+                .catch(error => {
+                    console.error('Lỗi khi lấy số lượng mục trong giỏ hàng:', error);
+                });
         }
     </script>
 </body>

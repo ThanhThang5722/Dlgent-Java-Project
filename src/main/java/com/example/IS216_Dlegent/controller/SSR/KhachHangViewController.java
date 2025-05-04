@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
 import com.example.IS216_Dlegent.model.LoaiPhong;
+import com.example.IS216_Dlegent.payload.dto.ChiTietDatPhongDTO;
 import com.example.IS216_Dlegent.payload.dto.DanhGiaDTO;
 import com.example.IS216_Dlegent.payload.dto.RoomTypeDTO;
 import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
 import com.example.IS216_Dlegent.repository.DanhGiaRepository;
+import com.example.IS216_Dlegent.service.ChiTietDatPhongService;
 import com.example.IS216_Dlegent.service.DanhGiaService;
 import com.example.IS216_Dlegent.service.DichVuMacDinhService;
 import com.example.IS216_Dlegent.service.GoiDatPhongService;
@@ -42,6 +44,9 @@ public class KhachHangViewController {
 
     @Autowired
     private DanhGiaService danhGiaService;
+
+    @Autowired
+    private ChiTietDatPhongService chiTietDatPhongService;
 
     @GetMapping("/tim-kiem-resort")
     public String timKiemResortPage(Model model) {
@@ -128,5 +133,23 @@ public class KhachHangViewController {
         model.addAttribute("danhGias", danhGias);
 
         return "CustomerView/ResortDetail";
+    }
+
+    @GetMapping("/gio-hang")
+    public String gioHangPage(Model model) {
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+
+        List<ChiTietDatPhongDTO> cartItems = chiTietDatPhongService.getChiTietDatPhongByDatPhongId();
+
+        //tổng tiền
+        int totalPrice = cartItems.stream()
+                .mapToInt(item -> item.getTongGiaTien())
+                .sum();
+
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("totalPrice", totalPrice);
+
+        return "CustomerView/GioHang";
     }
 }
