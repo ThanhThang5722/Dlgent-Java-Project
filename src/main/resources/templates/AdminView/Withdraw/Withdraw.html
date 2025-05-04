@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vn">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="${bootstrapUrl}"/>
+    <link rel="stylesheet" th:href="@{/css/PartnerDashboard/ResortListStyle.css}"/>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <title>With Draw</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+</head>
+<body>
+    <div class="sidebar">
+        <h4 class="text-center text-white">Admin Dashboard</h4>
+        <ul class="list-unstyled">
+            <li><a th:href="@{/partner/{doiTacId}(doiTacId=${doiTacId})}">Quản lý tài khoản khách hàng</a></li>
+            <li><a th:href="@{/partner/room-type-list/{doiTacId}(doiTacId=${doiTacId})}">Quản lý tài khoản </a></li>
+            <li><a th:href="@{/partner/WithDraw/{doiTacId}(doiTacId=${doiTacId})}">Duyệt rút tiền</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="row">
+            <!-- Modal -->
+            <div class="col-12">
+                <div class="tools">
+                    <h5>Tools</h5>
+                    <form id="searchForm" class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label for="batDau" class="form-label">Thời gian bắt đầu:</label>
+                            <input type="datetime-local" id="batDau" name="batDau" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="ketThuc" class="form-label">Thời gian kết thúc:</label>
+                            <input type="datetime-local" id="ketThuc" name="ketThuc" class="form-control" required>
+                        </div>
+                        <div class="col-md-4 align-self-end">
+                            <button type="submit" class="btn btn-primary">Lọc</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                  <th>Thời gian tạo</th>
+                  <th>Đối tác</th>
+                  <th>Số dư hiện tại</th>
+                  <th>Số tiền</th>
+                  <th>Trạng thái</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="item : ${rutTienList}" th:attr="data-doi-tac-id=${item.doiTacId}">
+                  <td th:text="${#temporals.format(item.thoiGianTao, 'dd/MM/yyyy HH:mm')}"></td>
+                  <td th:text="${item.tenDoiTac}"></td>
+                  <td th:text="${#numbers.formatDecimal(item.soDuHienTai, 0, 'POINT', 2, 'COMMA')} + ' đ'"
+                  th:id="'sodu-' + ${item.doiTacId}"
+                  class="so-du-cell"
+                  ></td>
+                  <td th:text="${#numbers.formatDecimal(item.soTien, 0, 'POINT', 2, 'COMMA')} + ' đ'"></td>
+                  <td th:text="${item.trangThai}"></td>
+                  <td>
+                    <button th:if="${item.trangThai == 'Chờ phê duyệt'}"
+                            class="btn btn-success btn-sm"
+                            th:onclick="'duyetRutTien(' + ${item.id} + ')'">Duyệt</button>
+                  </td>
+                </tr>
+              </tbody>
+        </table>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const doiTacId = urlParams.get("doiTacId");
+        document.getElementById("withdrawForm").addEventListener("submit", function (e) {
+          e.preventDefault();
+    
+          const data = {
+            doiTacId: parseInt(doiTacId),
+            soTien: parseFloat(document.getElementById("soTien").value),
+            trangThai: "Chờ duyệt"
+          };
+
+          fetch("/api/partner/withdraw", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          })
+          .then(response => {
+            if (!response.ok) throw new Error("Gửi thất bại");
+            return response.json();
+          })
+          .then(result => {
+            alert("Gửi yêu cầu thành công!");
+            document.getElementById("withdrawForm").reset();
+          })
+          .catch(error => {
+            alert("Đã xảy ra lỗi: " + error.message);
+          });
+        });
+    </script>
+    <script>
+        document.getElementById("searchForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Ngăn reload trang
+        
+            const batDau = new Date(document.getElementById("batDau").value);
+            const ketThuc = new Date(document.getElementById("ketThuc").value);
+        
+            const rows = document.querySelectorAll("table tbody tr");
+        
+            rows.forEach(row => {
+                const thoiGianTaoText = row.cells[0].textContent.trim(); // Lấy text cột thời gian tạo (ô đầu tiên)
+                
+                // Parse text dd/MM/yyyy HH:mm
+                const [day, month, yearAndTime] = thoiGianTaoText.split('/');
+                const [year, time] = yearAndTime.split(' ');
+                const thoiGianTao = new Date(`${year}-${month}-${day}T${time}`);
+        
+                if (thoiGianTao >= batDau && thoiGianTao <= ketThuc) {
+                    row.style.display = ""; // Hiện dòng
+                } else {
+                    row.style.display = "none"; // Ẩn dòng
+                }
+            });
+        });
+    </script>
+    <script>
+        const withdrawModal = document.getElementById('withdrawModal');
+        withdrawModal.addEventListener('show.bs.modal', function () {
+            document.getElementById("withdrawForm").reset();
+            document.getElementById("soDuText").textContent = "--";
+      
+          // Gọi API lấy số dư từ đối tác hiện tại
+            fetch(`/api/partner/sodu?doiTacId=${doiTacId}`)
+                .then(res => {
+                if (!res.ok) throw new Error("Không thể lấy số dư");
+                    return res.json();
+                })
+                .then(data => {
+                    document.getElementById("soDuText").textContent = parseFloat(data).toLocaleString("vi-VN") + " đ";
+                    const soTienInput = document.getElementById("soTien");
+                    soTienInput.setAttribute("max", data);
+                })
+                .catch(err => {
+                    document.getElementById("soDuText").textContent = "Không thể tải số dư";
+                    console.error(err);
+                });
+        });
+    </script>
+
+    <script>
+        function duyetRutTien(id) {
+            if (!confirm("Bạn có chắc muốn duyệt yêu cầu này?")) return;
+
+            fetch(`/api/admin/withdraw/${id}`, {
+                method: "PUT"
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(msg => { throw new Error(msg); });
+                }
+                return response.text(); // Giả sử trả về newSoDu dạng số hoặc chuỗi số
+            })
+            .then(newSoDu => {
+                const row = document.querySelector(`button[onclick="duyetRutTien(${id})"]`)?.closest("tr");
+                console.log(`here 0`);
+                if (!row) return;
+                console.log(`here haha`);
+                // Cập nhật trạng thái
+                row.querySelector("td:nth-child(5)").textContent = "Đã duyệt"; // Trạng thái
+                row.querySelector("td:last-child").innerHTML = ""; // Xóa nút duyệt
+                console.log(`here 1`);
+                const doiTacId = row.getAttribute("data-doi-tac-id");
+                if (!doiTacId) {
+                    console.warn("Không tìm thấy doiTacId trong row.");
+                    return;
+                }
+
+                const newSoDuFormatted = parseInt(newSoDu).toLocaleString("vi-VN") + " đ";
+                console.log(`here 2`);
+                // Cập nhật tất cả các dòng có cùng doiTacId
+                document.querySelectorAll(`tr[data-doi-tac-id="${doiTacId}"]`).forEach(r => {
+                    console.log(`here 3`);
+                    const soDuCell = r.querySelector(".so-du-cell");
+                    console.log(soDuCell);
+                    if (soDuCell) {
+                        soDuCell.textContent = newSoDuFormatted;
+                    }
+                });
+
+                alert(`Đã duyệt thành công. Số dư mới: ${newSoDuFormatted}`);
+            })
+            .catch(err => {
+                alert("Lỗi: " + err.message);
+            });
+        }
+    </script>
+    
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
