@@ -4,15 +4,51 @@ body {
 }
 
 .search-bar {
-    background-color: #1a294d;
+    background-color: white;
     padding: 15px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .search-input {
     border-radius: 4px;
     padding: 10px 15px;
-    border: none;
     font-size: 14px;
+    height: 50px !important;
+}
+
+select.form-select.rounded-input {
+    height: 50px !important;
+    line-height: 50px;
+}
+
+.rounded-input {
+    border-radius: 6px !important;
+    border: 1.5px solid #aaaaaa !important;
+    padding: 10px 15px !important;
+    height: 50px !important;
+}
+
+.rounded-start-input {
+    border-radius: 6px 0 0 6px !important;
+    border-right: none !important;
+}
+
+.rounded-start-0 {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.input-group-text {
+    color: #0071c2;
+    border: 1.5px solid #aaaaaa !important;
+    height: 50px !important;
+}
+
+.input-group-text i {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .resort-card {

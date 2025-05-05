@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.IS216_Dlegent.payload.dto.RoomTypeDTO;
+import com.example.IS216_Dlegent.payload.SSR.RoomTypeDetailsDTO;
 import com.example.IS216_Dlegent.service.LoaiPhongService;
 
 @RestController
@@ -23,7 +23,7 @@ public class RoomDetailsAPI {
     private LoaiPhongService loaiPhongService;
 
     @GetMapping("/roomtypes")
-    public ResponseEntity<List<RoomTypeDTO>> searchRooms(
+    public ResponseEntity<List<RoomTypeDetailsDTO>> searchRooms(
             @PathVariable("id") Long resortId,
             @RequestParam String checkIn, // yyyy-MM-dd'T'HH:mm:ss
             @RequestParam String checkOut,
@@ -33,7 +33,7 @@ public class RoomDetailsAPI {
         LocalDateTime ngayNhan = LocalDateTime.parse(checkIn, formatter);
         LocalDateTime ngayTra = LocalDateTime.parse(checkOut, formatter);
 
-        List<RoomTypeDTO> result = loaiPhongService.getRoomByResort(resortId, ngayNhan, ngayTra,
+        List<RoomTypeDetailsDTO> result = loaiPhongService.getRoomByResort(resortId, ngayNhan, ngayTra,
                 soNguoi);
 
         return ResponseEntity.ok(result);

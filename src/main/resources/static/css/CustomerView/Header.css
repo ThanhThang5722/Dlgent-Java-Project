@@ -1,0 +1,138 @@
+/* Header Styles */
+.main-header {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo */
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: #003580;
+    text-decoration: none;
+    background-color: #f0f0f0;
+    padding: 6px 12px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+}
+
+.logo:hover {
+    color: #0071c2;
+}
+
+/* Right Menu */
+.right-menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Cart Button */
+.cart-button {
+    position: relative;
+    color: #333;
+    font-size: 1.3rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-button:hover {
+    color: #0071c2;
+}
+
+.cart-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: #e74c3c;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* User Account */
+.user-account {
+    position: relative;
+}
+
+.avatar-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.avatar-img {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 2px solid #f0f0f0 !important;
+    overflow: hidden !important;
+}
+
+.avatar-button:hover .avatar-img {
+    border-color: #0071c2;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    padding: 8px 0;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+    margin-top: 8px;
+}
+
+.dropdown-item {
+    padding: 8px 16px;
+    color: #333;
+    font-size: 13px;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #0071c2;
+}
+
+.dropdown-item i {
+    color: #0071c2;
+}
+
+.dropdown-divider {
+    margin: 6px 0;
+}
+
+/* Header Divider */
+.header-divider {
+    height: 1px;
+    background-color: #e0e0e0;
+    width: 100%;
+}

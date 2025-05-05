@@ -16,6 +16,9 @@ import com.example.IS216_Dlegent.repository.DanhGiaRepository;
 import com.example.IS216_Dlegent.repository.KhachHangRepository;
 import com.example.IS216_Dlegent.repository.KhuNghiDuongRepo;
 import com.example.IS216_Dlegent.repository.UserRepo;
+import com.example.IS216_Dlegent.repository.jdbc.JdbcDanhGiaRepository;
+
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,6 +31,9 @@ public class DanhGiaService {
 
     @Autowired
     private DanhGiaRepository danhGiaRepository;
+
+    @Autowired
+    private JdbcDanhGiaRepository jdbcDanhGiaRepository;
 
     @Autowired
     private KhuNghiDuongRepo khuNghiDuongRepo;
@@ -81,6 +87,7 @@ public class DanhGiaService {
                 dg.getThoiGianTao().format(formatter)));
     }
 
+    @Transactional
     public DanhGia insertDanhGia(InsertDanhGiaRequest danhGia) {
         KhuNghiDuong khuNghiDuong = khuNghiDuongRepo.findById(danhGia.getResortId())
                 .orElseThrow(() -> new RuntimeException("Resort không tồn tại"));
@@ -95,6 +102,22 @@ public class DanhGiaService {
         dg.setNoiDung(danhGia.getNoiDung());
         dg.setThoiGianTao(LocalDateTime.now());
 
-        return danhGiaRepository.save(dg);
+        DanhGia savedDanhGia = danhGiaRepository.save(dg);
+        
+        updateResortAverageRating(khuNghiDuong.getId());
+        
+        return savedDanhGia;
+    }
+
+    @Transactional
+    public void updateResortAverageRating(Long resortId) {
+        Double avgRating = jdbcDanhGiaRepository.getAverageRatingByResort(resortId);
+        
+        Integer roundedRating = (int) Math.round(avgRating);
+        
+        KhuNghiDuong resort = khuNghiDuongRepo.findById(resortId)
+                .orElseThrow(() -> new RuntimeException("Resort không tồn tại"));
+        resort.setDanhGia(roundedRating);
+        khuNghiDuongRepo.save(resort);
     }
 }

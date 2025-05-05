@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
 import com.example.IS216_Dlegent.model.LoaiPhong;
+import com.example.IS216_Dlegent.payload.SSR.RoomTypeDetailsDTO;
 import com.example.IS216_Dlegent.payload.dto.ChiTietDatPhongDTO;
 import com.example.IS216_Dlegent.payload.dto.DanhGiaDTO;
-import com.example.IS216_Dlegent.payload.dto.RoomTypeDTO;
 import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
 import com.example.IS216_Dlegent.repository.DanhGiaRepository;
 import com.example.IS216_Dlegent.service.ChiTietDatPhongService;
@@ -47,6 +47,27 @@ public class KhachHangViewController {
 
     @Autowired
     private ChiTietDatPhongService chiTietDatPhongService;
+
+    @GetMapping("/user/profile")
+    public String profilePage(Model model) {
+        return "CustomerView/Profile";
+    }
+
+    @GetMapping("/user/mybooking")
+    public String myBookingPage(Model model) {
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+
+        return "CustomerView/MyBooking";
+    }
+
+    @GetMapping("/user/purchase")
+    public String purchasePage(Model model) {
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+
+        return "CustomerView/Purchase";
+    }
 
     @GetMapping("/tim-kiem-resort")
     public String timKiemResortPage(Model model) {
@@ -119,7 +140,7 @@ public class KhachHangViewController {
             return "redirect:/tim-kiem-resort";
         }
 
-        List<RoomTypeDTO> roomtypes = loaiPhongService.getRoomByResort(id, checkInDateTime, checkOutDateTime,
+        List<RoomTypeDetailsDTO> roomtypes = loaiPhongService.getRoomByResort(id, checkInDateTime, checkOutDateTime,
                 soNguoi);
 
         List<DanhGiaDTO> danhGias = danhGiaService.getDanhGiaDTOs(id);
@@ -142,7 +163,7 @@ public class KhachHangViewController {
 
         List<ChiTietDatPhongDTO> cartItems = chiTietDatPhongService.getChiTietDatPhongByDatPhongId();
 
-        //tổng tiền
+        // tổng tiền
         int totalPrice = cartItems.stream()
                 .mapToInt(item -> item.getTongGiaTien())
                 .sum();

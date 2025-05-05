@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <link rel="stylesheet" th:href="@{/css/CustomerView/SearchResult.css}">
+    <link rel="stylesheet" th:href="@{/css/CustomerView/Header.css}">
     <link rel="stylesheet" href="https://unpkg.com/@coreui/coreui/dist/css/coreui.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <link rel="stylesheet" th:href="@{/css/CustomerView/ResortDetail.css}">
@@ -107,98 +108,15 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <div th:replace="~{CustomerView/components/SearchBar :: searchBarScript}"></div>
 </head>
 
 <body>
-    <!-- Top Header -->
-    <!-- <header>
-        <div class="container">
-            <div class="top-header">
-                <div class="logo">
-                    <img src="https://d1785e74lyxkqq.cloudfront.net/_next/static/v2/3/30bf6c528078ba28d34bc3e37d124bdb.svg"
-                        alt="Traveloka Logo">
-                </div>
-                <div class="top-menu">
-                    <div class="lang-currency">
-                        <span>EN | VND</span>
-                        <i class="bi bi-chevron-down"></i>
-                    </div>
-                    <a href="#" class="top-link">
-                        <i class="bi bi-trophy"></i>
-                        Deals
-                    </a>
-                    <a href="#" class="top-link">
-                        <i class="bi bi-headset"></i>
-                        Support
-                        <i class="bi bi-chevron-down"></i>
-                    </a>
-                    <a href="#" class="top-link">
-                        Partnership
-                    </a>
-                    <a href="#" class="top-link">
-                        Bookings
-                    </a>
-                    <div class="auth-buttons">
-                        <button class="login-btn">Log In</button>
-                        <button class="register-btn">Register</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header> -->
+    <!-- Header -->
+    <div th:replace="~{CustomerView/components/Header :: header}"></div>
 
     <!-- Search bar  -->
-    <div class="search-bar mb-3" style="background-color: #192655;">
-        <div class="container">
-            <div class="row g-2 align-items-center">
-                <div class="col-md-6">
-                    <form th:action="@{/tim-kiem-resort/ket-qua}" method="get" class="row g-2 align-items-center">
-                        <div class="col-md-5">
-                            <input type="text" class="form-control search-input" id="searchTerm" name="searchTerm"
-                                th:value="${searchTerm}" placeholder="Điểm đến của bạn?">
-                        </div>
-                        <div class="col-md-4">
-                            <div class="position-relative" style="z-index: 1;">
-                                <input type="text" class="form-control date-range-picker" id="dateRange"
-                                    name="dateRange"
-                                    th:value="${checkIn != null ? #temporals.format(checkIn, 'dd/MM/yyyy') + ' - ' + #temporals.format(checkOut, 'dd/MM/yyyy') : ''}"
-                                    placeholder="Chọn ngày đến - ngày đi">
-                                <!-- Các input ẩn để tương thích -->
-                                <input type="hidden" id="checkIn" name="checkIn"
-                                    th:value="${checkIn != null ? #temporals.format(checkIn, 'yyyy-MM-dd') : ''}">
-                                <input type="hidden" id="checkOut" name="checkOut"
-                                    th:value="${checkOut != null ? #temporals.format(checkOut, 'yyyy-MM-dd') : ''}">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="d-flex">
-                                <select class="form-select search-input me-2" id="soNguoi" name="soNguoi">
-                                    <option value="1" th:selected="${soNguoi == 1}">1 người</option>
-                                    <option value="2" th:selected="${soNguoi == 2}">2 người</option>
-                                    <option value="3" th:selected="${soNguoi == 3}">3 người</option>
-                                    <option value="4" th:selected="${soNguoi == 4}">4 người</option>
-                                    <option value="5" th:selected="${soNguoi == 5}">5 người</option>
-                                    <option value="6" th:selected="${soNguoi == 6}">6 người</option>
-                                    <option value="8" th:selected="${soNguoi == 8}">8 người</option>
-                                    <option value="10" th:selected="${soNguoi == 10}">10 người</option>
-                                </select>
-                                <button type="submit" class="btn search-btn text-uppercase">TÌM</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-md-3 text-end">
-                    <a th:href="@{/gio-hang}" class="btn btn-outline-light position-relative">
-                        <i class="bi bi-cart3"></i> Giỏ hàng
-                        <span
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count">
-                            0
-                        </span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div th:replace="~{CustomerView/components/SearchBar :: searchBar}"></div>
 
     <!-- Navigation menu -->
     <!-- <nav>
@@ -421,7 +339,7 @@
                 <div th:unless="${#lists.isEmpty(result)}" th:each="roomType : ${result}"
                     class="card mb-4 shadow-sm border rounded">
                     <div class="card-header bg-white py-3">
-                        <h3 class="m-0 fw-bold" th:text="${roomType.roomtypeName}">Superior Twin City View</h3>
+                        <h3 class="m-0 fw-bold" th:text="${roomType.tenLoaiPhong}">Superior Twin City View</h3>
                     </div>
 
                     <div class="card-body">
@@ -429,16 +347,16 @@
                             <!-- Hình ảnh và thông tin phòng -->
                             <div class="col-md-4">
                                 <div class="position-relative">
-                                    <img th:if="${not #lists.isEmpty(roomType.images)}" class="img-fluid rounded"
-                                        th:src="${roomType.images[0].url}" alt="Room Image">
-                                    <img th:if="${#lists.isEmpty(roomType.images)}" class="img-fluid rounded"
+                                    <img th:if="${not #lists.isEmpty(roomType.hinhAnh)}" class="img-fluid rounded"
+                                        th:src="${roomType.hinhAnh[0].url}" alt="Room Image">
+                                    <img th:if="${#lists.isEmpty(roomType.hinhAnh)}" class="img-fluid rounded"
                                         src="https://placehold.co/600x400/e67e22/ffffff?text=Room+Image"
                                         alt="Room Image">
 
                                     <div class="d-flex mt-3">
                                         <div class="me-4 d-flex align-items-center">
                                             <i class="bi bi-rulers me-2 text-primary"></i>
-                                            <span th:text="${roomType.area} + ' m²'">45.0 m²</span>
+                                            <span th:text="${roomType.dienTich} + ' m²'">45.0 m²</span>
                                         </div>
                                         <div class="d-flex align-items-center">
                                             <i class="bi bi-person-fill me-2 text-primary"></i>
@@ -452,58 +370,52 @@
                                     <div class="mt-3">
                                         <div class="d-flex align-items-center mb-2">
                                             <i class="bi bi-door-closed me-2 text-primary"></i>
-                                            <span th:text="${roomType.quantityRoomType}">Twin</span>
+                                            <span th:text="${roomType.loaiPhongTheoSoLuong}">Twin</span>
                                         </div>
                                         <div class="d-flex align-items-center mb-2">
                                             <i class="bi bi-door-open me-2 text-primary"></i>
-                                            <span th:text="${roomType.standardRoomType}">Superior</span>
+                                            <span th:text="${roomType.loaiPhongTheoTieuChuan}">Superior</span>
                                         </div>
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center mb-3">
                                             <i class="bi bi-person-arms-up me-2 text-primary"></i>
-                                            <span th:text="${roomType.bedNum} + ' beds'">2 twin beds</span>
+                                            <span th:text="${roomType.soGiuong} + ' beds'">2 twin beds</span>
                                         </div>
-                                    </div>
 
-                                    <div class="mt-3">
-                                        <a href="#" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-info-circle me-1"></i> See Room Details
-                                        </a>
+                                        <!-- Tiện ích của phòng -->
+                                        <div class="amenities-list">
+                                            <h6 class="mb-2"><i
+                                                    class="bi bi-check-circle-fill text-primary me-2"></i>Tiện ích phòng
+                                            </h6>
+                                            <div>
+                                                <span th:each="utility : ${roomType.tienIch}"
+                                                    class="badge bg-light text-dark me-2 mb-2"
+                                                    th:text="${utility.loaiTienIch}">Refrigerator</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Các gói đặt phòng -->
                             <div class="col-md-8">
-                                <!-- Tiện ích của phòng -->
-                                <div class="amenities-list mb-3">
-                                    <span th:each="utility : ${roomType.utilities}"
-                                        class="badge bg-light text-dark me-2 mb-2"
-                                        th:text="${utility.loaiTienIch}">Refrigerator</span>
-                                </div>
 
                                 <!-- Danh sách các gói đặt phòng -->
-                                <div th:if="${not #lists.isEmpty(roomType.goiDatPhongDTOs)}">
+                                <div th:if="${not #lists.isEmpty(roomType.dsGoiDatPhongs)}">
                                     <!-- Package 1 -->
-                                    <div th:each="package : ${roomType.goiDatPhongDTOs}" class="card mb-3 border">
+                                    <div th:each="package : ${roomType.dsGoiDatPhongs}" class="card mb-3 border">
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-md-8">
-                                                    <h5 class="card-title" th:text="${package.tenLoaiPhong}">Room
-                                                        Option(s)</h5>
-                                                    <div class="mb-2 fw-bold">
-                                                        <span class="text-success">Breakfast Included</span>
-                                                    </div>
+                                                    <h4 class="card-title fw-bold">Các dịch vụ gói:</h4>
                                                     <div class="mb-2">
-                                                        <i class="bi bi-check text-success me-2"></i>
                                                         <span th:if="${not #lists.isEmpty(package.dichVuMacDinhs)}">
-                                                            <span th:each="service, stat : ${package.dichVuMacDinhs}"
-                                                                th:text="${!stat.last ? service.tenDichVu + ', ' : service.tenDichVu}">Amenity</span>
+                                                            <div th:each="service : ${package.dichVuMacDinhs}"
+                                                                class="mb-2">
+                                                                <i class="bi bi-check text-success me-2"></i>
+                                                                <span class="text-dark"
+                                                                    th:text="${service.dichVuKhuNghiDuong.dichVu.serviceName}">Amenity</span>
+                                                            </div>
                                                         </span>
-                                                    </div>
-                                                    <div class="d-flex align-items-center mb-1">
-                                                        <i class="bi bi-check text-success me-2"></i>
-                                                        <span>Free Cancellation until 07 May 22:59</span>
-                                                        <i class="bi bi-info-circle ms-2 text-muted"></i>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 text-end">
@@ -517,20 +429,10 @@
 
                                                     <!-- Giá và nút đặt phòng -->
                                                     <div class="text-end">
-                                                        <div>
-                                                            <span class="badge bg-primary mb-2">Affordable luxury</span>
-                                                        </div>
-                                                        <div class="text-decoration-line-through text-muted">
-                                                            <small
-                                                                th:text="${#numbers.formatDecimal(package.tongGiaTien * 1.2, 0, 'COMMA', 0, 'POINT')} + ' VND'">2,821,322
-                                                                VND</small>
-                                                        </div>
-                                                        <div class="text-danger fw-bold fs-5"
-                                                            th:text="${#numbers.formatDecimal(package.tongGiaTien, 0, 'COMMA', 0, 'POINT')} + ' VND'">
-                                                            2,115,993 VND
-                                                        </div>
-                                                        <div class="text-muted mb-2">
-                                                            <small>Include taxes & fees</small>
+                                                        <div class="text-danger fw-bold fs-5">
+                                                            <span
+                                                                th:text="${#numbers.formatDecimal(package.tongGiaTien, 0, 'POINT', 2, 'COMMA')}">1,000,000</span>
+                                                            VND
                                                         </div>
                                                         <div class="d-flex gap-2 justify-content-end">
                                                             <button class="btn btn-outline-primary add-to-cart-btn"
@@ -545,15 +447,17 @@
                                                             <a th:href="@{/dat-phong(resortId=${resortId}, loaiPhongId=${roomType.id}, packageId=${package.id}, checkIn=${checkIn}, checkOut=${checkOut}, soNguoi=${soNguoi})}"
                                                                 class="btn btn-primary">Choose</a>
                                                         </div>
-                                                        <div class="text-danger mt-2">
-                                                            <small>2 room(s) left!</small>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Policy Section -->
             <!-- <div class="policy-section" id="policy">
                     <h2 class="section-title">Policies</h2>
@@ -686,8 +590,10 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h5 class="mb-1" th:text="${review.tenKhachHang}">Tên khách hàng</h5>
-                                    <p class="mb-1 text-muted" th:text="${review.tenResort}">Tên khu nghỉ dưỡng</p>
+                                    <h5 class="mb-1" th:text="${review.tenKhachHang}">Tên khách
+                                        hàng</h5>
+                                    <p class="mb-1 text-muted" th:text="${review.tenResort}">Tên
+                                        khu nghỉ dưỡng</p>
                                 </div>
                                 <div class="text-end">
                                     <!-- Hiển thị số sao -->
@@ -699,7 +605,8 @@
                                             <i class="bi bi-star text-secondary"></i>
                                         </span>
                                     </div>
-                                    <div class="small text-muted" th:text="${review.thoiGianTaoFormatted}">Thời gian
+                                    <div class="small text-muted" th:text="${review.thoiGianTaoFormatted}">
+                                        Thời gian
                                     </div>
                                 </div>
                             </div>
@@ -719,7 +626,8 @@
 
                         <input type="hidden" name="resortId" th:value="${resort.id}">
 
-                        <label for="khachHangId" class="form-label fw-bold">ID Khách Hàng</label>
+                        <label for="khachHangId" class="form-label fw-bold">ID Khách
+                            Hàng</label>
                         <input type="number" class="form-control" id="khachHangId" name="khachHangId"
                             placeholder="Nhập ID" required>
 
@@ -747,7 +655,8 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="reviewContent" class="form-label fw-bold">Nhận xét của bạn</label>
+                            <label for="reviewContent" class="form-label fw-bold">Nhận xét của
+                                bạn</label>
                             <textarea class="form-control" id="reviewContent" name="noiDung" rows="4"
                                 placeholder="Chia sẻ trải nghiệm của bạn về khu nghỉ dưỡng này..."></textarea>
                         </div>
@@ -765,7 +674,8 @@
                 <div class="alert alert-info d-flex align-items-center" role="alert">
                     <i class="bi bi-info-circle-fill me-2"></i>
                     <div>
-                        Vui lòng <a th:href="@{/dang-nhap}" class="alert-link">đăng nhập</a> để viết nhận xét về khu
+                        Vui lòng <a th:href="@{/dang-nhap}" class="alert-link">đăng nhập</a> để
+                        viết nhận xét về khu
                         nghỉ dưỡng này.
                     </div>
                 </div>

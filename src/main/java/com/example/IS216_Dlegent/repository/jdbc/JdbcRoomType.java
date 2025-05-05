@@ -18,13 +18,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
-import com.example.IS216_Dlegent.model.DanhGia;
 import com.example.IS216_Dlegent.model.GoiDatPhong;
 import com.example.IS216_Dlegent.model.HinhPhong;
 import com.example.IS216_Dlegent.model.TienIch;
 import com.example.IS216_Dlegent.model.UtilitiesOfRoomType;
-import com.example.IS216_Dlegent.payload.dto.RoomTypeDTO;
-import com.example.IS216_Dlegent.payload.dto.GoiDatPhongDTO;
+import com.example.IS216_Dlegent.payload.SSR.RoomTypeDetailsDTO;
 import com.example.IS216_Dlegent.repository.HinhPhongRepo;
 import com.example.IS216_Dlegent.repository.DanhGiaRepository;
 import com.example.IS216_Dlegent.repository.GoiDaiPhongRepository;
@@ -47,7 +45,7 @@ public class JdbcRoomType {
                 this.jdbcTemplate = jdbcTemplate;
         }
 
-        public List<RoomTypeDTO> getRoomByResort(Long resortId, LocalDateTime ngayNhan, LocalDateTime ngayTra,
+        public List<RoomTypeDetailsDTO> getRoomByResort(Long resortId, LocalDateTime ngayNhan, LocalDateTime ngayTra,
                         int soNguoi) {
                 SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate)
                                 .withProcedureName("TimLoaiPhong")
@@ -68,22 +66,19 @@ public class JdbcRoomType {
                 Map<String, Object> result = call.execute(params);
 
                 @SuppressWarnings("unchecked")
-                List<RoomTypeDTO> roomTypes = (List<RoomTypeDTO>) result.get("p_output");
+                List<RoomTypeDetailsDTO> roomTypes = (List<RoomTypeDetailsDTO>) result.get("p_output");
 
-                for (RoomTypeDTO roomtype : roomTypes) {
+                for (RoomTypeDetailsDTO roomtype : roomTypes) {
                         List<HinhPhong> hinhPhongs = hinhPhongRepo.findByRoomTypeID(roomtype.getId());
 
-                        List<GoiDatPhongDTO> goiDatPhongs = (goiDatPhongRepo.findByLoaiPhong_Id(roomtype.getId())
-                                        .stream()
-                                        .map(GoiDatPhongDTO::new)
-                                        .collect(Collectors.toList()));
+                        List<GoiDatPhong> goiDatPhongs = goiDatPhongRepo.findByLoaiPhong_Id(roomtype.getId());
 
                         List<UtilitiesOfRoomType> tienIchs = utilitiesOfRoomTypeRepository
                                         .findByLoaiPhong_Id(roomtype.getId());
                         
-                        roomtype.setImages(hinhPhongs);
-                        roomtype.setGoiDatPhongDTOs(goiDatPhongs);
-                        roomtype.setUtilities(tienIchs.stream()
+                        roomtype.setHinhAnh(hinhPhongs);
+                        roomtype.setDsGoiDatPhongs(goiDatPhongs);
+                        roomtype.setTienIch(tienIchs.stream()
                                         .map(tienIch -> new TienIch(
                                                         tienIch.getUtility().getId(),
                                                         tienIch.getUtility().getUtilityType(),
@@ -94,18 +89,19 @@ public class JdbcRoomType {
                 return roomTypes;
         }
 
-        private static class RoomTypeRowMapper implements RowMapper<RoomTypeDTO> {
+        private static class RoomTypeRowMapper implements RowMapper<RoomTypeDetailsDTO> {
                 @Override
-                public RoomTypeDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new RoomTypeDTO(
+                public RoomTypeDetailsDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return new RoomTypeDetailsDTO(
                                         rs.getLong("ID"),
+                                        rs.getLong("ID_KHU_NGHI_DUONG"),
                                         rs.getString("TEN_LOAI_PHONG"),
                                         rs.getDouble("DIEN_TICH"),
                                         rs.getString("LOAI_PHONG_THEO_SO_LUONG"),
                                         rs.getString("LOAI_PHONG_THEO_TIEU_CHUAN"),
                                         rs.getInt("SO_GIUONG"),
                                         rs.getInt("SO_NGUOI"),
-                                        rs.getDouble("GIA"));
+                                        rs.getBigDecimal("GIA"));
                 }
         }
 }

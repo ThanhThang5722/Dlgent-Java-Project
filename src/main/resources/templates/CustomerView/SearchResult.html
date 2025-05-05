@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <link rel="stylesheet" th:href="@{/css/CustomerView/SearchResult.css}">
     <link rel="stylesheet" href="/src/main/resources/static/css/CustomerView/SearchResult.css">
+    <link rel="stylesheet" th:href="@{/css/CustomerView/Header.css}">
     <link rel="stylesheet" href="https://unpkg.com/@coreui/coreui/dist/css/coreui.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <script src="https://unpkg.com/@coreui/coreui/dist/js/coreui.bundle.min.js"></script>
@@ -50,12 +51,35 @@
             background-color: #2a65db;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             padding: 10px 25px;
             font-weight: bold;
             font-size: 14px;
             position: relative;
             z-index: 1;
+            transition: all 0.3s ease;
+            height: 50px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-btn:hover {
+            background-color: #1a56cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-btn i {
+            font-size: 1.5rem;
+        }
+
+        .form-select.rounded-input {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            display: flex;
+            align-items: center;
+            height: 50px !important;
         }
 
         /* Custom width classes */
@@ -74,44 +98,11 @@
 </head>
 
 <body>
+    <!-- Header -->
+    <div th:replace="~{CustomerView/components/Header :: header}"></div>
+
     <!-- Thanh tìm kiếm -->
-    <div class="search-bar mb-3">
-        <div class="container">
-            <form th:action="@{/tim-kiem-resort/ket-qua}" method="get" class="row g-2 align-items-center">
-                <div class="col-md-3">
-                    <input type="text" class="form-control search-input" id="searchTerm" name="searchTerm"
-                        th:value="${searchTerm}" placeholder="Điểm đến của bạn?">
-                </div>
-                <div class="col-md-4">
-                    <div class="position-relative" style="z-index: 1;">
-                        <input type="text" class="form-control date-range-picker" id="dateRange" name="dateRange"
-                            th:value="${checkIn != null ? #temporals.format(checkIn, 'dd/MM/yyyy') + ' - ' + #temporals.format(checkOut, 'dd/MM/yyyy') : ''}"
-                            placeholder="Chọn ngày đến - ngày đi">
-                        <!-- Các input ẩn để tương thích -->
-                        <input type="hidden" id="checkIn" name="checkIn"
-                            th:value="${checkIn != null ? #temporals.format(checkIn, 'yyyy-MM-dd') : ''}">
-                        <input type="hidden" id="checkOut" name="checkOut"
-                            th:value="${checkOut != null ? #temporals.format(checkOut, 'yyyy-MM-dd') : ''}">
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <select class="form-select search-input" id="soNguoi" name="soNguoi">
-                        <option value="1" th:selected="${soNguoi == 1}">1 người</option>
-                        <option value="2" th:selected="${soNguoi == 2}">2 người</option>
-                        <option value="3" th:selected="${soNguoi == 3}">3 người</option>
-                        <option value="4" th:selected="${soNguoi == 4}">4 người</option>
-                        <option value="5" th:selected="${soNguoi == 5}">5 người</option>
-                        <option value="6" th:selected="${soNguoi == 6}">6 người</option>
-                        <option value="8" th:selected="${soNguoi == 8}">8 người</option>
-                        <option value="10" th:selected="${soNguoi == 10}">10 người</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn search-btn w-100">TÌM KIẾM</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <div th:replace="~{CustomerView/components/SearchBar :: searchBar}"></div>
 
     <div class="container w-70">
         <div class="row">
@@ -247,9 +238,9 @@
 
                 <!-- Danh sách kết quả -->
                 <div th:each="resort : ${ketQuaTimKiem}" class="resort-card" style="cursor: pointer; text-align: left;">
-                    <a th:href="@{/resort-detail/{id}(id=${resort.id}, 
-                        checkIn=${checkIn != null ? #temporals.format(checkIn, 'yyyy-MM-dd') : #temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}, 
-                        checkOut=${checkOut != null ? #temporals.format(checkOut, 'yyyy-MM-dd') : #temporals.format(#temporals.createNow().plusDays(1), 'yyyy-MM-dd')}, 
+                    <a th:href="@{/resort-detail/{id}(id=${resort.id},
+                        checkIn=${checkIn != null ? #temporals.format(checkIn, 'yyyy-MM-dd') : #temporals.format(#temporals.createNow(), 'yyyy-MM-dd')},
+                        checkOut=${checkOut != null ? #temporals.format(checkOut, 'yyyy-MM-dd') : #temporals.format(#temporals.createNow().plusDays(1), 'yyyy-MM-dd')},
                         soNguoi=${soNguoi != null ? soNguoi : 2})}"
                         style="text-decoration: none; color: inherit; display: block;">
                         <div class="row g-0">
@@ -298,14 +289,13 @@
 
                                 <!-- Giá -->
                                 <div>
-                                    <div class="mb-1 original-price">5.893.162đ</div>
+                                    <!-- <div class="mb-1 original-price">5.893.162đ</div> -->
                                     <div class="d-flex align-items-center justify-content-end">
                                         <div class="current-price"
                                             th:text="${#numbers.formatDecimal(resort.giaThapNhat, 0, 'COMMA', 0, 'POINT')} + '₫'">
                                             2.015.207₫</div>
-                                        <span class="discount-badge">-66%</span>
+                                        <!-- <span class="discount-badge">-66%</span> -->
                                     </div>
-                                    <div class="price-details">Mỗi đêm trước thuế và phí</div>
                                 </div>
                             </div>
                         </div>
@@ -317,6 +307,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/@coreui/coreui/dist/js/coreui.bundle.min.js"></script>
+    <div th:replace="~{CustomerView/components/SearchBar :: searchBarScript}"></div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const calendar = document.querySelector('[data-coreui-toggle="calendar"]');
@@ -332,69 +323,8 @@
             });
         });
 
-        $('#dateRange').daterangepicker({
-            autoUpdateInput: false,
-            minDate: moment(), // Chỉ cho phép chọn từ ngày hiện tại trở đi
-            showDropdowns: true, // Hiển thị dropdown chọn tháng/năm
-            linkedCalendars: false, // Hiển thị 2 lịch độc lập nhau
-            drops: 'down', // Buộc hiển thị xuống dưới
-            opens: 'center', // Căn giữa
-            isInvalidDate: function (date) {
-                // Vô hiệu hóa những ngày trước ngày hiện tại
-                return date.isBefore(moment(), 'day');
-            },
-            locale: {
-                format: 'DD/MM/YYYY',
-                applyLabel: 'Áp dụng',
-                cancelLabel: 'Hủy',
-                fromLabel: 'Từ',
-                toLabel: 'Đến',
-                customRangeLabel: 'Tùy chọn',
-                daysOfWeek: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
-                monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
-                firstDay: 1
-            }
-        });
-
-        // Cập nhật giá trị input khi chọn xong ngày
-        $('#dateRange').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-
-            // Cập nhật giá trị cho hidden inputs
-            $('#checkIn').val(picker.startDate.format('YYYY-MM-DD'));
-            $('#checkOut').val(picker.endDate.format('YYYY-MM-DD'));
-        });
-
-        // Xóa giá trị input khi cancel
-        $('#dateRange').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
-        });
-
-        // Xử lý sự kiện khi chọn ngày bắt đầu, cập nhật lại minDate cho ngày kết thúc
-        $('#dateRange').on('show.daterangepicker', function (ev, picker) {
-            picker.container.on('mousedown.daterangepicker', '.calendar-table', function () {
-                setTimeout(function () {
-                    if (picker.startDate && !picker.endDate) {
-                        // Nếu đã chọn ngày bắt đầu nhưng chưa chọn ngày kết thúc
-                        // Vô hiệu hóa tất cả các ngày trước ngày bắt đầu
-                        $('.daterangepicker td.available').each(function () {
-                            var date = moment($(this).attr('data-date'), 'YYYY-MM-DD');
-                            if (date.isBefore(picker.startDate, 'day')) {
-                                $(this).addClass('disabled');
-                            }
-                        });
-                    }
-                }, 0);
-            });
-        });
-
-        // Đảm bảo nút tìm kiếm luôn hiển thị
-        $(document).ready(function () {
-            $('.search-btn').css({
-                'position': 'relative',
-                'z-index': '2'
-            });
-        });
+        // Sử dụng script từ component SearchBar
+        // Script đã được tách ra và đặt trong component
 
         // Google Maps API initialization
         let map;

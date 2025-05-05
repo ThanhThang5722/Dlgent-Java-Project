@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
 import com.example.IS216_Dlegent.model.LoaiPhong;
-import com.example.IS216_Dlegent.payload.dto.RoomTypeDTO;
+import com.example.IS216_Dlegent.payload.SSR.RoomTypeDetailsDTO;
 import com.example.IS216_Dlegent.repository.KhuNghiDuongRepo;
 import com.example.IS216_Dlegent.repository.LoaiPhongRepo;
 import com.example.IS216_Dlegent.repository.jdbc.JdbcRoomType;
@@ -169,7 +169,7 @@ public class LoaiPhongService {
 
     /**
      * Lấy danh sách loại phòng theo khu nghỉ dưỡng
-     * 
+     *
      * @param khuNghiDuongId ID của khu nghỉ dưỡng
      * @return Danh sách các loại phòng thuộc khu nghỉ dưỡng
      */
@@ -179,7 +179,7 @@ public class LoaiPhongService {
 
     /**
      * Lấy danh sách loại phòng theo khu nghỉ dưỡng và số người
-     * 
+     *
      * @param khuNghiDuongId ID của khu nghỉ dưỡng
      * @param soNguoi        Số người tối thiểu của loại phòng
      * @return Danh sách các loại phòng phù hợp
@@ -203,7 +203,7 @@ public class LoaiPhongService {
     @Autowired
     private JdbcRoomType jdbcRoomType;
 
-    public List<RoomTypeDTO> getRoomByResort(Long resortId, LocalDateTime checkIn, LocalDateTime checkOut,
+    public List<RoomTypeDetailsDTO> getRoomByResort(Long resortId, LocalDateTime checkIn, LocalDateTime checkOut,
             int soNguoi) {
         if (checkIn == null) {
             checkIn = LocalDateTime.now();
