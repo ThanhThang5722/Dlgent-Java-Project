@@ -1,4 +1,5 @@
 package com.example.IS216_Dlegent.model;
+
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
@@ -13,11 +14,14 @@ public class Account {
     @Column(name = "ACCOUNT_ID")
     private Long accountId;
 
-    /*@ManyToOne
-    @JoinColumn(name = "USER_ID", nullable = false)
-    private User user;*/
+    /*
+     * @ManyToOne
+     * 
+     * @JoinColumn(name = "USER_ID", nullable = false)
+     * private User user;
+     */
     @Column(name = "USER_ID", nullable = false)
-    private int userId;
+    private Long userId;
 
     @Column(name = "TEN_TAI_KHOAN", nullable = false, length = 255)
     private String username;
@@ -33,11 +37,7 @@ public class Account {
     private Date createdAt;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "ACCOUNT_ROLE_GROUP",
-        joinColumns = @JoinColumn(name = "ACCOUNT_ID"),
-        inverseJoinColumns = @JoinColumn(name = "ROLE_GROUP_ID")
-    )
+    @JoinTable(name = "ACCOUNT_ROLE_GROUP", joinColumns = @JoinColumn(name = "ACCOUNT_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_GROUP_ID"))
     private Set<RoleGroup> roleGroups = new HashSet<>();
 
     public Set<RoleGroup> getRoleGroups() {
@@ -45,9 +45,10 @@ public class Account {
     }
 
     // Constructors
-    public Account() {}
+    public Account() {
+    }
 
-    public Account(Long accountId, int userId, String username, String password, String status, Date createdAt) {
+    public Account(Long accountId, Long userId, String username, String password, String status, Date createdAt) {
         this.accountId = accountId;
         this.userId = userId;
         this.username = username;
@@ -55,8 +56,6 @@ public class Account {
         this.status = status;
         this.createdAt = createdAt;
     }
-
-    
 
     // Getters and Setters
     public Long getAccountId() {
@@ -67,11 +66,11 @@ public class Account {
         this.accountId = accountId;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -107,7 +106,6 @@ public class Account {
         this.createdAt = createdAt;
     }
 
-    
     public void setRoleGroups(Set<RoleGroup> roleGroups) {
         this.roleGroups = roleGroups;
     }
