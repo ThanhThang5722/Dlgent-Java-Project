@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.IS216_Dlegent.model.DoiTac;
 import com.example.IS216_Dlegent.model.LichSuRutTien;
+import com.example.IS216_Dlegent.payload.dto.DoiTacDTO;
 import com.example.IS216_Dlegent.payload.dto.KhachHangDTO;
 import com.example.IS216_Dlegent.repository.DoiTacRepository;
 import com.example.IS216_Dlegent.repository.LichSuRutTienRepository;
@@ -72,7 +73,7 @@ public class AdminAPI {
 
     // Customer Management
     @GetMapping("/customer-account")
-    public ResponseEntity<?> getCustomerAccountManagementView() {
+    public ResponseEntity<?> getAllCustomer() {
         List<KhachHangDTO> khachHangDTO = khachHangService.getKhachHangDTO();
         return ResponseEntity.ok(khachHangDTO);
     }
@@ -94,4 +95,17 @@ public class AdminAPI {
         return khachHangService.xoaKhachHang(id);
     }
 
+    @Autowired
+    DoiTacService doiTacService;
+
+    @GetMapping("/partner-account")
+    public List<DoiTacDTO> getAllPartner() {
+        return doiTacService.getDoiTacDTO();
+    }
+    
+    @GetMapping("/partner-account/{id}")
+    public ResponseEntity<?> getDoiTacById(@PathVariable Long id){
+        DoiTacDTO doiTacDTO = doiTacService.getDoiTacById(id); 
+        return ResponseEntity.ok(doiTacDTO);
+    }
 }
