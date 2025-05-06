@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vn">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="${bootstrapUrl}"/>
+    <link rel="stylesheet" th:href="@{/css/PartnerDashboard/ResortListStyle.css}"/>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <title>With Draw</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+</head>
+<body>
+    <div class="sidebar">
+        <h4 class="text-center text-white">Partner Dashboard</h4>
+        <ul class="list-unstyled">
+            <li><a th:href="@{/partner/{doiTacId}(doiTacId=${doiTacId})}">Danh sách khu nghỉ dưỡng</a></li>
+            <li><a th:href="@{/partner/room-type-list/{doiTacId}(doiTacId=${doiTacId})}">Danh sách loại phòng</a></li>
+            <li><a th:href="@{/partner/booking-offer?doiTacId={doiTacId}(doiTacId=${doiTacId})}">Gói đặt phòng</a></li>
+            <li><a th:href="@{/partner/room?doiTacId={doiTacId}(doiTacId=${doiTacId})}">Quản lý đặt phòng</a></li>
+            <li><a th:href="@{/partner/report?doiTacId={doiTacId}(doiTacId=${doiTacId})}">Báo cáo doanh thu</a></li>
+            <li><a th:href="@{/partner/withdraw?doiTacId={doiTacId}(doiTacId=${doiTacId})}">Rút tiền</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="tools">
+                    <h5>Tools</h5>
+                    <form id="searchForm" class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label for="batDau" class="form-label">Thời gian bắt đầu:</label>
+                            <input type="datetime-local" id="batDau" name="batDau" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="ketThuc" class="form-label">Thời gian kết thúc:</label>
+                            <input type="datetime-local" id="ketThuc" name="ketThuc" class="form-control" required>
+                        </div>
+                        <div class="col-md-4 align-self-end">
+                            <button type="submit" class="btn btn-primary">Lọc</button>
+                        </div>
+                    </form>
+                    <button class="btn btn-primary mb-2" id="insertBtn" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                        Tạo yêu cầu rút tiền mới
+                    </button>
+                    
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="withdrawModal" tabindex="-1" aria-labelledby="withdrawModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="withdrawForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="withdrawModalLabel">Thêm yêu cầu rút tiền</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+            
+                        <div class="mb-3">
+                            <label for="soTien" class="form-label">Số tiền (VNĐ)</label>
+                            <input type="number" class="form-control" id="soTien" step="1000" min="1000" required>
+                        </div>
+                        <div class="alert alert-info" role="alert">
+                            Số dư khả dụng: <span id="soDuText">--</span>
+                        </div>
+            
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Gửi yêu cầu</button>
+                    </div>
+                    </form>
+                </div>
+                </div>
+            </div>  
+        </div>
+
+        <table class="table table-bordered table-hover">
+            <thead class="table-primary">
+              <tr>
+                <th>Thời gian tạo</th>
+                <th>Số tiền</th>
+                <th>Thời gian được duyệt</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="item : ${rutTienList}">
+                <td th:text="${#temporals.format(item.thoiGianTao, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${#numbers.formatDecimal(item.soTien, 0, 'POINT', 2, 'COMMA')} + ' đ'"></td>
+                <td th:text="${#temporals.format(item.thoiGianRutTien, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${item.trangThaiRutTien}"></td>
+              </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const doiTacId = urlParams.get("doiTacId");
+        document.getElementById("withdrawForm").addEventListener("submit", function (e) {
+          e.preventDefault();
+    
+          const data = {
+            doiTacId: parseInt(doiTacId),
+            soTien: parseFloat(document.getElementById("soTien").value),
+            trangThai: "Chờ duyệt"
+          };
+
+          fetch("/api/partner/withdraw", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          })
+          .then(response => {
+            if (!response.ok) throw new Error("Gửi thất bại");
+            return response.json();
+          })
+          .then(result => {
+            alert("Gửi yêu cầu thành công!");
+            document.getElementById("withdrawForm").reset();
+            const tbody = document.querySelector("table tbody");
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${formatDateTime(data.thoiGianTao)}</td>
+                <td>${formatCurrency(data.soTien)}</td>
+                <td>${data.thoiGianRutTien ? formatDateTime(data.thoiGianRutTien) : ""}</td>
+                <td>Chờ phê duyệt</td>
+            `;
+            tbody.prepend(row); // chèn đầu bảng
+            document.getElementById("withdrawForm").reset();
+            bootstrap.Modal.getInstance(document.getElementById("withdrawModal")).hide();
+          })
+          .catch(error => {
+            alert("Đã xảy ra lỗi: " + error.message);
+          });
+        });
+    </script>
+    <script>
+        document.getElementById("searchForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Ngăn reload trang
+        
+            const batDau = new Date(document.getElementById("batDau").value);
+            const ketThuc = new Date(document.getElementById("ketThuc").value);
+        
+            const rows = document.querySelectorAll("table tbody tr");
+        
+            rows.forEach(row => {
+                const thoiGianTaoText = row.cells[0].textContent.trim(); // Lấy text cột thời gian tạo (ô đầu tiên)
+                
+                // Parse text dd/MM/yyyy HH:mm
+                const [day, month, yearAndTime] = thoiGianTaoText.split('/');
+                const [year, time] = yearAndTime.split(' ');
+                const thoiGianTao = new Date(`${year}-${month}-${day}T${time}`);
+        
+                if (thoiGianTao >= batDau && thoiGianTao <= ketThuc) {
+                    row.style.display = ""; // Hiện dòng
+                } else {
+                    row.style.display = "none"; // Ẩn dòng
+                }
+            });
+        });
+    </script>
+    <script>
+        const withdrawModal = document.getElementById('withdrawModal');
+        withdrawModal.addEventListener('show.bs.modal', function () {
+            document.getElementById("withdrawForm").reset();
+            document.getElementById("soDuText").textContent = "--";
+      
+          // Gọi API lấy số dư từ đối tác hiện tại
+            fetch(`/api/partner/sodu?doiTacId=${doiTacId}`)
+                .then(res => {
+                if (!res.ok) throw new Error("Không thể lấy số dư");
+                    return res.json();
+                })
+                .then(data => {
+                    document.getElementById("soDuText").textContent = parseFloat(data).toLocaleString("vi-VN") + " đ";
+                    const soTienInput = document.getElementById("soTien");
+                    soTienInput.setAttribute("max", data);
+                })
+                .catch(err => {
+                    document.getElementById("soDuText").textContent = "Không thể tải số dư";
+                    console.error(err);
+                });
+        });
+    </script>
+    <script>
+        function formatDateTime(iso) {
+            const d = new Date(iso);
+            return d.toLocaleString("vi-VN", { hour12: false });
+        }
+
+        function formatCurrency(amount) {
+            return amount.toLocaleString('vi-VN') + " đ";
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

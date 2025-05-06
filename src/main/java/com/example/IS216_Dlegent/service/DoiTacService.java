@@ -16,4 +16,14 @@ public class DoiTacService {
         DoiTac doiTac = doiTacRepository.findById(doiTacId).orElse(null);
         return doiTac.getSoDu();
     }
+    public void truSoDu(Long doiTacId, BigDecimal soTien) {
+        DoiTac doiTac = doiTacRepository.findById(doiTacId)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy đối tác"));
+        BigDecimal soDuHienTai = doiTac.getSoDu();
+        if (soDuHienTai.compareTo(soTien) < 0) {
+            throw new RuntimeException("Số dư không đủ");
+        }
+        doiTac.setSoDu(soDuHienTai.subtract(soTien));
+        doiTacRepository.save(doiTac);
+    }
 }

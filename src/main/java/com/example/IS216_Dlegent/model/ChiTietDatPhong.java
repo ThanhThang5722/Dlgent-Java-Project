@@ -138,5 +138,13 @@ public class ChiTietDatPhong {
     public void setTinhTrang(String tinhTrang) {
         this.tinhTrang = tinhTrang;
     }
+
+    @Override
+    public String toString() {
+        return "ChiTietDatPhong [id=" + id + ", datPhong=" + datPhong + ", goiDatPhong=" + goiDatPhong + ", giamGia="
+                + giamGia + ", soLuongPhong=" + soLuongPhong + ", soLuongDichVuYeuCau=" + soLuongDichVuYeuCau
+                + ", tongGiaTien=" + tongGiaTien + ", ngayBatDau=" + ngayBatDau + ", ngayKetThuc=" + ngayKetThuc
+                + ", tinhTrang=" + tinhTrang + "]";
+    }
     
 }

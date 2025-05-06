@@ -112,5 +112,12 @@ public class DatPhong {
         this.tenNganHang = tenNganHang;
     }
 
+    @Override
+    public String toString() {
+        return "DatPhong [id=" + id + ", khachHang=" + khachHang + ", thoiGianTao=" + thoiGianTao + ", tinhTrang="
+                + tinhTrang + ", tongGiaTien=" + tongGiaTien + ", taiKhoanNganHang=" + taiKhoanNganHang + ", tenTKNH="
+                + tenTKNH + ", tenNganHang=" + tenNganHang + "]";
+    }
+
     
 }

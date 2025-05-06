@@ -311,15 +311,9 @@
                                         <span class="rating-badge">Tuyệt vời</span>
                                     </div>
                                     <!-- Hiển thị sao dựa trên điểm đánh giá -->
-                                    <div class="star-rating-container mb-1"
+                                    <!-- <div class="star-rating-container mb-1"
                                         th:attr="data-rating=${resort.rate != null ? resort.rate : 0}">
-                                        <!-- Sao sẽ được tạo bằng JavaScript -->
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                    </div>
+                                    </div> -->
                                     <span th:text="${resort.soLuongDanhGia} + ' đánh giá'">0 đánh giá</span>
                                 </div>
 
@@ -359,30 +353,27 @@
             });
 
             // Hàm tạo sao dựa trên điểm đánh giá
-            function renderStarRating() {
-                const ratingElements = document.querySelectorAll('.star-rating-container');
+            // function renderStarRating() {
+            //     const ratingElements = document.querySelectorAll('.star-rating-container');
 
-                ratingElements.forEach(container => {
-                    const rating = parseFloat(container.getAttribute('data-rating'));
-                    const starCount = 5;
-                    let starsHtml = '';
+            //     ratingElements.forEach(container => {
+            //         const rating = parseFloat(container.getAttribute('data-rating')) || 0;
+            //         const starCount = 5;
+            //         let starsHtml = '';
 
-                    for (let i = 1; i <= starCount; i++) {
-                        if (i <= rating) {
-                            // Sao đầy
-                            starsHtml += '<i class="bi bi-star-fill text-warning"></i>';
-                        } else if (i - 0.5 <= rating) {
-                            // Nửa sao
-                            starsHtml += '<i class="bi bi-star-half text-warning"></i>';
-                        } else {
-                            // Sao rỗng
-                            starsHtml += '<i class="bi bi-star text-warning"></i>';
-                        }
-                    }
+            //         for (let i = 1; i <= starCount; i++) {
+            //             if (i <= Math.floor(rating)) {
+            //                 starsHtml += '<i class="bi bi-star-fill text-warning"></i>'; // Sao đầy
+            //             } else if (i - 0.5 <= rating) {
+            //                 starsHtml += '<i class="bi bi-star-half text-warning"></i>'; // Nửa sao
+            //             } else {
+            //                 starsHtml += '<i class="bi bi-star text-warning"></i>'; // Sao rỗng
+            //             }
+            //         }
 
-                    container.innerHTML = starsHtml;
-                });
-            }
+            //         container.innerHTML = starsHtml;
+            //     });
+            // }
 
             // Gọi hàm tạo sao khi trang đã tải xong
             renderStarRating();
