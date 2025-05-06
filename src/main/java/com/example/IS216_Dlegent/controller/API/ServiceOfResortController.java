@@ -93,7 +93,7 @@ public class ServiceOfResortController {
             } else {
                 // Nếu bỏ chọn → soft delete
                 optional.ifPresent(existing -> {
-                    existing.setIsDeleted(true);
+                    existing.setIsDeleted(false);
                     servicesOfResortRepository.save(existing);
                 });
             }

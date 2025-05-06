@@ -13,10 +13,8 @@ import com.example.IS216_Dlegent.model.KhuNghiDuong;
 
 @Repository
 public interface KhuNghiDuongRepo extends JpaRepository<KhuNghiDuong, Long> {
-    //List<KhuNghiDuong> findByThanhPhoAndQuanAndPhuong(String thanhPho, String quan, String phuong);
     List<KhuNghiDuong> findByDoiTac_Id(Long doiTacId);
 
-    
     @Modifying
     @Transactional
     @Query("UPDATE KhuNghiDuong k SET k.ten = :ten, k.diaChi = :diaChi WHERE k.id = :id")

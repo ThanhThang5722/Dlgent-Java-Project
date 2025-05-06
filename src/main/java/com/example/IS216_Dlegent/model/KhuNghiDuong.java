@@ -30,8 +30,10 @@ public class KhuNghiDuong {
     @Column(name = "DANH_GIA", nullable = false)
     private Integer danhGia;
 
+    
     // Constructors
-    public KhuNghiDuong() {}
+    public KhuNghiDuong() {
+    }
 
     public KhuNghiDuong(DoiTac doiTac, String ten, String diaChi, Phuong phuong, String img360Url, int danhGia) {
         this.doiTac = doiTac;
@@ -43,7 +45,7 @@ public class KhuNghiDuong {
     }
 
     public KhuNghiDuong(Long resortId) {
-        //TODO Auto-generated constructor stub
+        // TODO Auto-generated constructor stub
     }
 
     // Getters and Setters
@@ -108,5 +110,5 @@ public class KhuNghiDuong {
         return "KhuNghiDuong [id=" + id + ", doiTac=" + doiTac + ", ten=" + ten + ", diaChi=" + diaChi + ", phuong="
                 + phuong + ", img360Url=" + img360Url + ", danhGia=" + danhGia + "]";
     }
-    
+
 }

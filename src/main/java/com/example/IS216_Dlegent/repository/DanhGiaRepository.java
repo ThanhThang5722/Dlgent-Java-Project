@@ -1,5 +1,6 @@
 package com.example.IS216_Dlegent.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +13,10 @@ import java.util.List;
 public interface DanhGiaRepository extends JpaRepository<DanhGia, Long> {
 
     @Query("SELECT dg FROM DanhGia dg " +
-           "WHERE dg.khuNghiDuong.doiTac.id = :doiTacId " +
-           "ORDER BY dg.thoiGianTao DESC")
+            "WHERE dg.khuNghiDuong.doiTac.id = :doiTacId " +
+            "ORDER BY dg.thoiGianTao DESC")
     List<DanhGia> findTop10ByDoiTacIdOrderByThoiGianTaoDesc(@Param("doiTacId") Long doiTacId, Pageable pageable);
+
+    List<DanhGia> findByKhuNghiDuong_Id(Long khuNghiDuongId);
+    Page<DanhGia> findByKhuNghiDuong_Id(Long khuNghiDuongId, Pageable pageable);
 }

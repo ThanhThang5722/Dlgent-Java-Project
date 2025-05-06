@@ -16,4 +16,29 @@ public class ThanhPho {
 
     @OneToMany(mappedBy = "thanhPho", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Quan> quans = new ArrayList<>();
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTenThanhPho() {
+        return tenThanhPho;
+    }
+
+    public void setTenThanhPho(String tenThanhPho) {
+        this.tenThanhPho = tenThanhPho;
+    }
+
+    public List<Quan> getQuans() {
+        return quans;
+    }
+
+    public void setQuans(List<Quan> quans) {
+        this.quans = quans;
+    }
 }

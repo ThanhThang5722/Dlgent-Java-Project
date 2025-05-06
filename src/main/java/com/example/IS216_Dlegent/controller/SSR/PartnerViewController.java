@@ -112,22 +112,20 @@ public class PartnerViewController {
         List<LoaiPhong> listLoaiPhong = loaiPhongService.getRoomTypesByPartnerId(doiTacId);
         model.addAttribute("loaiPhongs", listLoaiPhong);
         List<String> danhSachTieuChuan = new ArrayList<>(Arrays.asList(
-            "Hạng sang", 
-            "Bình dân", 
-            "Thương gia"
-        ));
+                "Hạng sang",
+                "Bình dân",
+                "Thương gia"));
         model.addAttribute("danhSachTieuChuan", danhSachTieuChuan);
         List<String> danhSachSoLuong = new ArrayList<>(Arrays.asList(
-            "Phòng đơn", 
-            "Phòng đôi", 
-            "Phòng gia đình",
-            "Phòng tập thể", 
-            "Phòng cao cấp",
-            "Phòng Suite"
-        ));
+                "Phòng đơn",
+                "Phòng đôi",
+                "Phòng gia đình",
+                "Phòng tập thể",
+                "Phòng cao cấp",
+                "Phòng Suite"));
         model.addAttribute("danhSachSoLuong", danhSachSoLuong);
         Logger logger = LoggerFactory.getLogger(getClass());
-        
+
         Map<Long, List<HinhPhong>> anhTheoLoaiPhong = new HashMap<>();
         for (LoaiPhong loaiPhong : listLoaiPhong) {
             Long roomTypeID = loaiPhong.getId();
@@ -139,7 +137,7 @@ public class PartnerViewController {
         List<TienIch> danhSachTienIch = tienIchService.getAllTienIch();
         model.addAttribute("danhSachTienIch", danhSachTienIch);
         Map<Long, List<TienIch>> tienIchTheoLoaiPhong = new HashMap<>();
-        for(LoaiPhong loaiPhong : listLoaiPhong) {
+        for (LoaiPhong loaiPhong : listLoaiPhong) {
             Long roomTypeID = loaiPhong.getId();
             List<TienIch> tienIchcuaLoaiPhong = new ArrayList<>(tienIchService.getTienIchByLoaiPhongId(roomTypeID));
             tienIchTheoLoaiPhong.put(roomTypeID, tienIchcuaLoaiPhong);

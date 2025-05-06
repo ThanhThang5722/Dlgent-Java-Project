@@ -1,5 +1,6 @@
 package com.example.IS216_Dlegent.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,34 +15,43 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
 import com.example.IS216_Dlegent.payload.request.InsertResortRequest;
 import com.example.IS216_Dlegent.repository.KhuNghiDuongRepo;
+import com.example.IS216_Dlegent.repository.jdbc.JdbcResortRepository;
+import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
+
 @Service
 public class KhuNghiDuongService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
     @Transactional
     public boolean insertResort(String token, InsertResortRequest request) {
         String sql = "{ call ThemKhuNghiDuong(?, ?, ?, ?, ?, ?) }";
 
         try {
             jdbcTemplate.update(sql, token,
-                request.getResortName(),
-                request.getAddress(),
-                request.getCity(),
-                request.getDistrict(),
-                request.getProvince());
+                    request.getResortName(),
+                    request.getAddress(),
+                    request.getCity(),
+                    request.getDistrict(),
+                    request.getProvince());
 
             return true; // Successful execution
         } catch (DataAccessException e) {
-            e.printStackTrace();  // Log the exception for debugging
+            e.printStackTrace(); // Log the exception for debugging
             return false; // Error occurred during the stored procedure execution
         }
     }
 
     @Autowired
     private KhuNghiDuongRepo khuNghiDuongRepo;
+
+    @Autowired
+    private JdbcResortRepository jdbcResortRepository;
+
     public List<KhuNghiDuong> getKhuNghiDuongsByDoiTacId(Long doiTacId) {
         return khuNghiDuongRepo.findByDoiTac_Id(doiTacId);
     }
+
     public List<KhuNghiDuong> getAllKhuNghiDuongs() {
         return khuNghiDuongRepo.findAll();
     }
@@ -62,7 +72,7 @@ public class KhuNghiDuongService {
 
             int rowsUpdated = khuNghiDuongRepo.updateTenAndDiaChiById(id, ten, diaChi);
             return rowsUpdated > 0;
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
@@ -71,8 +81,25 @@ public class KhuNghiDuongService {
         try {
             khuNghiDuongRepo.deleteAllById(ids);
             return true;
-        } catch(Exception e) {
+        } catch (Exception e) {
             return false;
         }
+    }
+
+    public List<ResortSearchResponse> searchResorts(String tenResort, LocalDateTime checkIn, LocalDateTime checkOut,
+            int soNguoi) {
+        if (tenResort == null || tenResort.trim().isEmpty()) {
+            tenResort = "";
+        }
+
+        if (checkIn == null) {
+            checkIn = LocalDateTime.now();
+        }
+
+        if (checkOut == null) {
+            checkOut = checkIn.plusDays(1); // mac dinh checkout sau 1 ngay
+        }
+
+        return jdbcResortRepository.searchResorts(tenResort, checkIn, checkOut, soNguoi);
     }
 }

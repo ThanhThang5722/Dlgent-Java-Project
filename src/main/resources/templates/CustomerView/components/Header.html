@@ -1,0 +1,45 @@
+<!-- Header Component -->
+<header class="main-header">
+    <div class="container">
+        <div class="header-content">
+            <!-- Logo -->
+            <div class="logo-container">
+                <a href="/" class="logo">Dlegent</a>
+            </div>
+
+            <!-- Right Menu -->
+            <div class="right-menu">
+                <!-- Giỏ hàng -->
+                <a th:href="@{/gio-hang}" class="cart-button">
+                    <i class="bi bi-cart3"></i>
+                    <span class="cart-count" th:text="${cartCount != null ? cartCount : '0'}">0</span>
+                </a>
+
+                <!-- User Account -->
+                <div class="user-account dropdown">
+                    <button class="avatar-button dropdown-toggle" type="button" id="userDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff&rounded=true"
+                            alt="User Avatar" class="avatar-img"
+                            style="border-radius: 50%; width: 32px; height: 32px; object-fit: cover;">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Tài khoản</a>
+                        </li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-calendar-check me-2"></i>Đặt phòng</a>
+                        </li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i>Lịch sử đặt
+                                phòng</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Cài đặt tài khoản</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-divider"></div>
+</header>

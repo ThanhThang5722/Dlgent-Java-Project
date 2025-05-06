@@ -20,4 +20,37 @@ public class Phuong {
 
     @OneToMany(mappedBy = "phuong", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<KhuNghiDuong> khuNghiDuongs = new ArrayList<>();
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTenPhuong() {
+        return tenPhuong;
+    }
+
+    public void setTenPhuong(String tenPhuong) {
+        this.tenPhuong = tenPhuong;
+    }
+
+    public Quan getQuan() {
+        return quan;
+    }
+
+    public void setQuan(Quan quan) {
+        this.quan = quan;
+    }
+
+    public List<KhuNghiDuong> getKhuNghiDuongs() {
+        return khuNghiDuongs;
+    }
+
+    public void setKhuNghiDuongs(List<KhuNghiDuong> khuNghiDuongs) {
+        this.khuNghiDuongs = khuNghiDuongs;
+    }
 }

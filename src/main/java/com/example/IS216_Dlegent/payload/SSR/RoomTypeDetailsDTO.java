@@ -23,8 +23,22 @@ public class RoomTypeDetailsDTO {
     private List<TienIch> tienIch;
     private List<GoiDatPhong> dsGoiDatPhongs;
 
-
     public RoomTypeDetailsDTO(){}
+
+    public RoomTypeDetailsDTO(Long id, Long idKhuNghiDuong, String tenLoaiPhong, Double dienTich,
+            String loaiPhongTheoSoLuong, String loaiPhongTheoTieuChuan, Integer soGiuong, Integer soNguoi,
+            BigDecimal gia) {
+        this.id = id;
+        this.idKhuNghiDuong = idKhuNghiDuong;
+        this.tenLoaiPhong = tenLoaiPhong;
+        this.dienTich = dienTich;
+        this.loaiPhongTheoSoLuong = loaiPhongTheoSoLuong;
+        this.loaiPhongTheoTieuChuan = loaiPhongTheoTieuChuan;
+        this.soGiuong = soGiuong;
+        this.soNguoi = soNguoi;
+        this.gia = gia;
+    }
+    
     public RoomTypeDetailsDTO(LoaiPhong lp) {
         this.id = lp.getId();
         this.idKhuNghiDuong = lp.getKhuNghiDuong().getId();
@@ -34,6 +48,7 @@ public class RoomTypeDetailsDTO {
         this.loaiPhongTheoTieuChuan = lp.getLoaiPhongTheoTieuChuan();
         this.soGiuong = lp.getSoGiuong();
         this.soNguoi = lp.getSoNguoi();
+        this.gia = lp.getGia();
 
         hinhAnh = null;
         tienIch = null;

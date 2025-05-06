@@ -1,0 +1,124 @@
+<!-- Search Bar Component -->
+<div th:fragment="searchBar" class="search-bar mb-3" style="background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <div class="container">
+        <form th:action="@{/tim-kiem-resort/ket-qua}" method="get" class="row g-2 align-items-center">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 rounded-start-input">
+                        <i class="bi bi-geo-alt text-primary"></i>
+                    </span>
+                    <input type="text" class="form-control search-input rounded-input border-start-0 rounded-start-0"
+                        id="searchTerm" name="searchTerm" th:value="${searchTerm}" placeholder="Điểm đến của bạn?">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="position-relative" style="z-index: 1;">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 rounded-start-input">
+                            <i class="bi bi-calendar3 text-primary"></i>
+                        </span>
+                        <input type="text" class="form-control date-range-picker rounded-input border-start-0 rounded-start-0"
+                            id="dateRange" name="dateRange"
+                            th:value="${checkIn != null ? #temporals.format(checkIn, 'dd/MM/yyyy') + ' - ' + #temporals.format(checkOut, 'dd/MM/yyyy') : ''}"
+                            placeholder="Chọn ngày đến - ngày đi">
+                    </div>
+                    <!-- Các input ẩn để tương thích -->
+                    <input type="hidden" id="checkIn" name="checkIn"
+                        th:value="${checkIn != null ? #temporals.format(checkIn, 'yyyy-MM-dd') : ''}">
+                    <input type="hidden" id="checkOut" name="checkOut"
+                        th:value="${checkOut != null ? #temporals.format(checkOut, 'yyyy-MM-dd') : ''}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 rounded-start-input">
+                        <i class="bi bi-person text-primary"></i>
+                    </span>
+                    <select class="form-select search-input rounded-input border-start-0 rounded-start-0"
+                        id="soNguoi" name="soNguoi">
+                        <option value="1" th:selected="${soNguoi == 1}">1 người</option>
+                        <option value="2" th:selected="${soNguoi == 2}">2 người</option>
+                        <option value="3" th:selected="${soNguoi == 3}">3 người</option>
+                        <option value="4" th:selected="${soNguoi == 4}">4 người</option>
+                        <option value="5" th:selected="${soNguoi == 5}">5 người</option>
+                        <option value="6" th:selected="${soNguoi == 6}">6 người</option>
+                        <option value="8" th:selected="${soNguoi == 8}">8 người</option>
+                        <option value="10" th:selected="${soNguoi == 10}">10 người</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn search-btn w-100 rounded-input">
+                    <i class="bi bi-search me-1"></i> TÌM KIẾM
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript for DateRangePicker -->
+<script th:fragment="searchBarScript">
+    $(document).ready(function() {
+        $('#dateRange').daterangepicker({
+            autoUpdateInput: false,
+            minDate: moment(), // Chỉ cho phép chọn từ ngày hiện tại trở đi
+            showDropdowns: true, // Hiển thị dropdown chọn tháng/năm
+            linkedCalendars: false, // Hiển thị 2 lịch độc lập nhau
+            drops: 'down', // Buộc hiển thị xuống dưới
+            opens: 'center', // Căn giữa
+            isInvalidDate: function (date) {
+                // Vô hiệu hóa những ngày trước ngày hiện tại
+                return date.isBefore(moment(), 'day');
+            },
+            locale: {
+                format: 'DD/MM/YYYY',
+                applyLabel: 'Áp dụng',
+                cancelLabel: 'Hủy',
+                fromLabel: 'Từ',
+                toLabel: 'Đến',
+                customRangeLabel: 'Tùy chọn',
+                daysOfWeek: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                firstDay: 1
+            }
+        });
+
+        // Cập nhật giá trị input khi chọn xong ngày
+        $('#dateRange').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+
+            // Cập nhật giá trị cho hidden inputs
+            $('#checkIn').val(picker.startDate.format('YYYY-MM-DD'));
+            $('#checkOut').val(picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        // Xóa giá trị input khi cancel
+        $('#dateRange').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        // Xử lý sự kiện khi chọn ngày bắt đầu, cập nhật lại minDate cho ngày kết thúc
+        $('#dateRange').on('show.daterangepicker', function (ev, picker) {
+            picker.container.on('mousedown.daterangepicker', '.calendar-table', function () {
+                setTimeout(function () {
+                    if (picker.startDate && !picker.endDate) {
+                        // Nếu đã chọn ngày bắt đầu nhưng chưa chọn ngày kết thúc
+                        // Vô hiệu hóa tất cả các ngày trước ngày bắt đầu
+                        $('.daterangepicker td.available').each(function () {
+                            var date = moment($(this).attr('data-date'), 'YYYY-MM-DD');
+                            if (date.isBefore(picker.startDate, 'day')) {
+                                $(this).addClass('disabled');
+                            }
+                        });
+                    }
+                }, 0);
+            });
+        });
+
+        // Đảm bảo nút tìm kiếm luôn hiển thị
+        $('.search-btn').css({
+            'position': 'relative',
+            'z-index': '2'
+        });
+    });
+</script>

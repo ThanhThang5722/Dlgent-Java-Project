@@ -72,6 +72,11 @@
 			<artifactId>json</artifactId>
 			<version>20250107</version>
 		</dependency>
+		<!-- Spring Data ElasticSearch -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+		</dependency>		
 	</dependencies>
 
 	<build>

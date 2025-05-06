@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:if="${resort != null}" th:text="${resort.ten}">Chi tiết khu nghỉ dưỡng</title>
+    <title th:unless="${resort != null}">Chi tiết khu nghỉ dưỡng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/CustomerView/SearchResult.css}">
+    <link rel="stylesheet" th:href="@{/css/CustomerView/Header.css}">
+    <link rel="stylesheet" href="https://unpkg.com/@coreui/coreui/dist/css/coreui.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" th:href="@{/css/CustomerView/ResortDetail.css}">
+    <style>
+        /* Styles for the star rating selection */
+        .star-rating-select {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .star-rating-select input {
+            display: none;
+        }
+
+        .star-rating-select label {
+            font-size: 30px;
+            color: #ddd;
+            cursor: pointer;
+            margin: 0 2px;
+        }
+
+        .star-rating-select label:hover,
+        .star-rating-select label:hover~label,
+        .star-rating-select input:checked~label {
+            color: #ffc107;
+        }
+
+        .rating-text-select {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .add-review-section {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* CSS cho notification alert */
+        #review-success {
+            animation: fadeInDown 0.5s ease-in-out;
+            border-left: 5px solid #198754;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOutUp {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        .fadeOutUp {
+            animation: fadeOutUp 0.5s ease-in-out;
+        }
+
+        .btn-submit-review {
+            background-color: #0d6efd;
+            border: none;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit-review:hover {
+            background-color: #0b5ed7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-submit-review:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+    <script src="https://unpkg.com/@coreui/coreui/dist/js/coreui.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <div th:replace="~{CustomerView/components/SearchBar :: searchBarScript}"></div>
+</head>
+
+<body>
+    <!-- Header -->
+    <div th:replace="~{CustomerView/components/Header :: header}"></div>
+
+    <!-- Search bar  -->
+    <div th:replace="~{CustomerView/components/SearchBar :: searchBar}"></div>
+
+    <!-- Navigation menu -->
+    <!-- <nav>
+        <div class="container">
+            <ul class="nav-menu">
+                <li class="nav-item active">
+                    <a href="#">Hotels</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Flights</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Bus & Shuttle</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Airport Transfer</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Car Rental</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Things to Do</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#">
+                        More
+                        <i class="bi bi-chevron-down"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav> -->
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Tabs and Utility Links -->
+            <div class="d-flex justify-content-between align-items-center">
+                <ul class="content-tabs">
+                    <li class="tab-item active">Overview</li>
+                    <li class="tab-item">Rooms</li>
+                    <li class="tab-item">Location</li>
+                    <li class="tab-item">Facilities</li>
+                    <li class="tab-item">Policy</li>
+                    <li class="tab-item">Reviews</li>
+                </ul>
+
+                <!-- <div class="utility-links">
+                        <a href="#" class="util-link">
+                            <i class="bi bi-link-45deg"></i>
+                            Copy link
+                        </a>
+                        <a href="#" class="util-link save-link">
+                            <i class="bi bi-bookmark"></i>
+                            Save Accommodation
+                        </a>
+                    </div> -->
+            </div>
+
+            <!-- Resort Info -->
+            <div class="resort-header-section">
+                <div class="utility-links">
+                    <a href="#" class="util-link"><i class="bi bi-share"></i> Share</a>
+                    <a href="#" class="util-link save-link"><i class="bi bi-heart"></i> Save</a>
+                </div>
+
+                <h1 class="resort-title" th:text="${resort.ten}">Beach Resort & Spa</h1>
+                <div class="resort-category">Resort</div>
+
+                <div class="rating-container">
+                    <div class="rating-badge" th:text="${resort.danhGia}">8.9</div>
+                    <div class="rating-text">Excellent</div>
+                    <div class="star-rating">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-half"></i>
+                    </div>
+                    <div>(Based on guest reviews)</div>
+                </div>
+
+                <div class="location-info">
+                    <i class="bi bi-geo-alt"></i>
+                    <span th:if="${resort != null}"
+                        th:text="${resort.diaChi + ', ' + resort.phuong.tenPhuong + ', ' + resort.phuong.quan.tenQuan + ', ' + resort.phuong.quan.thanhPho.tenThanhPho}">Location
+                        information</span>
+                    <a href="#map" class="view-map-link">View on map</a>
+                </div>
+            </div>
+
+            <!-- Image Gallery -->
+            <div class="image-gallery">
+                <!-- Main large image -->
+                <div class="gallery-item main-img">
+                    <img th:if="${resort != null && resort.img360Url != null}" th:src="${resort.img360Url}"
+                        alt="Resort Main Image">
+                    <img th:unless="${resort != null && resort.img360Url != null}"
+                        src="https://placehold.co/800x600/3498db/ffffff?text=Resort+Main+Image" alt="Main Photo">
+                </div>
+                <!-- Other gallery images -->
+                <div class="gallery-item">
+                    <img src="https://placehold.co/400x300/2ecc71/ffffff?text=Photo+2" alt="Photo 2">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://placehold.co/400x300/e74c3c/ffffff?text=Photo+3" alt="Photo 3">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://placehold.co/400x300/f39c12/ffffff?text=Photo+4" alt="Photo 4">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://placehold.co/400x300/9b59b6/ffffff?text=Photo+5" alt="Photo 5">
+                    <button class="all-photos-btn">
+                        <i class="bi bi-grid-3x3"></i>
+                        See All Photos
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Left content - description -->
+                <div class="col-md-8">
+                    <p>
+                        Staying at this resort is a good choice when you are visiting this location.
+                        24-hours front desk is available to serve you, from check-in to check-out, or any
+                        assistance you need. Should you desire more, do not hesitate to ask the front desk,
+                        we are always ready to accommodate you. WiFi is available within public areas of the
+                        property to help you to stay connected with family and friends.
+                    </p>
+                    <p>
+                        This resort is the perfect choice for couples seeking a romantic getaway or a honeymoon
+                        retreat. Enjoy the most memorable nights with your loved one by staying at this resort.
+                    </p>
+                    <p>
+                        This is the splendid choice for you who are seeking a luxurious treat for your holiday.
+                        Get pampered with the most excellent services and make your holiday memorable by staying
+                        here.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Facilities Section -->
+            <div class="facilities-section" id="facilities">
+                <h2 class="section-title">Facilities &amp; Services</h2>
+
+                <div class="facilities-grid">
+                    <div class="facility-category">
+                        <h3 class="category-title">General</h3>
+                        <ul class="facility-list">
+                            <li><i class="bi bi-wifi"></i> Free WiFi in public areas</li>
+                            <li><i class="bi bi-p-circle"></i> Free parking</li>
+                            <li><i class="bi bi-person"></i> 24-hour front desk</li>
+                            <li><i class="bi bi-shield-check"></i> 24-hour security</li>
+                            <li><i class="bi bi-lock"></i> Safety deposit box</li>
+                        </ul>
+                    </div>
+
+                    <div class="facility-category">
+                        <h3 class="category-title">Food &amp; Drinks</h3>
+                        <ul class="facility-list">
+                            <li><i class="bi bi-cup-straw"></i> Restaurant</li>
+                            <li><i class="bi bi-cup"></i> Coffee shop</li>
+                            <li><i class="bi bi-basket"></i> Breakfast available</li>
+                            <li><i class="bi bi-cup-hot"></i> Room service</li>
+                            <li><i class="bi bi-fire"></i> BBQ facilities</li>
+                        </ul>
+                    </div>
+
+                    <div class="facility-category">
+                        <h3 class="category-title">Outdoor &amp; Activities</h3>
+                        <ul class="facility-list">
+                            <li><i class="bi bi-water"></i> Outdoor pool</li>
+                            <li><i class="bi bi-tree"></i> Garden</li>
+                            <li><i class="bi bi-umbrella"></i> Terrace</li>
+                            <li><i class="bi bi-buildings"></i> Private beach</li>
+                        </ul>
+                    </div>
+
+                    <div class="facility-category">
+                        <h3 class="category-title">Room Amenities</h3>
+                        <ul class="facility-list">
+                            <li><i class="bi bi-snow"></i> Air conditioning</li>
+                            <li><i class="bi bi-tv"></i> Flat-screen TV</li>
+                            <li><i class="bi bi-door-closed"></i> Private bathroom</li>
+                            <li><i class="bi bi-archive"></i> Mini bar</li>
+                            <li><i class="bi bi-safe"></i> In-room safe</li>
+                        </ul>
+                    </div>
+
+                    <div class="facility-category">
+                        <h3 class="category-title">Cleaning Services</h3>
+                        <ul class="facility-list">
+                            <li><i class="bi bi-basket"></i> Daily housekeeping</li>
+                            <li><i class="bi bi-trash"></i> Laundry service</li>
+                            <li><i class="bi bi-broom"></i> Ironing service</li>
+                        </ul>
+                    </div>
+
+                    <div class="facility-category">
+                        <h3 class="category-title">Business Facilities</h3>
+                        <ul class="facility-list">
+                            <li><i class="bi bi-printer"></i> Business center</li>
+                            <li><i class="bi bi-people"></i> Meeting/banquet facilities</li>
+                            <li><i class="bi bi-envelope-paper"></i> Fax/photocopying</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rooms Section -->
+            <div class="rooms-section" id="rooms">
+                <h2 class="section-title">Available Room Types</h2>
+
+                <!-- Hiển thị thông báo nếu không có phòng nào -->
+                <div th:if="${#lists.isEmpty(result)}" class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    Hiện tại không có loại phòng nào khả dụng cho khu nghỉ dưỡng này. Vui lòng kiểm tra lại sau.
+                </div>
+
+                <div th:unless="${#lists.isEmpty(result)}" th:each="roomType : ${result}"
+                    class="card mb-4 shadow-sm border rounded">
+                    <div class="card-header bg-white py-3">
+                        <h3 class="m-0 fw-bold" th:text="${roomType.tenLoaiPhong}">Superior Twin City View</h3>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Hình ảnh và thông tin phòng -->
+                            <div class="col-md-4">
+                                <div class="position-relative">
+                                    <img th:if="${not #lists.isEmpty(roomType.hinhAnh)}" class="img-fluid rounded"
+                                        th:src="${roomType.hinhAnh[0].url}" alt="Room Image">
+                                    <img th:if="${#lists.isEmpty(roomType.hinhAnh)}" class="img-fluid rounded"
+                                        src="https://placehold.co/600x400/e67e22/ffffff?text=Room+Image"
+                                        alt="Room Image">
+
+                                    <div class="d-flex mt-3">
+                                        <div class="me-4 d-flex align-items-center">
+                                            <i class="bi bi-rulers me-2 text-primary"></i>
+                                            <span th:text="${roomType.dienTich} + ' m²'">45.0 m²</span>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-person-fill me-2 text-primary"></i>
+                                            <span>
+                                                <i class="bi bi-person-fill"></i>
+                                                <i class="bi bi-person-fill"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-door-closed me-2 text-primary"></i>
+                                            <span th:text="${roomType.loaiPhongTheoSoLuong}">Twin</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-door-open me-2 text-primary"></i>
+                                            <span th:text="${roomType.loaiPhongTheoTieuChuan}">Superior</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <i class="bi bi-person-arms-up me-2 text-primary"></i>
+                                            <span th:text="${roomType.soGiuong} + ' beds'">2 twin beds</span>
+                                        </div>
+
+                                        <!-- Tiện ích của phòng -->
+                                        <div class="amenities-list">
+                                            <h6 class="mb-2"><i
+                                                    class="bi bi-check-circle-fill text-primary me-2"></i>Tiện ích phòng
+                                            </h6>
+                                            <div>
+                                                <span th:each="utility : ${roomType.tienIch}"
+                                                    class="badge bg-light text-dark me-2 mb-2"
+                                                    th:text="${utility.loaiTienIch}">Refrigerator</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Các gói đặt phòng -->
+                            <div class="col-md-8">
+
+                                <!-- Danh sách các gói đặt phòng -->
+                                <div th:if="${not #lists.isEmpty(roomType.dsGoiDatPhongs)}">
+                                    <!-- Package 1 -->
+                                    <div th:each="package : ${roomType.dsGoiDatPhongs}" class="card mb-3 border">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <h4 class="card-title fw-bold">Các dịch vụ gói:</h4>
+                                                    <div class="mb-2">
+                                                        <span th:if="${not #lists.isEmpty(package.dichVuMacDinhs)}">
+                                                            <div th:each="service : ${package.dichVuMacDinhs}"
+                                                                class="mb-2">
+                                                                <i class="bi bi-check text-success me-2"></i>
+                                                                <span class="text-dark"
+                                                                    th:text="${service.dichVuKhuNghiDuong.dichVu.serviceName}">Amenity</span>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <!-- Thông tin khách -->
+                                                    <div class="text-center mb-3">
+                                                        <div class="text-center mb-2">
+                                                            <i class="bi bi-person-fill fs-4"></i>
+                                                        </div>
+                                                        <div class="text-muted">Guest(s)</div>
+                                                    </div>
+
+                                                    <!-- Giá và nút đặt phòng -->
+                                                    <div class="text-end">
+                                                        <div class="text-danger fw-bold fs-5">
+                                                            <span
+                                                                th:text="${#numbers.formatDecimal(package.tongGiaTien, 0, 'POINT', 2, 'COMMA')}">1,000,000</span>
+                                                            VND
+                                                        </div>
+                                                        <div class="d-flex gap-2 justify-content-end">
+                                                            <button class="btn btn-outline-primary add-to-cart-btn"
+                                                                th:data-resort-id="${resortId}"
+                                                                th:data-room-type-id="${roomType.id}"
+                                                                th:data-package-id="${package.id}"
+                                                                th:data-check-in="${#temporals.format(checkIn, 'yyyy-MM-dd')}"
+                                                                th:data-check-out="${#temporals.format(checkOut, 'yyyy-MM-dd')}"
+                                                                th:data-so-nguoi="${soNguoi}">
+                                                                <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                                                            </button>
+                                                            <a th:href="@{/dat-phong(resortId=${resortId}, loaiPhongId=${roomType.id}, packageId=${package.id}, checkIn=${checkIn}, checkOut=${checkOut}, soNguoi=${soNguoi})}"
+                                                                class="btn btn-primary">Choose</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Policy Section -->
+            <!-- <div class="policy-section" id="policy">
+                    <h2 class="section-title">Policies</h2>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="policy-group">
+                                <h3 class="policy-title">Check-in/Check-out Policy</h3>
+                                <ul class="policy-list">
+                                    <li>Check-in time: From 14:00</li>
+                                    <li>Check-out time: Before 12:00</li>
+                                    <li>Reception is available 24/7</li>
+                                    <li>Early check-in and late check-out are subject to availability and may incur
+                                        additional charges</li>
+                                </ul>
+                            </div>
+
+                            <div class="policy-group">
+                                <h3 class="policy-title">Children Policy</h3>
+                                <ul class="policy-list">
+                                    <li>Children of any age are welcome</li>
+                                    <li>Children aged 6 years and above are considered as adults</li>
+                                    <li>An extra bed may be provided for children at additional cost</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="policy-group">
+                                <h3 class="policy-title">Cancellation Policy</h3>
+                                <ul class="policy-list">
+                                    <li>Cancellation policies vary depending on the room type and rate plan</li>
+                                    <li>For fully refundable bookings, you can cancel free of charge up to 24 hours
+                                        before
+                                        check-in</li>
+                                    <li>For non-refundable bookings, no refund will be provided for cancellation
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="policy-group">
+                                <h3 class="policy-title">Additional Information</h3>
+                                <ul class="policy-list">
+                                    <li>Minimum age to check-in is 18</li>
+                                    <li>Minor guests must be accompanied by adults upon check-in</li>
+                                    <li>Extra breakfast charges VND 350,000/guest</li>
+                                    <li>Pets are not allowed</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+            <!-- Reviews Section -->
+            <div class="reviews-section" id="reviews-section">
+                <h2 class="section-title">Guest Reviews</h2>
+
+                <div class="review-stats">
+                    <div class="overall-rating">
+                        <div class="rating-number" th:text="${resort.danhGia}">8.9</div>
+                        <div class="star-rating">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i th:if="${resort.danhGia >= 8}" class="bi bi-star-fill"></i>
+                            <i th:if="${resort.danhGia < 8 && resort.danhGia >= 7}" class="bi bi-star-half"></i>
+                            <i th:if="${resort.danhGia < 7}" class="bi bi-star"></i>
+                        </div>
+                        <div class="rating-text"
+                            th:text="${resort.danhGia >= 9 ? 'Exceptional' : (resort.danhGia >= 8 ? 'Excellent' : (resort.danhGia >= 7 ? 'Very Good' : (resort.danhGia >= 6 ? 'Good' : 'Average')))}">
+                            Excellent</div>
+                        <div>Based on guest reviews</div>
+                    </div>
+
+                    <div class="rating-breakdown">
+                        <div class="rating-item">
+                            <div class="rating-category">Cleanliness</div>
+                            <div class="rating-bar">
+                                <div class="rating-fill" th:style="'width: ' + ${(resort.danhGia * 10) + 3} + '%'">
+                                </div>
+                            </div>
+                            <div class="rating-value" th:text="${#numbers.formatDecimal(resort.danhGia + 0.3, 1, 1)}">
+                                9.3</div>
+                        </div>
+
+                        <div class="rating-item">
+                            <div class="rating-category">Room Comfort</div>
+                            <div class="rating-bar">
+                                <div class="rating-fill" th:style="'width: ' + ${resort.danhGia * 10} + '%'"></div>
+                            </div>
+                            <div class="rating-value" th:text="${resort.danhGia}">9.0</div>
+                        </div>
+
+                        <div class="rating-item">
+                            <div class="rating-category">Staff</div>
+                            <div class="rating-bar">
+                                <div class="rating-fill" th:style="'width: ' + ${(resort.danhGia * 10) + 5} + '%'">
+                                </div>
+                            </div>
+                            <div class="rating-value" th:text="${#numbers.formatDecimal(resort.danhGia + 0.5, 1, 1)}">
+                                9.5</div>
+                        </div>
+
+                        <div class="rating-item">
+                            <div class="rating-category">Value for Money</div>
+                            <div class="rating-bar">
+                                <div class="rating-fill" th:style="'width: ' + ${(resort.danhGia * 10) - 5} + '%'">
+                                </div>
+                            </div>
+                            <div class="rating-value" th:text="${#numbers.formatDecimal(resort.danhGia - 0.5, 1, 1)}">
+                                8.5</div>
+                        </div>
+
+                        <div class="rating-item">
+                            <div class="rating-category">Location</div>
+                            <div class="rating-bar">
+                                <div class="rating-fill" th:style="'width: ' + ${(resort.danhGia * 10) - 2} + '%'">
+                                </div>
+                            </div>
+                            <div class="rating-value" th:text="${#numbers.formatDecimal(resort.danhGia - 0.2, 1, 1)}">
+                                8.8</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviews will be loaded here -->
+                <div class="review-box-list">
+                    <div th:each="review : ${danhGias}" class="card mb-3 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="mb-1" th:text="${review.tenKhachHang}">Tên khách
+                                        hàng</h5>
+                                    <p class="mb-1 text-muted" th:text="${review.tenResort}">Tên
+                                        khu nghỉ dưỡng</p>
+                                </div>
+                                <div class="text-end">
+                                    <!-- Hiển thị số sao -->
+                                    <div>
+                                        <span th:each="i : ${#numbers.sequence(1, review.diem)}">
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        </span>
+                                        <span th:each="i : ${#numbers.sequence(review.diem + 1, 5)}">
+                                            <i class="bi bi-star text-secondary"></i>
+                                        </span>
+                                    </div>
+                                    <div class="small text-muted" th:text="${review.thoiGianTaoFormatted}">
+                                        Thời gian
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <p th:text="${review.noiDung}">Nội dung nhận xét</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Review Form -->
+                <!-- th:if="${#authentication != null and #authentication.authenticated}" -->
+                <div class="add-review-section mt-5">
+                    <h3 class="mb-4">Gửi đánh giá</h3>
+                    <form onsubmit="return showAlert()" th:action="@{/api/danh-gia}" method="post" class="review-form"
+                        target="invisible" id="reviewForm">
+                        <iframe name="invisible" style="display:none;"></iframe>
+
+                        <input type="hidden" name="resortId" th:value="${resort.id}">
+
+                        <label for="khachHangId" class="form-label fw-bold">ID Khách
+                            Hàng</label>
+                        <input type="number" class="form-control" id="khachHangId" name="khachHangId"
+                            placeholder="Nhập ID" required>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Đánh giá của bạn</label>
+                            <div class="rating-input d-flex align-items-center mb-2">
+                                <div class="star-rating-select">
+                                    <input type="radio" id="star5" name="diem" value="5" required>
+                                    <label for="star5"><i class="bi bi-star-fill"></i></label>
+
+                                    <input type="radio" id="star4" name="diem" value="4">
+                                    <label for="star4"><i class="bi bi-star-fill"></i></label>
+
+                                    <input type="radio" id="star3" name="diem" value="3">
+                                    <label for="star3"><i class="bi bi-star-fill"></i></label>
+
+                                    <input type="radio" id="star2" name="diem" value="2">
+                                    <label for="star2"><i class="bi bi-star-fill"></i></label>
+
+                                    <input type="radio" id="star1" name="diem" value="1">
+                                    <label for="star1"><i class="bi bi-star-fill"></i></label>
+                                </div>
+                                <span class="ms-3 rating-text-select">Chọn đánh giá</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="reviewContent" class="form-label fw-bold">Nhận xét của
+                                bạn</label>
+                            <textarea class="form-control" id="reviewContent" name="noiDung" rows="4"
+                                placeholder="Chia sẻ trải nghiệm của bạn về khu nghỉ dưỡng này..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary px-4 py-2 btn-submit-review">
+                            <i class="bi bi-send-fill me-2"></i>Gửi đánh giá
+                        </button>
+
+                </div>
+                </form>
+            </div>
+
+            <!-- Message for unauthenticated users -->
+            <div class="mt-5" th:unless="${#authentication != null and #authentication.authenticated}">
+                <div class="alert alert-info d-flex align-items-center" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <div>
+                        Vui lòng <a th:href="@{/dang-nhap}" class="alert-link">đăng nhập</a> để
+                        viết nhận xét về khu
+                        nghỉ dưỡng này.
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="footer-section">
+                        <div class="footer-title">About Traveloka</div>
+                        <ul class="footer-links">
+                            <li><a href="#">How to Book</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">About Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="footer-section">
+                        <div class="footer-title">Products</div>
+                        <ul class="footer-links">
+                            <li><a href="#">Hotels</a></li>
+                            <li><a href="#">Flights</a></li>
+                            <li><a href="#">Bus & Shuttle</a></li>
+                            <li><a href="#">Airport Transport</a></li>
+                            <li><a href="#">Car Rental</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="footer-section">
+                        <div class="footer-title">Other</div>
+                        <ul class="footer-links">
+                            <li><a href="#">Traveloka Affiliate</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Privacy Notice</a></li>
+                            <li><a href="#">Terms & Conditions</a></li>
+                            <li><a href="#">Register Your Accommodation</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="footer-section">
+                        <div class="footer-title">Follow us on</div>
+                        <div class="social-links">
+                            <a href="#"><i class="bi bi-facebook"></i></a>
+                            <a href="#"><i class="bi bi-instagram"></i></a>
+                            <a href="#"><i class="bi bi-twitter"></i></a>
+                            <a href="#"><i class="bi bi-youtube"></i></a>
+                            <a href="#"><i class="bi bi-telegram"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="footer-section">
+                        <div class="footer-title">Download Traveloka App</div>
+                        <div>Available on iOS and Android</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>Traveloka Vietnam Co., Ltd. Enterprise Reg.: 0313581779. An Phu Building, 117-119 Ly Chinh Thang,
+                    Ward 7, District 3, HCMC</p>
+                <p>Copyright © 2023 Traveloka. All rights reserved</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Date Range Picker
+            $('#dateRange').daterangepicker({
+                opens: 'left',
+                autoApply: true,
+                minDate: moment(),
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    separator: ' - ',
+                    applyLabel: 'Apply',
+                    cancelLabel: 'Cancel',
+                    fromLabel: 'From',
+                    toLabel: 'To',
+                    customRangeLabel: 'Custom',
+                    daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                    firstDay: 1
+                }
+            }, function (start, end, label) {
+                $('#checkIn').val(start.format('YYYY-MM-DD'));
+                $('#checkOut').val(end.format('YYYY-MM-DD'));
+            });
+
+            // Handle star rating input
+            $('input[name="diem"]').change(function () {
+                var ratingValue = $(this).val();
+                var ratingText = '';
+
+                switch (parseInt(ratingValue)) {
+                    case 5:
+                        ratingText = 'Xuất sắc';
+                        break;
+                    case 4:
+                        ratingText = 'Rất tốt';
+                        break;
+                    case 3:
+                        ratingText = 'Tốt';
+                        break;
+                    case 2:
+                        ratingText = 'Bình thường';
+                        break;
+                    case 1:
+                        ratingText = 'Không hài lòng';
+                        break;
+                    default:
+                        ratingText = 'Chọn đánh giá';
+                }
+
+                $('.rating-text-select').text(ratingText);
+            });
+
+            // Cập nhật số lượng mục trong giỏ hàng
+            updateCartCount();
+        });
+
+        function showAlert() {
+            alert("Gửi đánh giá thành công!");
+            return true;
+        }
+
+        // Thêm event listener cho tất cả các nút "Thêm vào giỏ"
+        $(document).ready(function () {
+            // Gắn sự kiện click cho tất cả các nút có class add-to-cart-btn
+            $(document).on('click', '.add-to-cart-btn', function (event) {
+                event.preventDefault();
+
+                // Lấy dữ liệu từ thuộc tính data-*
+                const button = $(this);
+                const resortId = button.data('resort-id');
+                const roomTypeId = button.data('room-type-id');
+                let packageId = button.data('package-id');
+                const checkIn = button.data('check-in');
+                const checkOut = button.data('check-out');
+                const soNguoi = button.data('so-nguoi');
+
+                // Nếu packageId là "null" (string), chuyển thành null (object)
+                if (packageId === "null") {
+                    packageId = null;
+                }
+
+                // Tạo đối tượng dữ liệu để gửi đi
+                const data = {
+                    khachHangId: 1, // Mặc định là khách hàng có ID = 1
+                    goiDatPhongId: packageId || roomTypeId, // Nếu không có packageId thì dùng roomTypeId
+                    ngayBatDau: checkIn,
+                    ngayKetThuc: checkOut
+                };
+
+                // Gọi API để thêm vào giỏ hàng
+                fetch('/api/cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Hiển thị thông báo thành công
+                            alert('Đã thêm vào giỏ hàng thành công!');
+                            // Cập nhật số lượng mục trong giỏ hàng
+                            updateCartCount();
+                        } else {
+                            // Hiển thị thông báo lỗi
+                            alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi:', error);
+                        alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
+                    });
+            });
+        });
+
+        // Hàm cập nhật số lượng mục trong giỏ hàng
+        function updateCartCount() {
+            fetch('/gio-hang/count')
+                .then(response => response.json())
+                .then(data => {
+                    // Cập nhật số lượng mục trong giỏ hàng
+                    const cartCountElement = document.querySelector('.cart-count');
+                    if (cartCountElement) {
+                        cartCountElement.textContent = data.count;
+
+                        // Ẩn badge nếu không có mục nào trong giỏ hàng
+                        if (data.count === 0) {
+                            cartCountElement.style.display = 'none';
+                        } else {
+                            cartCountElement.style.display = 'inline-block';
+                        }
+                    }
+                    console.log('Số lượng mục trong giỏ hàng:', data.count);
+                })
+                .catch(error => {
+                    console.error('Lỗi khi lấy số lượng mục trong giỏ hàng:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>

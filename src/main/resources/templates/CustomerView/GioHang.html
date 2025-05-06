@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/CustomerView/SearchResult.css}">
+    <link rel="stylesheet" th:href="@{/css/CustomerView/Header.css}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .cart-container {
+            padding: 40px 0;
+        }
+
+        h1 {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .cart-item {
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            background-color: #fff;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .cart-item:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-summary {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-cart i {
+            font-size: 6rem;
+            color: #ced4da;
+        }
+
+        .btn-primary {
+            border-radius: 30px;
+            padding: 10px 20px;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+
+        footer {
+            font-size: 0.9rem;
+        }
+
+        footer h5 {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .top-header {
+            padding: 10px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .top-link {
+            margin-left: 15px;
+            color: #495057;
+            text-decoration: none;
+        }
+
+        .top-link:hover {
+            text-decoration: underline;
+        }
+
+        .auth-buttons button {
+            margin-left: 10px;
+            border-radius: 20px;
+            padding: 5px 15px;
+            border: 1px solid #007bff;
+            color: #007bff;
+            background-color: transparent;
+            transition: 0.3s;
+        }
+
+        .auth-buttons button:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .date-badge {
+            background-color: #f1f3f5;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .card-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .fw-bold {
+            font-weight: 600 !important;
+        }
+
+        .text-end {
+            text-align: end;
+        }
+
+        .btn-outline-danger {
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .bi {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div th:replace="~{CustomerView/components/Header :: header}"></div>
+
+    <!-- Main Content -->
+    <div class="container cart-container">
+        <h1 class="mb-4">Giỏ hàng của bạn</h1>
+
+        <!-- Empty Cart Message -->
+        <div th:if="${#lists.isEmpty(cartItems)}" class="empty-cart">
+            <i class="bi bi-cart-x"></i>
+            <h3>Giỏ hàng của bạn đang trống</h3>
+            <p class="text-muted">Hãy thêm các gói đặt phòng vào giỏ hàng để tiếp tục</p>
+            <a th:href="@{/tim-kiem-resort}" class="btn btn-primary mt-3">Tìm kiếm khu nghỉ dưỡng</a>
+        </div>
+
+        <!-- Cart Items -->
+        <div th:if="${not #lists.isEmpty(cartItems)}" class="row">
+            <div class="col-md-8">
+                <div th:each="item : ${cartItems}" class="card cart-item mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0" th:text="${item.tenLoaiPhong}">Tên loại phòng</h5>
+                            <button class="btn btn-sm btn-outline-danger"
+                                th:onclick="'deleteCartItem(' + ${item.id} + ')'">
+                                <i class="bi bi-trash"></i> Xóa
+                            </button>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <span class="date-badge">
+                                        <i class="bi bi-calendar-check"></i> Check-in:
+                                    </span>
+                                    <span th:text="${item.ngayBatDau}">01/01/2023</span>
+                                </div>
+                                <div>
+                                    <span class="date-badge">
+                                        <i class="bi bi-calendar-x"></i> Check-out:
+                                    </span>
+                                    <span th:text="${item.ngayKetThuc}">03/01/2023</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <div class="mb-2">
+                                    <span class="fw-bold">Số lượng phòng: </span>
+                                    <span th:text="${item.soLuongPhong}">1</span>
+                                </div>
+                                <div>
+                                    <span class="fw-bold">Số lượng dịch vụ: </span>
+                                    <span th:text="${item.soLuongDichVuYeuCau}">2</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="text-muted">
+                                <span th:text="${item.tinhTrang}">Pending</span>
+                            </div>
+                            <div class="text-end">
+                                <div class="text-danger fw-bold fs-5">
+                                    <span
+                                        th:text="${#numbers.formatInteger(item.tongGiaTien, 0, 'COMMA')}">2,115,993</span>
+                                    VND
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cart Summary -->
+            <div class="col-md-4">
+                <div class="cart-summary">
+                    <h4 class="mb-4">Tổng thanh toán</h4>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Tổng tiền phòng:</span>
+                        <span class="fw-bold">
+                            <span th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')}">4,231,986</span> VND
+                        </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Thuế và phí:</span>
+                        <span class="fw-bold">0 VND</span>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fw-bold">Tổng cộng:</span>
+                        <span class="fw-bold text-danger fs-5">
+                            <span th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')}">4,231,986</span> VND
+                        </span>
+                    </div>
+
+                    <a href="#" class="btn btn-primary w-100">Tiến hành thanh toán</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <h5>Về chúng tôi</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white-50">Giới thiệu</a></li>
+                        <li><a href="#" class="text-white-50">Tuyển dụng</a></li>
+                        <li><a href="#" class="text-white-50">Tin tức</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Hỗ trợ</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white-50">Trung tâm trợ giúp</a></li>
+                        <li><a href="#" class="text-white-50">Câu hỏi thường gặp</a></li>
+                        <li><a href="#" class="text-white-50">Chính sách bảo mật</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Đối tác</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white-50">Đăng ký đối tác</a></li>
+                        <li><a href="#" class="text-white-50">Quy định cho đối tác</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Tải ứng dụng</h5>
+                    <div class="d-flex gap-2 mb-3">
+                        <a href="#" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-apple"></i> App Store
+                        </a>
+                        <a href="#" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-google-play"></i> Google Play
+                        </a>
+                    </div>
+                    <h5>Kết nối với chúng tôi</h5>
+                    <div class="d-flex gap-3 fs-5">
+                        <a href="#" class="text-white"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+    <script>
+        function deleteCartItem(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa mục này khỏi giỏ hàng?')) {
+                fetch(`/api/cart?id=${id}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Reload trang sau khi xóa thành công
+                            window.location.reload();
+                        } else {
+                            alert('Có lỗi xảy ra khi xóa mục khỏi giỏ hàng');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi:', error);
+                        alert('Có lỗi xảy ra khi xóa mục khỏi giỏ hàng');
+                    });
+            }
+        }
+
+        // Cập nhật số lượng mục trong giỏ hàng
+        function updateCartCount() {
+            fetch('/gio-hang/count')
+                .then(response => response.json())
+                .then(data => {
+                    // Cập nhật số lượng mục trong giỏ hàng
+                    const cartCountElement = document.querySelector('.cart-count');
+                    if (cartCountElement) {
+                        cartCountElement.textContent = data.count;
+
+                        // Ẩn badge nếu không có mục nào trong giỏ hàng
+                        if (data.count === 0) {
+                            cartCountElement.style.display = 'none';
+                        } else {
+                            cartCountElement.style.display = 'inline-block';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi khi lấy số lượng mục trong giỏ hàng:', error);
+                });
+        }
+
+        // Gọi hàm cập nhật khi trang được tải
+        $(document).ready(function () {
+            updateCartCount();
+        });
+    </script>
+</body>
+
+</html>
