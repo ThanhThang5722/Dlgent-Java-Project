@@ -12,17 +12,19 @@ public class ResortSearchResponse {
     private BigDecimal giaThapNhat;
     private String imageUrl;
     private Double rate;
+    private Integer soLuongDanhGia;
     private int relevanceScore;
     private List<DichVuDTO> dichVuMacDinhs;
 
     public ResortSearchResponse(Long id, String tenResort, String diaChi, BigDecimal giaThapNhat, String imageUrl, Double rate,
-            int relevanceScore) {
+     Integer soLuongDanhGia, int relevanceScore) {
         this.id = id;
         this.tenResort = tenResort;
         this.diaChi = diaChi;
         this.giaThapNhat = giaThapNhat;
         this.imageUrl = imageUrl;
         this.rate = rate;
+        this.soLuongDanhGia = soLuongDanhGia;
         this.relevanceScore = relevanceScore;
     }
 
@@ -72,6 +74,14 @@ public class ResortSearchResponse {
 
     public void setRate(Double rate) {
         this.rate = rate;
+    }
+
+    public Integer getSoLuongDanhGia() {
+        return soLuongDanhGia;
+    }
+
+    public void setSoLuongDanhGia(Integer soLuongDanhGia) {
+        this.soLuongDanhGia = soLuongDanhGia;
     }
 
     public int getRelevanceScore() {

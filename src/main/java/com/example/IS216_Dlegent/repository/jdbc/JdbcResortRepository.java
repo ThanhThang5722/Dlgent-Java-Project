@@ -87,6 +87,7 @@ public class JdbcResortRepository {
                                         rs.getBigDecimal("gia_thap_nhat"),
                                         rs.getString("img_360_url"),
                                         rs.getDouble("danh_gia"),
+                                        rs.getInt("so_luong_danh_gia"),
                                         rs.getInt("relevance_score"));
                 }
         }

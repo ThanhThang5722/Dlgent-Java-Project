@@ -44,13 +44,13 @@ public class DanhGiaAPI {
             @RequestParam("noiDung") String noiDung,
             HttpServletRequest request) {
         try {
-            InsertDanhGiaRequest dto = new InsertDanhGiaRequest();
-            dto.setResortId(resortId);
-            dto.setCustomerId(khachHangId);
-            dto.setDiem(diem);
-            dto.setNoiDung(noiDung);
+            InsertDanhGiaRequest insertDanhGiaRequest = new InsertDanhGiaRequest();
+            insertDanhGiaRequest.setResortId(resortId);
+            insertDanhGiaRequest.setCustomerId(khachHangId);
+            insertDanhGiaRequest.setDiem(diem);
+            insertDanhGiaRequest.setNoiDung(noiDung);
 
-            danhGiaService.insertDanhGia(dto);
+            danhGiaService.insertDanhGia(insertDanhGiaRequest);
             return ResponseEntity.ok("Đánh giá đã được ghi nhận.");
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
