@@ -102,10 +102,20 @@ public class AdminAPI {
     public List<DoiTacDTO> getAllPartner() {
         return doiTacService.getDoiTacDTO();
     }
-    
+
     @GetMapping("/partner-account/{id}")
-    public ResponseEntity<?> getDoiTacById(@PathVariable Long id){
-        DoiTacDTO doiTacDTO = doiTacService.getDoiTacById(id); 
+    public ResponseEntity<?> getDoiTacById(@PathVariable Long id) {
+        DoiTacDTO doiTacDTO = doiTacService.getDoiTacById(id);
         return ResponseEntity.ok(doiTacDTO);
+    }
+
+    @PutMapping("/partner-account/{id}")
+    public ResponseEntity<?> suaDoiTacById(@PathVariable Long id, @RequestBody DoiTacDTO doiTacDTO) {
+        return doiTacService.suaDoiTacById(id, doiTacDTO);
+    }
+
+    @DeleteMapping("/partner-account/{id}")
+    public ResponseEntity<?> xoaDoiTacById(@PathVariable Long id) {
+        return doiTacService.xoaDoiTacById(id);
     }
 }

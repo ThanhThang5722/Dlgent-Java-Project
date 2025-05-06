@@ -3,7 +3,7 @@ package com.example.IS216_Dlegent.payload.dto;
 import java.util.Date;
 
 public class DoiTacDTO {
-    //Khach_HANG
+    //DOI_TAC
     private Long doiTacId;
     private String diaChi;
     //TAI_KHOAN
