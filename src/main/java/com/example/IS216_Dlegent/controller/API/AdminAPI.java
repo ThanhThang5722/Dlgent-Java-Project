@@ -109,8 +109,27 @@ public class AdminAPI {
         return ResponseEntity.ok(doiTacDTO);
     }
 
+    @GetMapping("/partner-account/approval")
+    public ResponseEntity<?> getDoiTacApproval() {
+        return doiTacService.getDoiTacApproval();
+    }
+
     @PutMapping("/partner-account/{id}")
     public ResponseEntity<?> suaDoiTacById(@PathVariable Long id, @RequestBody DoiTacDTO doiTacDTO) {
+        return doiTacService.suaDoiTacById(id, doiTacDTO);
+    }
+
+    @PutMapping("/partner-account/approve/{id}")
+    public ResponseEntity<?> approvePartner(@PathVariable Long id) {
+        DoiTacDTO doiTacDTO = new DoiTacDTO();
+        doiTacDTO.setTrangThai("ACTIVE");
+        return doiTacService.suaDoiTacById(id, doiTacDTO);
+    }
+
+    @PutMapping("/partner-account/reject/{id}")
+    public ResponseEntity<?> rejectPartner(@PathVariable Long id) {
+        DoiTacDTO doiTacDTO = new DoiTacDTO();
+        doiTacDTO.setTrangThai("REJECTED");
         return doiTacService.suaDoiTacById(id, doiTacDTO);
     }
 

@@ -63,6 +63,36 @@ public class DoiTacService {
         return doiTacDTOs;
     }
 
+    public ResponseEntity<List<DoiTacDTO>> getDoiTacApproval() {
+        List<DoiTac> doiTacs = doiTacRepository.findAll();
+        List<DoiTacDTO> doiTacDTOs = new ArrayList<DoiTacDTO>();
+
+        for (DoiTac doiTac : doiTacs) {
+            Optional<User> user = userRepository.findByUserId(doiTac.getAccount().getUserId());
+
+            if (!user.isPresent() || user.get().getIsDeleted() == 1) {
+                continue;
+            }
+
+            if (doiTac.getAccount().getStatus().equals("PENDING")) {
+                doiTacDTOs.add(new DoiTacDTO(
+                        doiTac.getId(),
+                        doiTac.getDiaChi(),
+                        doiTac.getTaiKhoanNganHang(),
+                        doiTac.getTenNganHang(),
+                        doiTac.getTenTaiKhoanNganHang(),
+                        doiTac.getAccount().getUsername(),
+                        doiTac.getAccount().getStatus(),
+                        user.get().getFullName(),
+                        user.get().getEmail(),
+                        user.get().getPhoneNumber(),
+                        user.get().getCccd()));
+            }
+        }
+
+        return ResponseEntity.ok(doiTacDTOs);
+    }
+
     public DoiTacDTO getDoiTacById(Long id) {
         Optional<DoiTac> doiTac = doiTacRepository.findById(id);
         Optional<User> user = userRepository.findByUserId(doiTac.get().getAccount().getUserId());

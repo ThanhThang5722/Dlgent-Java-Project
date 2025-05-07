@@ -20,7 +20,7 @@ public class AdminViewController {
 
     @Autowired
     private LichSuRutTienService lichSuRutTienService;
-    
+
     @Autowired
     private KhachHangService khachHangService;
 
@@ -42,12 +42,18 @@ public class AdminViewController {
         model.addAttribute("bootstrapUrl", bootstrapUrl);
         return "/AdminView/PartnerAccount/PartnerAccount";
     }
-    
+
+    @GetMapping("/partnerApproval")
+    public String getPartnerApprovalView(Model model) {
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+        return "/AdminView/PartnerAccount/PartnerApproval";
+    }
+
     @GetMapping("/discount")
     public String getDiscountMangamentView(@RequestParam String param) {
         return new String();
     }
-    
 
     @GetMapping("/withdraw")
     public String WithdrawManagementView(@RequestParam Long adminId, Model model) {
@@ -57,6 +63,5 @@ public class AdminViewController {
         model.addAttribute("rutTienList", danhSachRutTien);
         return "/AdminView/Withdraw/Withdraw";
     }
-    
-    
+
 }
