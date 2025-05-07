@@ -23,6 +23,7 @@ import com.example.IS216_Dlegent.payload.dto.ChiTietDatPhongDTO;
 import com.example.IS216_Dlegent.payload.dto.DanhGiaDTO;
 import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
 import com.example.IS216_Dlegent.repository.DanhGiaRepository;
+import com.example.IS216_Dlegent.service.BookingListService;
 import com.example.IS216_Dlegent.service.ChiTietDatPhongService;
 import com.example.IS216_Dlegent.service.DanhGiaService;
 import com.example.IS216_Dlegent.service.DichVuMacDinhService;
@@ -48,17 +49,21 @@ public class KhachHangViewController {
     @Autowired
     private ChiTietDatPhongService chiTietDatPhongService;
 
+    @Autowired
+    BookingListService bookingListService;
+
     @GetMapping("/user/profile")
     public String profilePage(Model model) {
         return "CustomerView/Profile";
     }
 
-    @GetMapping("/user/mybooking")
-    public String myBookingPage(Model model) {
+    @GetMapping("/user/booking-history/{id}")
+    public String myBookingPage(@PathVariable Long id, Model model) {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);
+        model.addAttribute("bookingHistory", bookingListService.getBookingHistory(id));
 
-        return "CustomerView/MyBooking";
+        return "CustomerView/BookingHistory";
     }
 
     @GetMapping("/user/purchase")
