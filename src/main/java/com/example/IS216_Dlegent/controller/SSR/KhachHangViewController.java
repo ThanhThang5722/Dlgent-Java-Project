@@ -194,4 +194,19 @@ public class KhachHangViewController {
 
         return "CustomerView/GioHang";
     }
+
+    @GetMapping("/booking-detail")
+    public String bookingDetailPage(@RequestParam Long id, Model model) {
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+
+        // Gọi API để lấy thông tin chi tiết đặt phòng
+        var response = bookingListService.getBookingDetail(id);
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            model.addAttribute("booking", response.getBody());
+        }
+
+        return "CustomerView/BookingDetail";
+    }
 }

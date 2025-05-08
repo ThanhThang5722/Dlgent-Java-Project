@@ -280,7 +280,7 @@
                         </div>
                     </div>
                     <div class="booking-actions">
-                        <button class="btn-manage" th:data-booking-id="${booking.bookingId}">View booking</button>
+                        <a th:href="@{/booking-detail(id=${booking.bookingId})}" class="btn-manage">View booking</a>
                     </div>
                 </div>
             </div>
@@ -319,7 +319,7 @@
                         </div>
                     </div>
                     <div class="booking-actions">
-                        <button class="btn-manage" th:data-booking-id="${booking.bookingId}">View booking</button>
+                        <a th:href="@{/booking-detail(id=${booking.bookingId})}" class="btn-manage">View booking</a>
                     </div>
                 </div>
             </div>
@@ -357,7 +357,7 @@
                         </div>
                     </div>
                     <div class="booking-actions">
-                        <button class="btn-manage" th:data-booking-id="${booking.bookingId}">View booking</button>
+                        <a th:href="@{/booking-detail(id=${booking.bookingId})}" class="btn-manage">View booking</a>
                     </div>
                 </div>
             </div>
@@ -409,21 +409,8 @@
                 });
             });
 
-            // Log all button elements found
-            const buttonElements = document.querySelectorAll('.btn-manage');
-            console.log('Found button elements:', buttonElements.length);
-
-            // Add click event listeners to all "View booking" buttons
-            buttonElements.forEach(button => {
-                button.addEventListener('click', function () {
-                    const bookingId = this.getAttribute('data-booking-id');
-                    console.log('Button clicked, booking ID:', bookingId);
-
-                    if (bookingId) {
-                        window.location.href = `/booking-detail?id=${bookingId}`;
-                    }
-                });
-            });
+            // Không cần xử lý sự kiện click cho các nút "View booking" nữa
+            // vì chúng ta đã thay đổi thành thẻ <a> với href trực tiếp
 
             // Set the initial active tab
             console.log('Setting initial tab to completed');

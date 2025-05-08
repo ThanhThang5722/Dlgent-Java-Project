@@ -112,6 +112,16 @@ public class BookingListService {
         String ngayBatDau = chiTietDatPhong.getNgayBatDau().format(formatter);
         String ngayKetThuc = chiTietDatPhong.getNgayKetThuc().format(formatter);
 
+        // Xác định trạng thái đặt phòng
+        String tinhTrang;
+        if (chiTietDatPhong.getTinhTrang().equals("Đã hủy")) {
+            tinhTrang = "cancelled";
+        } else if (chiTietDatPhong.getNgayKetThuc().isBefore(currentDate)) {
+            tinhTrang = "completed";
+        } else {
+            tinhTrang = "upcoming";
+        }
+
         ChiTietDatPhongDTO2 chiTietDatPhong2 = new ChiTietDatPhongDTO2(
                 chiTietDatPhong.getId(),
                 chiTietDatPhong.getSoLuongPhong(),
@@ -124,7 +134,9 @@ public class BookingListService {
                 chiTietDatPhong.getGoiDatPhong().getLoaiPhong().getDienTich(),
                 chiTietDatPhong.getGoiDatPhong().getLoaiPhong().getSoGiuong(),
                 chiTietDatPhong.getGoiDatPhong().getLoaiPhong().getSoNguoi(),
-                hinhPhongs.get(0).getUrl());
+                chiTietDatPhong.getGoiDatPhong().getLoaiPhong().getTenLoaiPhong(),
+                hinhPhongs.get(0).getUrl(),
+                tinhTrang);
 
         return ResponseEntity.ok().body(chiTietDatPhong2);
     }
