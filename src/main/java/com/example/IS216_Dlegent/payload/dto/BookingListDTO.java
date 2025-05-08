@@ -4,17 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookingListDTO {
-    private List<BookedRoomDTO> upcomingRoom = new ArrayList<>();
-    private List<BookedRoomDTO> completedRooom = new ArrayList<>();
-    private List<BookedRoomDTO> cancelledRoom = new ArrayList<>();
+    private List<BookedRoomDTO> upcomingRoom;
+    private List<BookedRoomDTO> completedRoom;
+    private List<BookedRoomDTO> cancelledRoom;
 
     public BookingListDTO() {
+        this.upcomingRoom = new ArrayList<>();
+        this.completedRoom = new ArrayList<>();
+        this.cancelledRoom = new ArrayList<>();
     }
 
-    public BookingListDTO(List<BookedRoomDTO> upcomingRoom, List<BookedRoomDTO> completedRooom,
+    public BookingListDTO(List<BookedRoomDTO> upcomingRoom, List<BookedRoomDTO> completedRoom,
             List<BookedRoomDTO> cancelledRoom) {
         this.upcomingRoom = upcomingRoom;
-        this.completedRooom = completedRooom;
+        this.completedRoom = completedRoom;
         this.cancelledRoom = cancelledRoom;
     }
 
@@ -26,12 +29,12 @@ public class BookingListDTO {
         this.upcomingRoom = upcomingRoom;
     }
 
-    public List<BookedRoomDTO> getCompletedRooom() {
-        return completedRooom;
+    public List<BookedRoomDTO> getCompletedRoom() {
+        return completedRoom;
     }
 
-    public void setCompletedRooom(List<BookedRoomDTO> completedRooom) {
-        this.completedRooom = completedRooom;
+    public void setCompletedRoom(List<BookedRoomDTO> completedRoom) {
+        this.completedRoom = completedRoom;
     }
 
     public List<BookedRoomDTO> getCancelledRoom() {

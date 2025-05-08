@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
 import com.example.IS216_Dlegent.model.LoaiPhong;
 import com.example.IS216_Dlegent.payload.SSR.RoomTypeDetailsDTO;
+import com.example.IS216_Dlegent.payload.dto.BookedRoomDTO;
+import com.example.IS216_Dlegent.payload.dto.BookingListDTO;
 import com.example.IS216_Dlegent.payload.dto.ChiTietDatPhongDTO;
 import com.example.IS216_Dlegent.payload.dto.DanhGiaDTO;
 import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
@@ -57,11 +59,25 @@ public class KhachHangViewController {
         return "CustomerView/Profile";
     }
 
-    @GetMapping("/user/booking-history/{id}")
-    public String myBookingPage(@PathVariable Long id, Model model) {
+    @GetMapping("/user/booking-history")
+    public String myBookingPage(Model model) {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);
-        model.addAttribute("bookingHistory", bookingListService.getBookingHistory(id));
+        System.out.println("TEST: Calling bookingListService.getBookingHistory(1L)");
+        BookingListDTO bookingList = bookingListService.getBookingHistory(1L);
+        System.out.println("BookingList: " + bookingList);
+
+        List<BookedRoomDTO> upcomingRoom = bookingList.getUpcomingRoom();
+        List<BookedRoomDTO> completedRoom = bookingList.getCompletedRoom();
+        List<BookedRoomDTO> cancelledRoom = bookingList.getCancelledRoom();
+
+        System.out.println("Upcoming rooms: " + upcomingRoom.size());
+        System.out.println("Completed rooms: " + completedRoom.size());
+        System.out.println("Cancelled rooms: " + cancelledRoom.size());
+
+        model.addAttribute("cancelledBookings", cancelledRoom);
+        model.addAttribute("upcomingBookings", upcomingRoom);
+        model.addAttribute("completedBookings", completedRoom);
 
         return "CustomerView/BookingHistory";
     }

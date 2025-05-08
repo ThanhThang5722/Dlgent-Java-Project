@@ -3,6 +3,7 @@ package com.example.IS216_Dlegent.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +46,16 @@ public class BookingListService {
             return null;
         }
 
+        if (bookingListDTO.getCancelledRoom() == null) {
+            bookingListDTO.setCancelledRoom(new ArrayList<>());
+        }
+        if (bookingListDTO.getCompletedRoom() == null) {
+            bookingListDTO.setCompletedRoom(new ArrayList<>());
+        }
+        if (bookingListDTO.getUpcomingRoom() == null) {
+            bookingListDTO.setUpcomingRoom(new ArrayList<>());
+        }
+
         for (DatPhong datPhong : datPhongs) {
             List<ChiTietDatPhong> chiTietDatPhongs = chiTietDatPhongRepository.findByDatPhong_Id(datPhong.getId());
 
@@ -73,7 +84,7 @@ public class BookingListService {
                 if (chiTietDatPhong.getTinhTrang().equals("Đã hủy")) {
                     bookingListDTO.getCancelledRoom().add(bookedRoomDTO);
                 } else if (chiTietDatPhong.getNgayKetThuc().isBefore(currentDate)) {
-                    bookingListDTO.getCompletedRooom().add(bookedRoomDTO);
+                    bookingListDTO.getCompletedRoom().add(bookedRoomDTO);
                 } else if (chiTietDatPhong.getNgayBatDau().isAfter(currentDate)) {
                     bookingListDTO.getUpcomingRoom().add(bookedRoomDTO);
                 }
