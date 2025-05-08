@@ -7,6 +7,7 @@
     <title>Lịch sử đặt phòng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/CustomerView/Header.css}">
     <style>
         body {
             background-color: #f0f4f8;
@@ -245,64 +246,133 @@
     <div class="booking-container">
         <!-- Tab Navigation -->
         <div class="tab-header">
-            <div class="tab-item" id="tab-upcoming" onclick="switchTab('upcoming')">Upcoming</div>
-            <div class="tab-item active" id="tab-completed" onclick="switchTab('completed')">Completed</div>
-            <div class="tab-item" id="tab-cancelled" onclick="switchTab('cancelled')">Cancelled</div>
+            <div class="tab-item" id="tab-upcoming">Upcoming</div>
+            <div class="tab-item active" id="tab-completed">Completed</div>
+            <div class="tab-item" id="tab-cancelled">Cancelled</div>
         </div>
 
         <!-- Completed Tab -->
         <div id="content-completed" class="tab-content">
-
-            <!-- Booking Card -->
-            <div class="booking-card">
-                <div class="booking-id">
-                    <span>ID: 1524287636</span>
-                    <span class="booking-status status-completed">Completed</span>
-                </div>
-                <div class="booking-details">
-                    <div class="booking-image">
-                        <img src="https://via.placeholder.com/100x80" alt="Hotel">
+            <div th:if="${completedBookings != null and !completedBookings.empty}"
+                th:each="booking : ${completedBookings}">
+                <div class="booking-card">
+                    <div class="booking-id">
+                        <span>ID: <span th:text="${booking.bookingId}"></span></span>
+                        <span class="booking-status status-completed">Completed</span>
                     </div>
-                    <div class="booking-info">
-                        <h5>I Love Vinhome Grand Park HCM</h5>
-                        <div class="booking-dates">
-                            <div>Check in: Thu, Feb 05</div>
-                            <div>Check out: Sun, Feb 09</div>
+                    <div class="booking-details">
+                        <div class="booking-image">
+                            <img th:src="${booking.hinhPhongUrl != null ? booking.hinhPhongUrl : 'https://via.placeholder.com/150'}"
+                                alt="Room">
+                        </div>
+                        <div class="booking-info">
+                            <h5
+                                th:text="${(booking.tenResort != null ? booking.tenResort : 'Resort') + ' - ' + (booking.tenLoaiPhong != null ? booking.tenLoaiPhong : 'Room')}">
+                            </h5>
+                            <div class="booking-dates">
+                                <div>Check in: <span
+                                        th:text="${booking.ngayBatDau != null ? booking.ngayBatDau : 'N/A'}"></span>
+                                </div>
+                                <div>Check out: <span
+                                        th:text="${booking.ngayKetThuc != null ? booking.ngayKetThuc : 'N/A'}"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <div class="booking-actions">
+                        <a th:href="@{/booking-detail(id=${booking.bookingId})}" class="btn-manage">View booking</a>
+                    </div>
                 </div>
-                <div class="booking-actions">
-                    <button class="btn-manage">View booking</button>
-                </div>
+            </div>
+            <div th:if="${completedBookings == null or completedBookings.empty}" class="empty-state">
+                <img src="https://cdn-icons-png.flaticon.com/512/1034/1034131.png" alt="No bookings">
+                <h3>Bạn không có đặt phòng đã hoàn thành</h3>
             </div>
         </div>
 
         <!-- Upcoming Tab -->
         <div id="content-upcoming" class="tab-content" style="display: none;">
-            <!-- Empty State -->
-            <div class="empty-state">
+            <div th:if="${upcomingBookings != null and !upcomingBookings.empty}"
+                th:each="booking : ${upcomingBookings}">
+                <div class="booking-card">
+                    <div class="booking-id">
+                        <span>ID: <span th:text="${booking.bookingId}"></span></span>
+                        <span class="booking-status status-upcoming">Upcoming</span>
+                    </div>
+                    <div class="booking-details">
+                        <div class="booking-image">
+                            <img th:src="${booking.hinhPhongUrl != null ? booking.hinhPhongUrl : 'https://via.placeholder.com/150'}"
+                                alt="Room">
+                        </div>
+                        <div class="booking-info">
+                            <h5
+                                th:text="${(booking.tenResort != null ? booking.tenResort : 'Resort') + ' - ' + (booking.tenLoaiPhong != null ? booking.tenLoaiPhong : 'Room')}">
+                            </h5>
+                            <div class="booking-dates">
+                                <div>Check in: <span
+                                        th:text="${booking.ngayBatDau != null ? booking.ngayBatDau : 'N/A'}"></span>
+                                </div>
+                                <div>Check out: <span
+                                        th:text="${booking.ngayKetThuc != null ? booking.ngayKetThuc : 'N/A'}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="booking-actions">
+                        <a th:href="@{/booking-detail(id=${booking.bookingId})}" class="btn-manage">View booking</a>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${upcomingBookings == null or upcomingBookings.empty}" class="empty-state">
                 <img src="https://cdn-icons-png.flaticon.com/512/1034/1034131.png" alt="No bookings">
-                <h3>Phong T., you have no upcoming trips</h3>
+                <h3>Bạn không có chuyến đi sắp tới nào</h3>
             </div>
         </div>
-
         <!-- Cancelled Tab -->
         <div id="content-cancelled" class="tab-content" style="display: none;">
-            <!-- Empty State -->
-            <div class="empty-state">
+            <div th:if="${cancelledBookings != null and !cancelledBookings.empty}"
+                th:each="booking : ${cancelledBookings}">
+                <div class="booking-card">
+                    <div class="booking-id">
+                        <span>ID: <span th:text="${booking.bookingId}"></span></span>
+                        <span class="booking-status status-cancelled">Cancelled</span>
+                    </div>
+                    <div class="booking-details">
+                        <div class="booking-image">
+                            <img th:src="${booking.hinhPhongUrl != null ? booking.hinhPhongUrl : 'https://via.placeholder.com/150'}"
+                                alt="Room">
+                        </div>
+                        <div class="booking-info">
+                            <h5
+                                th:text="${(booking.tenResort != null ? booking.tenResort : 'Resort') + ' - ' + (booking.tenLoaiPhong != null ? booking.tenLoaiPhong : 'Room')}">
+                            </h5>
+                            <div class="booking-dates">
+                                <div>Check in: <span
+                                        th:text="${booking.ngayBatDau != null ? booking.ngayBatDau : 'N/A'}"></span>
+                                </div>
+                                <div>Check out: <span
+                                        th:text="${booking.ngayKetThuc != null ? booking.ngayKetThuc : 'N/A'}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="booking-actions">
+                        <a th:href="@{/booking-detail(id=${booking.bookingId})}" class="btn-manage">View booking</a>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${cancelledBookings == null or cancelledBookings.empty}" class="empty-state">
                 <img src="https://cdn-icons-png.flaticon.com/512/1034/1034131.png" alt="No bookings">
-                <h3>You have no cancelled bookings</h3>
+                <h3>Bạn không có đặt phòng đã hủy</h3>
             </div>
         </div>
     </div>
-
-    <!-- Footer -->
-    <div th:replace="~{CustomerView/components/Footer :: footer}"></div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Switch between tabs
         function switchTab(tabId) {
+            console.log('Switching to tab:', tabId);
+
             // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.style.display = 'none';
@@ -320,101 +390,40 @@
             document.getElementById('tab-' + tabId).classList.add('active');
         }
 
-        // Load booking history data from API
-        function loadBookingHistory() {
-            const khachHangId = 1; // Replace with actual customer ID from session or URL
-
-            fetch(`/api/booking-history?khachHangId=${khachHangId}`)
-                .then(response => response.json())
-                .then(data => {
-                    renderBookings('upcoming', data.upcomingRoom);
-                    renderBookings('completed', data.completedRooom);
-                    renderBookings('cancelled', data.cancelledRoom);
-                })
-                .catch(error => {
-                    console.error('Error loading booking history:', error);
-                });
-        }
-
-        // Render bookings for a specific tab
-        function renderBookings(tabId, bookings) {
-            const container = document.getElementById('content-' + tabId);
-
-            // Clear existing content
-            container.innerHTML = '';
-
-            if (!bookings || bookings.length === 0) {
-                // Show empty state
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1034/1034131.png" alt="No bookings">
-                        <h3>${tabId === 'upcoming' ? 'You have no upcoming trips' :
-                        tabId === 'completed' ? 'You have no completed bookings' :
-                            'You have no cancelled bookings'}</h3>
-                    </div>
-                `;
-                return;
-            }
-
-            // Add booking cards
-            bookings.forEach(booking => {
-                const bookingCard = document.createElement('div');
-                bookingCard.className = 'booking-card';
-                bookingCard.innerHTML = `
-                    <div class="booking-id">
-                        <span>ID: ${booking.id}</span>
-                        <span class="booking-status status-${tabId}">${capitalizeFirstLetter(tabId)}</span>
-                    </div>
-                    <div class="booking-details">
-                        <div class="booking-image">
-                            <img src="${booking.hinhPhongUrl || 'https://via.placeholder.com/100x80'}" alt="Room">
-                        </div>
-                        <div class="booking-info">
-                            <h5>${booking.resortName} - ${booking.roomTypeName}</h5>
-                            <div class="booking-dates">
-                                <div>Check in: ${formatDate(booking.checkInDate)}</div>
-                                <div>Check out: ${formatDate(booking.checkOutDate)}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="booking-actions">
-                        <button class="btn-manage">View booking</button>
-                    </div>
-                `;
-                container.appendChild(bookingCard);
-            });
-        }
-
-        // Helper function to format date
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-            const months = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
-                'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
-
-            return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]}`;
-        }
-
-        // Helper function to capitalize first letter
-        function capitalizeFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
-        // Load booking history when page loads
+        // Add event listeners when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', function () {
+            console.log('DOM fully loaded');
+
+            // Log all tab elements found
+            const tabElements = document.querySelectorAll('.tab-item');
+            console.log('Found tab elements:', tabElements.length);
+
+            // Add click event listeners to all tab items
+            tabElements.forEach(tab => {
+                console.log('Adding click listener to tab:', tab.id);
+
+                tab.addEventListener('click', function () {
+                    const tabId = this.id.replace('tab-', '');
+                    console.log('Tab clicked:', tabId);
+                    switchTab(tabId);
+                });
+            });
+
+            // Không cần xử lý sự kiện click cho các nút "View booking" nữa
+            // vì chúng ta đã thay đổi thành thẻ <a> với href trực tiếp
+
+            // Set the initial active tab
+            console.log('Setting initial tab to completed');
             switchTab('completed');
-            loadBookingHistory();
-        });
 
-        // Xử lý sự kiện khi nhấn nút "View booking"
-        document.addEventListener('click', function (e) {
-            if (e.target.classList.contains('btn-manage')) {
-                const bookingCard = e.target.closest('.booking-card');
-                const bookingId = bookingCard.querySelector('.booking-id span').textContent.replace('ID: ', '');
-
-                // Chuyển hướng đến trang chi tiết đặt phòng
-                window.location.href = `/booking-detail?id=${bookingId}`;
-            }
+            // Add a direct click handler to the tab header as a fallback
+            document.querySelector('.tab-header').addEventListener('click', function (e) {
+                if (e.target.classList.contains('tab-item')) {
+                    const tabId = e.target.id.replace('tab-', '');
+                    console.log('Tab header click detected on:', tabId);
+                    switchTab(tabId);
+                }
+            });
         });
     </script>
 </body>

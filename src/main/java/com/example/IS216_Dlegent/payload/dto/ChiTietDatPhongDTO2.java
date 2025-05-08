@@ -13,6 +13,7 @@ public class ChiTietDatPhongDTO2 {
     private BigDecimal tongGiaTien;
     private String ngayBatDau;
     private String ngayKetThuc;
+    private String tinhTrang; // Trạng thái: "upcoming", "completed", "cancelled"
 
     List<DichVuYeuCau> dichVuYeuCaus;
     List<DichVuMacDinh> dichVuMacDinhs;
@@ -24,17 +25,15 @@ public class ChiTietDatPhongDTO2 {
     // sđt đối tác
 
     private String tenResort;
-    
-    //LOAI_PHONG
+
+    // LOAI_PHONG
     private Double dienTich;
     private Integer soGiuong;
     private Integer soNguoi;
-    
-    //HINH_PHONG
+    private String tenLoaiPhong;
+
+    // HINH_PHONG
     private String hinhAnhUrl;
-
-
-
 
     public ChiTietDatPhongDTO2(Long bookingId, Integer soLuongPhong, BigDecimal tongGiaTien, String ngayBatDau,
             String ngayKetThuc, List<DichVuYeuCau> dichVuYeuCaus, List<DichVuMacDinh> dichVuMacDinhs, String tenResort,
@@ -51,6 +50,44 @@ public class ChiTietDatPhongDTO2 {
         this.soGiuong = soGiuong;
         this.soNguoi = soNguoi;
         this.hinhAnhUrl = hinhAnhUrl;
+    }
+
+    public ChiTietDatPhongDTO2(Long bookingId, Integer soLuongPhong, BigDecimal tongGiaTien, String ngayBatDau,
+            String ngayKetThuc, List<DichVuYeuCau> dichVuYeuCaus, List<DichVuMacDinh> dichVuMacDinhs, String tenResort,
+            Double dienTich, Integer soGiuong, Integer soNguoi, String tenLoaiPhong, String hinhAnhUrl) {
+        this.bookingId = bookingId;
+        this.soLuongPhong = soLuongPhong;
+        this.tongGiaTien = tongGiaTien;
+        this.ngayBatDau = ngayBatDau;
+        this.ngayKetThuc = ngayKetThuc;
+        this.dichVuYeuCaus = dichVuYeuCaus;
+        this.dichVuMacDinhs = dichVuMacDinhs;
+        this.tenResort = tenResort;
+        this.dienTich = dienTich;
+        this.soGiuong = soGiuong;
+        this.soNguoi = soNguoi;
+        this.tenLoaiPhong = tenLoaiPhong;
+        this.hinhAnhUrl = hinhAnhUrl;
+    }
+
+    public ChiTietDatPhongDTO2(Long bookingId, Integer soLuongPhong, BigDecimal tongGiaTien, String ngayBatDau,
+            String ngayKetThuc, List<DichVuYeuCau> dichVuYeuCaus, List<DichVuMacDinh> dichVuMacDinhs, String tenResort,
+            Double dienTich, Integer soGiuong, Integer soNguoi, String tenLoaiPhong, String hinhAnhUrl,
+            String tinhTrang) {
+        this.bookingId = bookingId;
+        this.soLuongPhong = soLuongPhong;
+        this.tongGiaTien = tongGiaTien;
+        this.ngayBatDau = ngayBatDau;
+        this.ngayKetThuc = ngayKetThuc;
+        this.dichVuYeuCaus = dichVuYeuCaus;
+        this.dichVuMacDinhs = dichVuMacDinhs;
+        this.tenResort = tenResort;
+        this.dienTich = dienTich;
+        this.soGiuong = soGiuong;
+        this.soNguoi = soNguoi;
+        this.tenLoaiPhong = tenLoaiPhong;
+        this.hinhAnhUrl = hinhAnhUrl;
+        this.tinhTrang = tinhTrang;
     }
 
     public Long getBookingId() {
@@ -125,4 +162,43 @@ public class ChiTietDatPhongDTO2 {
         this.soNguoi = soNguoi;
     }
 
+    public Double getDienTich() {
+        return dienTich;
+    }
+
+    public void setDienTich(Double dienTich) {
+        this.dienTich = dienTich;
+    }
+
+    public Integer getSoGiuong() {
+        return soGiuong;
+    }
+
+    public void setSoGiuong(Integer soGiuong) {
+        this.soGiuong = soGiuong;
+    }
+
+    public String getTenLoaiPhong() {
+        return tenLoaiPhong;
+    }
+
+    public void setTenLoaiPhong(String tenLoaiPhong) {
+        this.tenLoaiPhong = tenLoaiPhong;
+    }
+
+    public String getHinhAnhUrl() {
+        return hinhAnhUrl;
+    }
+
+    public void setHinhAnhUrl(String hinhAnhUrl) {
+        this.hinhAnhUrl = hinhAnhUrl;
+    }
+
+    public String getTinhTrang() {
+        return tinhTrang;
+    }
+
+    public void setTinhTrang(String tinhTrang) {
+        this.tinhTrang = tinhTrang;
+    }
 }

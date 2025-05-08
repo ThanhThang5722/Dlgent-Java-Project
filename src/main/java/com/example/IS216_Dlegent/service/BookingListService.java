@@ -3,6 +3,7 @@ package com.example.IS216_Dlegent.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +46,16 @@ public class BookingListService {
             return null;
         }
 
+        if (bookingListDTO.getCancelledRoom() == null) {
+            bookingListDTO.setCancelledRoom(new ArrayList<>());
+        }
+        if (bookingListDTO.getCompletedRoom() == null) {
+            bookingListDTO.setCompletedRoom(new ArrayList<>());
+        }
+        if (bookingListDTO.getUpcomingRoom() == null) {
+            bookingListDTO.setUpcomingRoom(new ArrayList<>());
+        }
+
         for (DatPhong datPhong : datPhongs) {
             List<ChiTietDatPhong> chiTietDatPhongs = chiTietDatPhongRepository.findByDatPhong_Id(datPhong.getId());
 
@@ -73,7 +84,7 @@ public class BookingListService {
                 if (chiTietDatPhong.getTinhTrang().equals("Đã hủy")) {
                     bookingListDTO.getCancelledRoom().add(bookedRoomDTO);
                 } else if (chiTietDatPhong.getNgayKetThuc().isBefore(currentDate)) {
-                    bookingListDTO.getCompletedRooom().add(bookedRoomDTO);
+                    bookingListDTO.getCompletedRoom().add(bookedRoomDTO);
                 } else if (chiTietDatPhong.getNgayBatDau().isAfter(currentDate)) {
                     bookingListDTO.getUpcomingRoom().add(bookedRoomDTO);
                 }
@@ -101,6 +112,16 @@ public class BookingListService {
         String ngayBatDau = chiTietDatPhong.getNgayBatDau().format(formatter);
         String ngayKetThuc = chiTietDatPhong.getNgayKetThuc().format(formatter);
 
+        // Xác định trạng thái đặt phòng
+        String tinhTrang;
+        if (chiTietDatPhong.getTinhTrang().equals("Đã hủy")) {
+            tinhTrang = "cancelled";
+        } else if (chiTietDatPhong.getNgayKetThuc().isBefore(currentDate)) {
+            tinhTrang = "completed";
+        } else {
+            tinhTrang = "upcoming";
+        }
+
         ChiTietDatPhongDTO2 chiTietDatPhong2 = new ChiTietDatPhongDTO2(
                 chiTietDatPhong.getId(),
                 chiTietDatPhong.getSoLuongPhong(),
@@ -113,7 +134,9 @@ public class BookingListService {
                 chiTietDatPhong.getGoiDatPhong().getLoaiPhong().getDienTich(),
                 chiTietDatPhong.getGoiDatPhong().getLoaiPhong().getSoGiuong(),
                 chiTietDatPhong.getGoiDatPhong().getLoaiPhong().getSoNguoi(),
-                hinhPhongs.get(0).getUrl());
+                chiTietDatPhong.getGoiDatPhong().getLoaiPhong().getTenLoaiPhong(),
+                hinhPhongs.get(0).getUrl(),
+                tinhTrang);
 
         return ResponseEntity.ok().body(chiTietDatPhong2);
     }
