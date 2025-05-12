@@ -15,7 +15,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
 
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
 import com.example.IS216_Dlegent.model.LoaiPhong;
@@ -24,6 +28,7 @@ import com.example.IS216_Dlegent.payload.dto.BookedRoomDTO;
 import com.example.IS216_Dlegent.payload.dto.BookingListDTO;
 import com.example.IS216_Dlegent.payload.dto.ChiTietDatPhongDTO;
 import com.example.IS216_Dlegent.payload.dto.DanhGiaDTO;
+import com.example.IS216_Dlegent.payload.dto.ThongTinCaNhanKhachHangDTO;
 import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
 import com.example.IS216_Dlegent.repository.DanhGiaRepository;
 import com.example.IS216_Dlegent.service.BookingListService;
@@ -40,6 +45,7 @@ import com.example.IS216_Dlegent.service.GoiDatPhongService;
 import com.example.IS216_Dlegent.service.KhoMaGiamGiaService;
 import com.example.IS216_Dlegent.service.KhuNghiDuongService;
 import com.example.IS216_Dlegent.service.LoaiPhongService;
+import com.example.IS216_Dlegent.service.ThongTinTaiKhoanService;
 import com.example.IS216_Dlegent.service.MaGiamGiaService;
 import com.example.IS216_Dlegent.service.AccountService;
 
@@ -207,7 +213,6 @@ public class KhachHangViewController {
             checkOut = checkIn.plusDays(2);
         }
 
-        // Chuyển đổi LocalDate sang LocalDateTime (thời gian 00:00:00)
         LocalDateTime checkInDateTime = checkIn.atStartOfDay();
         LocalDateTime checkOutDateTime = checkOut.atStartOfDay();
 
@@ -244,10 +249,8 @@ public class KhachHangViewController {
         LocalDateTime checkInDateTime = checkIn.atStartOfDay();
         LocalDateTime checkOutDateTime = checkOut.atStartOfDay();
 
-        // Lấy thông tin khu nghỉ dưỡng
         KhuNghiDuong khuNghiDuong = khuNghiDuongService.findById(id);
         if (khuNghiDuong == null) {
-            // Xử lý khi không tìm thấy khu nghỉ dưỡng
             return "redirect:/tim-kiem-resort";
         }
 
@@ -293,7 +296,6 @@ public class KhachHangViewController {
         // Mặc định userId là 1
         Long userId = 1L;
 
-        // Lấy thông tin khách hàng
         Optional<KhachHang> khachHangOpt = khachHangRepository.findById(userId);
         if (khachHangOpt.isPresent()) {
             KhachHang khachHang = khachHangOpt.get();
@@ -303,4 +305,28 @@ public class KhachHangViewController {
 
         return "CustomerView/ChangePassword";
     }
+
+    @Autowired
+    ThongTinTaiKhoanService thongTinTaiKhoanService;
+
+    @GetMapping("/user/profile/{id}")
+    public String userProfile(@PathVariable Long id,Model model){
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+
+        ThongTinCaNhanKhachHangDTO thongTinCaNhanKhachHangDTO = thongTinTaiKhoanService.getThongTinCaNhanKhachHang(id);
+
+        model.addAttribute("thongTinCaNhanDto", thongTinCaNhanKhachHangDTO);
+        System.out.println("hehe" + thongTinCaNhanKhachHangDTO);
+
+        return "Profile/CustomerProfile";
+    }
+
+    @PutMapping("/user/profile/{id}")
+    public ResponseEntity<?> editProfile(@RequestBody ThongTinCaNhanKhachHangDTO thongTinCaNhanKhachHangDTO, @PathVariable Long id){
+
+        thongTinTaiKhoanService.setThongTinCaNhanKhachHang(id, thongTinCaNhanKhachHangDTO);
+        return ResponseEntity.ok().build();
+    }
+
 }

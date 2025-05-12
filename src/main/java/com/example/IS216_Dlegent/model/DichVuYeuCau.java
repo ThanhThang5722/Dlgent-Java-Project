@@ -25,6 +25,8 @@ public class DichVuYeuCau {
     @JoinColumn(name = "ID_CHI_TIET_DAT_PHONG")
     private ChiTietDatPhong chiTietDatPhong;
 
+    public DichVuYeuCau(){}
+
     public DichVuYeuCau(Long id, ServicesOfResort dichVuKhuNghiDuong, ChiTietDatPhong chiTietDatPhong) {
         this.id = id;
         this.dichVuKhuNghiDuong = dichVuKhuNghiDuong;
@@ -54,5 +56,6 @@ public class DichVuYeuCau {
     public void setChiTietDatPhong(ChiTietDatPhong chiTietDatPhong) {
         this.chiTietDatPhong = chiTietDatPhong;
     }
+
 
 }
