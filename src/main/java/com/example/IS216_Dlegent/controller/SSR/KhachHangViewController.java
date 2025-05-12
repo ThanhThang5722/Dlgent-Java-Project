@@ -14,13 +14,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
 
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
 import com.example.IS216_Dlegent.model.LoaiPhong;
 import com.example.IS216_Dlegent.payload.SSR.RoomTypeDetailsDTO;
 import com.example.IS216_Dlegent.payload.dto.ChiTietDatPhongDTO;
 import com.example.IS216_Dlegent.payload.dto.DanhGiaDTO;
+import com.example.IS216_Dlegent.payload.dto.ThongTinCaNhanKhachHangDTO;
 import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
 import com.example.IS216_Dlegent.repository.DanhGiaRepository;
 import com.example.IS216_Dlegent.service.ChiTietDatPhongService;
@@ -29,6 +34,7 @@ import com.example.IS216_Dlegent.service.DichVuMacDinhService;
 import com.example.IS216_Dlegent.service.GoiDatPhongService;
 import com.example.IS216_Dlegent.service.KhuNghiDuongService;
 import com.example.IS216_Dlegent.service.LoaiPhongService;
+import com.example.IS216_Dlegent.service.ThongTinTaiKhoanService;
 
 @Controller
 public class KhachHangViewController {
@@ -172,5 +178,28 @@ public class KhachHangViewController {
         model.addAttribute("totalPrice", totalPrice);
 
         return "CustomerView/GioHang";
+    }
+
+    @Autowired
+    ThongTinTaiKhoanService thongTinTaiKhoanService;
+
+    @GetMapping("/user/profile/{id}")
+    public String userProfile(@PathVariable Long id,Model model){
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+
+        ThongTinCaNhanKhachHangDTO thongTinCaNhanKhachHangDTO = thongTinTaiKhoanService.getThongTinCaNhanKhachHang(id);
+
+        model.addAttribute("thongTinCaNhanDto", thongTinCaNhanKhachHangDTO);
+        System.out.println("hehe" + thongTinCaNhanKhachHangDTO);
+
+        return "Profile/CustomerProfile";
+    }
+
+    @PutMapping("/user/profile/{id}")
+    public ResponseEntity<?> editProfile(@RequestBody ThongTinCaNhanKhachHangDTO thongTinCaNhanKhachHangDTO, @PathVariable Long id){
+
+        thongTinTaiKhoanService.setThongTinCaNhanKhachHang(id, thongTinCaNhanKhachHangDTO);
+        return ResponseEntity.ok().build();
     }
 }

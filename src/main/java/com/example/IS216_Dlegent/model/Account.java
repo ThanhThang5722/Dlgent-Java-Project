@@ -17,7 +17,7 @@ public class Account {
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;*/
     @Column(name = "USER_ID", nullable = false)
-    private int userId;
+    private Long userId;
 
     @Column(name = "TEN_TAI_KHOAN", nullable = false, length = 255)
     private String username;
@@ -47,7 +47,7 @@ public class Account {
     // Constructors
     public Account() {}
 
-    public Account(Long accountId, int userId, String username, String password, String status, Date createdAt) {
+    public Account(Long accountId, Long userId, String username, String password, String status, Date createdAt) {
         this.accountId = accountId;
         this.userId = userId;
         this.username = username;
@@ -67,11 +67,11 @@ public class Account {
         this.accountId = accountId;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

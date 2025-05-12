@@ -19,7 +19,7 @@ import com.example.IS216_Dlegent.model.GoiDatPhong;
 import com.example.IS216_Dlegent.model.KhachHang;
 import com.example.IS216_Dlegent.payload.dto.ChiTietDatPhongDTO;
 import com.example.IS216_Dlegent.payload.request.InsertGioHang;
-import com.example.IS216_Dlegent.payload.request.InsertGoiDatPhong;
+// import com.example.IS216_Dlegent.payload.request.InsertGoiDatPhong;
 import com.example.IS216_Dlegent.repository.ChiTietDatPhongRepository;
 import com.example.IS216_Dlegent.repository.DatPhongRepository;
 import com.example.IS216_Dlegent.repository.KhachHangRepository;
