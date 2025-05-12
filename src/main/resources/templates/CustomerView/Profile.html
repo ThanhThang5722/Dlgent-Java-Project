@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tài khoản của tôi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/CustomerView/Header.css}">
+    <style>
+        body {
+            background-color: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        .profile-container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+            border: 3px solid #0D8ABC;
+        }
+
+        .profile-info h2 {
+            margin: 0;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .profile-info p {
+            margin: 5px 0 0;
+            color: #666;
+        }
+
+        .profile-points {
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .points-badge {
+            background-color: #FFD700;
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+
+        .redeem-btn {
+            display: block;
+            background-color: #0D8ABC;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+
+        .redeem-btn:hover {
+            background-color: #0a6d8a;
+            color: white;
+        }
+
+        .profile-section {
+            margin-bottom: 30px;
+        }
+
+        .profile-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .info-item {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            width: 150px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .info-value {
+            flex: 1;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div th:replace="~{CustomerView/components/Header :: header}"></div>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff&rounded=true" alt="User Avatar"
+                class="profile-avatar">
+            <div class="profile-info">
+                <h2 th:text="${khachHang != null ? khachHang.hoTen : 'Khách hàng'}">Khách hàng</h2>
+                <p th:text="${khachHang != null ? khachHang.email : 'email@example.com'}">email@example.com</p>
+                <p>Thành viên Bạc</p>
+            </div>
+            <div class="profile-points">
+                <div class="points-badge">
+                    <i class="bi bi-coin"></i>
+                    <span th:text="${diemTichLuy != null ? diemTichLuy : '500'} + ' điểm'">500 điểm</span>
+                </div>
+                <a th:href="@{/user/point-redemption}" class="redeem-btn">Quy đổi điểm</a>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <h3>Thông tin cá nhân</h3>
+            <div class="info-item">
+                <div class="info-label">Họ và tên:</div>
+                <div class="info-value" th:text="${khachHang != null ? khachHang.hoTen : 'Khách hàng'}">Khách hàng</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Email:</div>
+                <div class="info-value" th:text="${khachHang != null ? khachHang.email : 'email@example.com'}">
+                    email@example.com</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Số điện thoại:</div>
+                <div class="info-value" th:text="${khachHang != null ? khachHang.sdt : '0123456789'}">0123456789</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">CCCD:</div>
+                <div class="info-value" th:text="${khachHang != null ? khachHang.cccd : '012345678901'}">012345678901
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Địa chỉ:</div>
+                <div class="info-value" th:text="${khachHang != null ? khachHang.diaChi : 'Chưa cập nhật'}">Chưa cập
+                    nhật</div>
+            </div>
+            <div class="mt-3">
+                <a th:href="@{/user/change-password}" class="btn btn-outline-primary">
+                    <i class="bi bi-key me-2"></i>Đổi mật khẩu
+                </a>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <h3>Điểm thưởng và quy đổi</h3>
+            <p>Tích lũy điểm qua mỗi lần đặt phòng và quy đổi các ưu đãi độc quyền tại Azure Resort.</p>
+            <div class="row mt-4">
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Điểm hiện tại</h5>
+                            <p class="card-text fs-4 fw-bold text-primary"
+                                th:text="${diemTichLuy != null ? diemTichLuy : '500'} + ' điểm'">500 điểm</p>
+                            <a th:href="@{/user/point-redemption}" class="btn btn-primary">Quy đổi ngay</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Mã giảm giá của tôi</h5>
+                            <p class="card-text">Xem các mã giảm giá bạn đã quy đổi từ điểm thưởng.</p>
+                            <a th:href="@{/user/discount-codes}" class="btn btn-outline-primary">Xem mã giảm giá</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
