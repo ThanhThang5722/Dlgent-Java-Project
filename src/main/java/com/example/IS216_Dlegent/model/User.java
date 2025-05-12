@@ -101,8 +101,4 @@ public class User {
         this.isDeleted = isDeleted;
     }
 
-    public User get() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
-    }
 }

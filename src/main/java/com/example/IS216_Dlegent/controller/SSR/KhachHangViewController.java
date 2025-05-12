@@ -213,7 +213,6 @@ public class KhachHangViewController {
             checkOut = checkIn.plusDays(2);
         }
 
-        // Chuyển đổi LocalDate sang LocalDateTime (thời gian 00:00:00)
         LocalDateTime checkInDateTime = checkIn.atStartOfDay();
         LocalDateTime checkOutDateTime = checkOut.atStartOfDay();
 
@@ -250,10 +249,8 @@ public class KhachHangViewController {
         LocalDateTime checkInDateTime = checkIn.atStartOfDay();
         LocalDateTime checkOutDateTime = checkOut.atStartOfDay();
 
-        // Lấy thông tin khu nghỉ dưỡng
         KhuNghiDuong khuNghiDuong = khuNghiDuongService.findById(id);
         if (khuNghiDuong == null) {
-            // Xử lý khi không tìm thấy khu nghỉ dưỡng
             return "redirect:/tim-kiem-resort";
         }
 
@@ -299,7 +296,6 @@ public class KhachHangViewController {
         // Mặc định userId là 1
         Long userId = 1L;
 
-        // Lấy thông tin khách hàng
         Optional<KhachHang> khachHangOpt = khachHangRepository.findById(userId);
         if (khachHangOpt.isPresent()) {
             KhachHang khachHang = khachHangOpt.get();
@@ -332,4 +328,5 @@ public class KhachHangViewController {
         thongTinTaiKhoanService.setThongTinCaNhanKhachHang(id, thongTinCaNhanKhachHangDTO);
         return ResponseEntity.ok().build();
     }
+
 }
