@@ -34,10 +34,14 @@ public class GiamGia {
     @Column(name = "TINH_TRANG", nullable = false, length = 255)
     private String tinhTrang;
 
-    public GiamGia() {}
+    @OneToOne(mappedBy = "giamGia", fetch = FetchType.EAGER)
+    private DoiDiem doiDiem;
+
+    public GiamGia() {
+    }
 
     public GiamGia(Long id, LoaiPhong loaiPhong, String loaiGiamGia, BigDecimal giaTri, BigDecimal mucToiDa,
-            LocalDateTime ngayBatDau, LocalDateTime ngayKetThuc, String tinhTrang) {
+            LocalDateTime ngayBatDau, LocalDateTime ngayKetThuc, String tinhTrang, DoiDiem doiDiem) {
         this.id = id;
         this.loaiPhong = loaiPhong;
         this.loaiGiamGia = loaiGiamGia;
@@ -46,6 +50,7 @@ public class GiamGia {
         this.ngayBatDau = ngayBatDau;
         this.ngayKetThuc = ngayKetThuc;
         this.tinhTrang = tinhTrang;
+        this.doiDiem = doiDiem;
     }
 
     public Long getId() {
@@ -111,5 +116,13 @@ public class GiamGia {
     public void setTinhTrang(String tinhTrang) {
         this.tinhTrang = tinhTrang;
     }
-    
+
+    public DoiDiem getDoiDiem() {
+        return doiDiem;
+    }
+
+    public void setDoiDiem(DoiDiem doiDiem) {
+        this.doiDiem = doiDiem;
+    }
+
 }
