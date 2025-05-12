@@ -49,7 +49,6 @@ public class ThongTinTaiKhoanService {
             khachHang.getDiemTichLuy(),
             nguoiDung.getEmail()
         );
-        System.out.println("hihi" + nguoiDung + khachHang);
 
         return thongTinCaNhanKhachHangDTO;
     }

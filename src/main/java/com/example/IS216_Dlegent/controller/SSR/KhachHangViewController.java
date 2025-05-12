@@ -45,12 +45,9 @@ import com.example.IS216_Dlegent.service.GoiDatPhongService;
 import com.example.IS216_Dlegent.service.KhoMaGiamGiaService;
 import com.example.IS216_Dlegent.service.KhuNghiDuongService;
 import com.example.IS216_Dlegent.service.LoaiPhongService;
-<<<<<<< HEAD
 import com.example.IS216_Dlegent.service.ThongTinTaiKhoanService;
-=======
 import com.example.IS216_Dlegent.service.MaGiamGiaService;
 import com.example.IS216_Dlegent.service.AccountService;
->>>>>>> 025d8ca2c8468076275b10de8e8b561a23db68e5
 
 @Controller
 public class KhachHangViewController {
@@ -294,7 +291,25 @@ public class KhachHangViewController {
         return "CustomerView/GioHang";
     }
 
-<<<<<<< HEAD
+    @GetMapping("/user/change-password")
+    public String changePasswordPage(Model model) {
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+
+        // Mặc định userId là 1
+        Long userId = 1L;
+
+        // Lấy thông tin khách hàng
+        Optional<KhachHang> khachHangOpt = khachHangRepository.findById(userId);
+        if (khachHangOpt.isPresent()) {
+            KhachHang khachHang = khachHangOpt.get();
+            model.addAttribute("khachHang", khachHang);
+            model.addAttribute("userId", khachHang.getTaiKhoan().getAccountId());
+        }
+
+        return "CustomerView/ChangePassword";
+    }
+
     @Autowired
     ThongTinTaiKhoanService thongTinTaiKhoanService;
 
@@ -316,24 +331,5 @@ public class KhachHangViewController {
 
         thongTinTaiKhoanService.setThongTinCaNhanKhachHang(id, thongTinCaNhanKhachHangDTO);
         return ResponseEntity.ok().build();
-=======
-    @GetMapping("/user/change-password")
-    public String changePasswordPage(Model model) {
-        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
-        model.addAttribute("bootstrapUrl", bootstrapUrl);
-
-        // Mặc định userId là 1
-        Long userId = 1L;
-
-        // Lấy thông tin khách hàng
-        Optional<KhachHang> khachHangOpt = khachHangRepository.findById(userId);
-        if (khachHangOpt.isPresent()) {
-            KhachHang khachHang = khachHangOpt.get();
-            model.addAttribute("khachHang", khachHang);
-            model.addAttribute("userId", khachHang.getTaiKhoan().getAccountId());
-        }
-
-        return "CustomerView/ChangePassword";
->>>>>>> 025d8ca2c8468076275b10de8e8b561a23db68e5
     }
 }
