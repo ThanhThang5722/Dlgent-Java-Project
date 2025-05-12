@@ -19,16 +19,17 @@ public class ChiTietDatPhong {
     @ManyToOne(optional = false)
     @JoinColumn(name = "ID_GOI_DAT_PHONG", referencedColumnName = "ID")
     private GoiDatPhong goiDatPhong;
-//TODO: GiamGia set lại về NULLABLE để tiện test tính năng add vào giỏ hàng, sau khi clear được GIAMGIA ntn thì sửa lại
+    // TODO: GiamGia set lại về NULLABLE để tiện test tính năng add vào giỏ hàng,
+    // sau khi clear được GIAMGIA ntn thì sửa lại
     @ManyToOne(optional = true)
     @JoinColumn(name = "ID_GIAMGIA", referencedColumnName = "ID")
     private GiamGia giamGia;
 
     @Column(name = "SO_LUONG_PHONG", nullable = false)
-    private int soLuongPhong;
+    private Integer soLuongPhong;
 
     @Column(name = "SO_LUONG_DICH_VU_YEU_CAU", nullable = false)
-    private int soLuongDichVuYeuCau;
+    private Integer soLuongDichVuYeuCau;
 
     @Column(name = "TONG_GIATIEN", nullable = false, precision = 12, scale = 2)
     private BigDecimal tongGiaTien;
@@ -42,10 +43,11 @@ public class ChiTietDatPhong {
     @Column(name = "TINH_TRANG", nullable = false, length = 255)
     private String tinhTrang;
 
-    public ChiTietDatPhong() {}
+    public ChiTietDatPhong() {
+    }
 
     public ChiTietDatPhong(Long id, DatPhong datPhong, GoiDatPhong goiDatPhong, GiamGia giamGia, int soLuongPhong,
-            int soLuongDichVuYeuCau, BigDecimal tongGiaTien, LocalDateTime ngayBatDau, LocalDateTime ngayKetThuc,
+            Integer soLuongDichVuYeuCau, BigDecimal tongGiaTien, LocalDateTime ngayBatDau, LocalDateTime ngayKetThuc,
             String tinhTrang) {
         this.id = id;
         this.datPhong = datPhong;
@@ -91,11 +93,11 @@ public class ChiTietDatPhong {
         this.giamGia = giamGia;
     }
 
-    public int getSoLuongPhong() {
+    public Integer getSoLuongPhong() {
         return soLuongPhong;
     }
 
-    public void setSoLuongPhong(int soLuongPhong) {
+    public void setSoLuongPhong(Integer soLuongPhong) {
         this.soLuongPhong = soLuongPhong;
     }
 
@@ -146,5 +148,5 @@ public class ChiTietDatPhong {
                 + ", tongGiaTien=" + tongGiaTien + ", ngayBatDau=" + ngayBatDau + ", ngayKetThuc=" + ngayKetThuc
                 + ", tinhTrang=" + tinhTrang + "]";
     }
-    
+
 }

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mã giảm giá của tôi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/CustomerView/Header.css}">
+    <style>
+        body {
+            background-color: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        .discount-container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        .discount-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 0;
+            color: #333;
+        }
+
+        .redeem-more-btn {
+            background-color: #0D8ABC;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .redeem-more-btn:hover {
+            background-color: #0a6d8a;
+            color: white;
+        }
+
+        .discount-card {
+            border: 1px solid #eaeaea;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .discount-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #FFD700;
+            color: #333;
+            padding: 5px 15px;
+            font-weight: 600;
+            border-bottom-left-radius: 10px;
+        }
+
+        .discount-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .discount-details {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .discount-validity {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .discount-code {
+            background-color: #f8f9fa;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #0D8ABC;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            color: #0a6d8a;
+        }
+
+        .discount-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-expired {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-used {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 0;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div th:replace="~{CustomerView/components/Header :: header}"></div>
+
+    <div class="discount-container">
+        <div class="discount-header">
+            <h1 class="section-title">Mã giảm giá của tôi</h1>
+            <a th:href="@{/user/point-redemption}" class="redeem-more-btn">
+                <i class="bi bi-plus-circle me-1"></i> Quy đổi thêm
+            </a>
+        </div>
+
+        <div class="row">
+            <!-- Discount Code Cards -->
+            <div th:if="${maGiamGias != null and !maGiamGias.empty}" th:each="maGiam : ${maGiamGias}"
+                class="col-md-6 mb-4">
+                <div class="discount-card">
+                    <div class="discount-badge"
+                        th:text="${maGiam.loaiGiamGia == 'PERCENT' ? maGiam.giaTri + '%' : maGiam.giaTri + ' VND'}">10%
+                    </div>
+
+                    <div class="discount-status"
+                        th:classappend="${maGiam.trangThai == 'ACTIVE' ? 'status-active' : (maGiam.trangThai == 'USED' ? 'status-used' : 'status-expired')}"
+                        th:text="${maGiam.trangThai == 'ACTIVE' ? 'Còn hiệu lực' : (maGiam.trangThai == 'USED' ? 'Đã sử dụng' : 'Hết hạn')}">
+                        Còn hiệu lực
+                    </div>
+
+                    <h3 class="discount-title"
+                        th:text="${maGiam.loaiGiamGia == 'PERCENT' ? 'Giảm ' + maGiam.giaTri + '%' : 'Giảm ' + maGiam.giaTri + ' VND'}">
+                        Giảm 10% phòng</h3>
+
+                    <div class="discount-details"
+                        th:text="${maGiam.loaiGiamGia == 'PERCENT' ? 'Giảm ' + maGiam.giaTri + '% cho tất cả các loại phòng' : 'Giảm ' + maGiam.giaTri + ' VND cho tất cả các loại phòng'}">
+                        Giảm 10% cho tất cả các loại phòng
+                    </div>
+
+                    <div class="discount-details" th:if="${maGiam.mucToiDa != null}">
+                        Giảm tối đa: <span th:text="${maGiam.mucToiDa + ' VND'}">500,000 VND</span>
+                    </div>
+
+                    <div class="discount-code">
+                        <span th:text="${maGiam.maCode}">SUMMER2023</span>
+                        <button class="copy-btn" th:attr="data-code=${maGiam.maCode}"
+                            onclick="copyToClipboard(this.getAttribute('data-code'))">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+                    </div>
+
+                    <div class="discount-validity">
+                        Hiệu lực: <span th:text="${maGiam.ngayBatDau + ' - ' + maGiam.ngayKetThuc}">01/01/2023 -
+                            31/12/2023</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${maGiamGias == null or maGiamGias.empty}" class="col-12">
+                <div class="empty-state">
+                    <i class="bi bi-tag"></i>
+                    <h3>Bạn chưa có mã giảm giá nào</h3>
+                    <p>Hãy quy đổi điểm thưởng để nhận các mã giảm giá hấp dẫn.</p>
+                    <a th:href="@{/user/point-redemption}" class="btn btn-primary">
+                        Quy đổi điểm ngay
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function () {
+                alert('Đã sao chép mã giảm giá: ' + text);
+            }, function (err) {
+                console.error('Không thể sao chép: ', err);
+            });
+        }
+    </script>
+</body>
+
+</html>

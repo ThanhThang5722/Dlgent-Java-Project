@@ -1,10 +1,14 @@
 package com.example.IS216_Dlegent.service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.IS216_Dlegent.model.ChiTietDatPhong;
@@ -31,7 +35,7 @@ public class DatPhongService {
     @Transactional
     public List<HoaDon> capNhatTrangThaiVaTaoHoaDon(Long datPhongId, String trangThaiMoi, String hinhThucThanhToan) {
         DatPhong datPhong = datPhongRepo.findById(datPhongId)
-            .orElseThrow(() -> new RuntimeException("Không tìm thấy đặt phòng"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đặt phòng"));
 
         // Cập nhật trạng thái
         datPhong.setTinhTrang(trangThaiMoi);
@@ -58,7 +62,37 @@ public class DatPhongService {
                 hoaDonList.add(hoaDonJPA.save(hoaDon));
             }
         }
-        
+
         return hoaDonList;
     }
+
+    @Transactional
+    public ResponseEntity<?> huyPhong(Long id) {
+        ChiTietDatPhong chiTietDatPhong = chiTietRepo.findById(id).get();
+        LocalDateTime currentDate = LocalDateTime.now();
+
+        if (!chiTietDatPhong.getTinhTrang().equals("Đã thanh toán")) {
+            return ResponseEntity.badRequest().body("Phòng chưa được thanh toán");
+        }
+
+        if (chiTietDatPhong.getNgayBatDau().isAfter(currentDate)) {
+            Duration duration = Duration.between(currentDate, chiTietDatPhong.getNgayBatDau());
+            Long day = duration.toDays();
+
+            if (day < 3) {
+                return ResponseEntity.ok().body("Đã quá thời gian hủy phòng");
+            }
+
+            chiTietDatPhong.setTinhTrang("Đã hủy");
+            capNhatTinhTrangPhong();
+
+            chiTietRepo.save(chiTietDatPhong);
+        }
+
+        return ResponseEntity.ok().body("Hủy đặt phòng thành công");
+    }
+
+    public void capNhatTinhTrangPhong() {
+    }
+
 }

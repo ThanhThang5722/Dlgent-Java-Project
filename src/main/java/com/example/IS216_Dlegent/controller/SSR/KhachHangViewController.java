@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,18 +24,33 @@ import org.springframework.http.ResponseEntity;
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
 import com.example.IS216_Dlegent.model.LoaiPhong;
 import com.example.IS216_Dlegent.payload.SSR.RoomTypeDetailsDTO;
+import com.example.IS216_Dlegent.payload.dto.BookedRoomDTO;
+import com.example.IS216_Dlegent.payload.dto.BookingListDTO;
 import com.example.IS216_Dlegent.payload.dto.ChiTietDatPhongDTO;
 import com.example.IS216_Dlegent.payload.dto.DanhGiaDTO;
 import com.example.IS216_Dlegent.payload.dto.ThongTinCaNhanKhachHangDTO;
 import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
 import com.example.IS216_Dlegent.repository.DanhGiaRepository;
+import com.example.IS216_Dlegent.service.BookingListService;
 import com.example.IS216_Dlegent.service.ChiTietDatPhongService;
 import com.example.IS216_Dlegent.service.DanhGiaService;
+import com.example.IS216_Dlegent.model.KhachHang;
+import com.example.IS216_Dlegent.model.KhoMaGiamGia;
+import com.example.IS216_Dlegent.payload.dto.KhachHangDTO;
+import com.example.IS216_Dlegent.payload.dto.MaGiamGiaDTO;
+import com.example.IS216_Dlegent.repository.KhachHangRepository;
 import com.example.IS216_Dlegent.service.DichVuMacDinhService;
+import com.example.IS216_Dlegent.service.DiemService;
 import com.example.IS216_Dlegent.service.GoiDatPhongService;
+import com.example.IS216_Dlegent.service.KhoMaGiamGiaService;
 import com.example.IS216_Dlegent.service.KhuNghiDuongService;
 import com.example.IS216_Dlegent.service.LoaiPhongService;
+<<<<<<< HEAD
 import com.example.IS216_Dlegent.service.ThongTinTaiKhoanService;
+=======
+import com.example.IS216_Dlegent.service.MaGiamGiaService;
+import com.example.IS216_Dlegent.service.AccountService;
+>>>>>>> 025d8ca2c8468076275b10de8e8b561a23db68e5
 
 @Controller
 public class KhachHangViewController {
@@ -54,17 +70,115 @@ public class KhachHangViewController {
     @Autowired
     private ChiTietDatPhongService chiTietDatPhongService;
 
+    @Autowired
+    private BookingListService bookingListService;
+
+    @Autowired
+    private DiemService diemService;
+
+    @Autowired
+    private MaGiamGiaService maGiamGiaService;
+
+    @Autowired
+    private KhachHangRepository khachHangRepository;
+
+    @Autowired
+    private KhoMaGiamGiaService khoMaGiamGiaService;
+
+    @Autowired
+    private AccountService accountService;
+
     @GetMapping("/user/profile")
     public String profilePage(Model model) {
-        return "CustomerView/Profile";
-    }
-
-    @GetMapping("/user/mybooking")
-    public String myBookingPage(Model model) {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);
 
-        return "CustomerView/MyBooking";
+   
+        Long userId = 1L;
+
+     
+        Optional<KhachHang> khachHangOpt = khachHangRepository.findById(userId);
+        if (khachHangOpt.isPresent()) {
+            KhachHang khachHang = khachHangOpt.get();
+            model.addAttribute("khachHang", khachHang);
+            model.addAttribute("diemTichLuy", khachHang.getDiemTichLuy());
+        } else {
+            model.addAttribute("diemTichLuy", 0);
+        }
+
+        return "CustomerView/Profile";
+    }
+
+    @GetMapping("/user/point-redemption")
+    public String pointRedemptionPage(Model model) {
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+
+        // Mặc định userId là 1
+        Long userId = 1L;
+
+        // Lấy điểm tích lũy của khách hàng
+        Integer diemTichLuy = diemService.getDiemByUserId(userId);
+        model.addAttribute("diemTichLuy", diemTichLuy);
+
+        // Lấy danh sách mã giảm giá có thể quy đổi
+        List<MaGiamGiaDTO> danhSachMaGiam = maGiamGiaService.getDanhSach();
+        model.addAttribute("danhSachMaGiam", danhSachMaGiam);
+
+        return "CustomerView/PointRedemption";
+    }
+
+    @GetMapping("/user/discount-codes")
+    public String discountCodesPage(Model model) {
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+
+        // Mặc định userId là 1
+        Long userId = 1L;
+
+        // Lấy danh sách mã giảm giá của khách hàng
+        List<MaGiamGiaDTO> maGiamGias = khoMaGiamGiaService.getMaGiamGiaByKhachHangId(userId);
+        model.addAttribute("maGiamGias", maGiamGias);
+
+        return "CustomerView/DiscountCodes";
+    }
+
+    @GetMapping("/user/booking-history")
+    public String myBookingPage(Model model) {
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+        System.out.println("TEST: Calling bookingListService.getBookingHistory(1L)");
+        BookingListDTO bookingList = bookingListService.getBookingHistory(1L);
+        System.out.println("BookingList: " + bookingList);
+
+        List<BookedRoomDTO> upcomingRoom = bookingList.getUpcomingRoom();
+        List<BookedRoomDTO> completedRoom = bookingList.getCompletedRoom();
+        List<BookedRoomDTO> cancelledRoom = bookingList.getCancelledRoom();
+
+        System.out.println("Upcoming rooms: " + upcomingRoom.size());
+        System.out.println("Completed rooms: " + completedRoom.size());
+        System.out.println("Cancelled rooms: " + cancelledRoom.size());
+
+        model.addAttribute("cancelledBookings", cancelledRoom);
+        model.addAttribute("upcomingBookings", upcomingRoom);
+        model.addAttribute("completedBookings", completedRoom);
+
+        return "CustomerView/BookingHistory";
+    }
+
+    @GetMapping("/user/booking-history/booking-detail")
+    public String bookingDetailPage(@RequestParam Long id, Model model) {
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+
+        // Gọi API để lấy thông tin chi tiết đặt phòng
+        var response = bookingListService.getBookingDetail(id);
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            model.addAttribute("booking", response.getBody());
+        }
+
+        return "CustomerView/BookingDetail";
     }
 
     @GetMapping("/user/purchase")
@@ -180,6 +294,7 @@ public class KhachHangViewController {
         return "CustomerView/GioHang";
     }
 
+<<<<<<< HEAD
     @Autowired
     ThongTinTaiKhoanService thongTinTaiKhoanService;
 
@@ -201,5 +316,24 @@ public class KhachHangViewController {
 
         thongTinTaiKhoanService.setThongTinCaNhanKhachHang(id, thongTinCaNhanKhachHangDTO);
         return ResponseEntity.ok().build();
+=======
+    @GetMapping("/user/change-password")
+    public String changePasswordPage(Model model) {
+        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+        model.addAttribute("bootstrapUrl", bootstrapUrl);
+
+        // Mặc định userId là 1
+        Long userId = 1L;
+
+        // Lấy thông tin khách hàng
+        Optional<KhachHang> khachHangOpt = khachHangRepository.findById(userId);
+        if (khachHangOpt.isPresent()) {
+            KhachHang khachHang = khachHangOpt.get();
+            model.addAttribute("khachHang", khachHang);
+            model.addAttribute("userId", khachHang.getTaiKhoan().getAccountId());
+        }
+
+        return "CustomerView/ChangePassword";
+>>>>>>> 025d8ca2c8468076275b10de8e8b561a23db68e5
     }
 }

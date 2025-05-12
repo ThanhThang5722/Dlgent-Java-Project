@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.IS216_Dlegent.encoder.Sha256PasswordEncoder;
@@ -19,6 +20,8 @@ import com.example.IS216_Dlegent.model.AccountToken;
 import com.example.IS216_Dlegent.model.RoleGroup;
 import com.example.IS216_Dlegent.model.User;
 import com.example.IS216_Dlegent.payload.request.LoginRequest;
+import com.example.IS216_Dlegent.payload.request.PasswordChangeRequest;
+import com.example.IS216_Dlegent.payload.respsonse.PasswordChangeResponse;
 import com.example.IS216_Dlegent.repository.AccountRepo;
 import com.example.IS216_Dlegent.repository.AccountTokenRepo;
 import com.example.IS216_Dlegent.repository.UserRepo;
@@ -55,6 +58,7 @@ public class AccountService {
     public Account saveAccount(Account account) {
         return accountRepository.save(account);
     }
+
     // Xóa tài khoản (soft delete bằng cách cập nhật trạng thái)
     public void deactivateAccount(Long id) {
         Optional<Account> account = accountRepository.findById(id);
@@ -96,9 +100,9 @@ public class AccountService {
 
     public boolean isTokenValid(String token) {
         Optional<AccountToken> accountToken = accountTokenRepository.findByTokenValue(token);
-        return accountToken.isPresent() && 
-               (accountToken.get().getIsRevoked() == 0) &&
-               accountToken.get().getExpiresAt().after(new Date());
+        return accountToken.isPresent() &&
+                (accountToken.get().getIsRevoked() == 0) &&
+                accountToken.get().getExpiresAt().after(new Date());
     }
 
     public List<RoleGroup> getRoleGroupsByUsername(String username) {
@@ -111,5 +115,34 @@ public class AccountService {
         } else {
             return new ArrayList<>(); // Return empty list
         }
+    }
+
+    public PasswordChangeResponse changePassword(PasswordChangeRequest request) {
+        Logger logger = LoggerFactory.getLogger(getClass());
+        logger.info("Changing password for user ID: {}", request.getUserId());
+
+        if (request.getConfirmPassword() == null || !request.getConfirmPassword().equals(request.getNewPassword())) {
+            return new PasswordChangeResponse(
+                    "Mật khẩu và xác nhận mật khẩu không khớp. Vui lòng kiểm tra lại và nhập lại.", false);
+        }
+
+        Optional<Account> accountOpt = accountRepository.findById(request.getUserId());
+        if (!accountOpt.isPresent()) {
+            return new PasswordChangeResponse("Tài khoản không tồn tại", false);
+        }
+
+        Account account = accountOpt.get();
+
+        String currentPasswordHash = Sha256PasswordEncoder.encode(request.getCurrentPassword());
+        if (!currentPasswordHash.equals(account.getPassword())) {
+            return new PasswordChangeResponse(
+                    "Mật khẩu hiện tại bạn đã nhập không chính xác. Vui lòng kiểm tra lại và thử lại.", false);
+        }
+
+        String newPasswordHash = Sha256PasswordEncoder.encode(request.getNewPassword());
+        account.setPassword(newPasswordHash);
+        accountRepository.save(account);
+
+        return new PasswordChangeResponse("Đổi mật khẩu thành công", true);
     }
 }
