@@ -7,8 +7,8 @@
     <link rel="stylesheet" th:href="${bootstrapUrl}"/>
 </head>
 <body class="d-flex justify-content-center align-items-center vh-100 bg-light">
-    <div class="card p-4 shadow-lg" st  yle="width: 350px;">
-        <h4 class="text-center mb-4">Đăng nhập tài khoảng khách hàng</h4>
+    <div class="card p-4 shadow-lg" style="width: 350px;">
+        <h4 class="text-center mb-4">Đăng nhập tài khoản đối tác</h4>
         <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
         <form id="loginForm">
             <div class="mb-3">
@@ -22,8 +22,7 @@
         <div class="text-center mt-3">
             <small class="text-muted">Default credentials: admin / password</small>
         </div>
-    </div>      
-    <!--<script th:src="@{/js/signin.js?version=1.0}"></script>-->
+    </div>
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
             event.preventDefault();
@@ -31,7 +30,7 @@
             var password = document.getElementById('password').value;
             
             try {
-                let response = await fetch('http://localhost:8080/api/signin', {
+                let response = await fetch('http://localhost:8080/api/partner-signin', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -42,14 +41,19 @@
                 if (response.ok) {
                     let data = await response.json();
                     document.cookie = `token=${data.token}; path=/; HttpOnly`;
-                    window.location.href = `http://localhost:8080/tim-kiem-resort`;
+                    window.location.href = `http://localhost:8080/partner/${data.roleId}`;
                 } else {
                     // Handle error responses
                     //const errorText = await response.text();
                     /*console.error('Login failed:', response.status, errorText);
                     alert('Login failed: ' + (response.status === 401 ? 'Invalid credentials' : 'Server error'));*/
                     let data = await response.json();
+                    let message = data.message;
+                    if(response.status === 406) {
+                        message = ''
+                    }
                     
+                    message = 
                     alert(`Login failed ${data.message}`);
                 }
             } catch (error) {

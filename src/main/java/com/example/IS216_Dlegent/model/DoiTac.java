@@ -31,21 +31,26 @@ public class DoiTac {
     @Column(name = "SO_DU", nullable = false, precision = 12, scale = 2)
     private BigDecimal soDu = BigDecimal.ZERO;
 
+    @Column(name = "TINH_TRANG", nullable = false, length = 255)
+    private String tinhTrang;
+
     // Constructors
     public DoiTac() {
     }
 
     public DoiTac(Account account, String diaChi, String taiKhoanNganHang, String tenTaiKhoanNganHang,
-            String tenNganHang, BigDecimal soDu) {
+            String tenNganHang, BigDecimal soDu, String tinhTrang) {
         this.account = account;
         this.diaChi = diaChi;
         this.taiKhoanNganHang = taiKhoanNganHang;
         this.tenTaiKhoanNganHang = tenTaiKhoanNganHang;
         this.tenNganHang = tenNganHang;
         this.soDu = soDu;
+        this.tinhTrang = tinhTrang;
     }
 
     // Getters and Setters
+    
     public Long getId() {
         return id;
     }
@@ -103,5 +108,13 @@ public class DoiTac {
             throw new IllegalArgumentException("Số dư không thể nhỏ hơn 0");
         }
         this.soDu = soDu;
+    }
+
+    public String getTinhTrang() {
+        return tinhTrang;
+    }
+
+    public void setTinhTrang(String tinhTrang) {
+        this.tinhTrang = tinhTrang;
     }
 }

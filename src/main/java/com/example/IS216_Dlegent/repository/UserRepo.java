@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import com.example.IS216_Dlegent.model.User;
 
 import java.util.Optional;
+import java.util.List;
+
 
 
 @Repository
@@ -15,4 +17,6 @@ public interface UserRepo extends JpaRepository<User, Long> {
     Optional<User>  findByUserId(Long userId);
     boolean existsByEmail(String email);
     boolean existsByPhoneNumber(String phoneNumber);
+    boolean existsByCccd(String cccd);
+
 }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Partner Sign Up</title>
+    <link rel="stylesheet" th:href="${bootstrapUrl}"/>
+</head>
+<body class="d-flex justify-content-center align-items-center vh-100 bg-light">
+    <div class="card p-4 shadow-lg" style="width: 450px;">
+        <h4 class="text-center mb-4">Đăng ký tài khoản đối tác</h4>
+
+        <div id="message" class="alert d-none" role="alert"></div>
+
+        <!-- Form đăng ký đối tác -->
+        <form id="partnerRegisterForm">
+            <input type="hidden" name="role" value="partner"/>
+
+            <div class="mb-2"><input type="text" name="fullName" class="form-control" placeholder="Họ tên" required /></div>
+            <div class="mb-2"><input type="email" name="email" class="form-control" placeholder="Email" required /></div>
+            <div class="mb-2"><input type="text" name="phoneNumber" class="form-control" placeholder="Số điện thoại" required /></div>
+            <div class="mb-2"><input type="text" name="cccd" class="form-control" placeholder="CCCD" required /></div>
+
+            <!-- Trường mới dành cho đối tác -->
+            <div class="mb-2"><input type="text" name="address" class="form-control" placeholder="Địa chỉ" required /></div>
+            <div class="mb-2"><input type="text" name="bankAccountNumber" class="form-control" placeholder="Số tài khoản" required /></div>
+            <div class="mb-2"><input type="text" name="bankAccountName" class="form-control" placeholder="Tên chủ tài khoản" required /></div>
+            <div class="mb-2"><input type="text" name="bankName" class="form-control" placeholder="Tên ngân hàng" required /></div>
+
+            <!-- Tài khoản hệ thống -->
+            <div class="mb-2"><input type="text" name="username" class="form-control" placeholder="Tên đăng nhập" required /></div>
+            <div class="mb-3"><input type="password" name="password" class="form-control" placeholder="Mật khẩu" required /></div>
+
+            <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="/partner-login" class="text-decoration-none small">Đã có tài khoản? Đăng nhập</a>
+        </div>
+    </div>
+
+    <script>
+    document.getElementById("partnerRegisterForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+
+        const messageEl = document.getElementById("message");
+        messageEl.classList.add("d-none");
+
+        try {
+            const response = await fetch("/api/account/partner", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            var msg = await response.text();
+            messageEl.classList.remove("d-none", "alert-success", "alert-danger");
+            messageEl.classList.add(response.ok ? "alert-success" : "alert-danger");
+            messageEl.textContent = "Tạo tài khoản đối tác thành công";
+        } catch (error) {
+            messageEl.classList.remove("d-none");
+            messageEl.classList.add("alert", "alert-danger");
+            messageEl.textContent = msg;
+        }
+    });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

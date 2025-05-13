@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Customer Sign Up</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="d-flex justify-content-center align-items-center vh-100 bg-light">
+  <div class="card p-4 shadow" style="width: 400px;">
+    <h2 class="text-center mb-4">Đăng ký</h2>
+
+    <!-- ALERT -->
+    <div id="message" class="alert d-none" role="alert"></div>
+
+    <form id="registerForm">
+      <input class="form-control mb-2" name="fullName" placeholder="Họ tên" required />
+      <input class="form-control mb-2" name="email" type="email" placeholder="Email" required />
+      <input class="form-control mb-2" name="phoneNumber" placeholder="Số điện thoại" required />
+      <input class="form-control mb-2" name="cccd" placeholder="CCCD" required />
+      <input class="form-control mb-2" name="address" placeholder="Địa chỉ" />
+      <input class="form-control mb-2" name="username" placeholder="Tên tài khoản" required />
+      <input class="form-control mb-2" name="password" type="password" placeholder="Mật khẩu" required />
+      <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
+    </form>
+
+    <div class="text-center mt-3">
+      <a href="/login" class="text-decoration-none small">Đã có tài khoản? Đăng nhập</a>
+    </div>
+  </div>
+
+  <!-- JS xử lý form -->
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+      const messageEl = document.getElementById("message");
+
+      try {
+        const response = await fetch("/api/account/customer", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        //const text = await response.text();
+        var text = 'Đăng ký thành công\nVui lòng xác nhận email';
+
+        // Xóa lớp cũ và hiển thị alert
+        messageEl.classList.remove("d-none", "alert-success", "alert-danger");
+
+        if (response.ok) {
+          messageEl.classList.add("alert", "alert-success");
+          messageEl.textContent = text;
+        } else {
+            text = await response.text();
+            messageEl.classList.add("alert", "alert-danger");
+            messageEl.textContent = text;
+        }
+
+      } catch (err) {
+        messageEl.classList.remove("d-none");
+        messageEl.classList.add("alert", "alert-danger");
+        messageEl.textContent = "Lỗi kết nối đến máy chủ.";
+      }
+    });
+  </script>
+</body>
+</html>
