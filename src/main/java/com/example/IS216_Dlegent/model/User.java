@@ -100,4 +100,5 @@ public class User {
     public void setIsDeleted(Integer isDeleted) {
         this.isDeleted = isDeleted;
     }
+
 }

@@ -1,6 +1,7 @@
 package com.example.IS216_Dlegent.model;
 
 import jakarta.persistence.*;
+
 @Entity
 @Table(name = "KHACH_HANG")
 public class KhachHang {
@@ -17,37 +18,48 @@ public class KhachHang {
     private String diaChi;
 
     @Column(name = "DIEM_TICH_LUY", nullable = false)
-    private int diemTichLuy;
-    public KhachHang() {}
-    public KhachHang(Long id, Account taiKhoan, String diaChi, int diemTichLuy) {
+    private Integer diemTichLuy;
+
+    public KhachHang() {
+    }
+
+    public KhachHang(Long id, Account taiKhoan, String diaChi, Integer diemTichLuy) {
         this.id = id;
         this.taiKhoan = taiKhoan;
         this.diaChi = diaChi;
         this.diemTichLuy = diemTichLuy;
     }
+
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public Account getTaiKhoan() {
         return taiKhoan;
     }
+
     public void setTaiKhoan(Account taiKhoan) {
         this.taiKhoan = taiKhoan;
     }
+
     public String getDiaChi() {
         return diaChi;
     }
+
     public void setDiaChi(String diaChi) {
         this.diaChi = diaChi;
     }
-    public int getDiemTichLuy() {
+
+    public Integer getDiemTichLuy() {
         return diemTichLuy;
     }
-    public void setDiemTichLuy(int diemTichLuy) {
+
+    public void setDiemTichLuy(Integer diemTichLuy) {
         this.diemTichLuy = diemTichLuy;
     }
-    
+
 }

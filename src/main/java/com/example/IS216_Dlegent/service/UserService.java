@@ -79,7 +79,7 @@ public class UserService {
 
         // Tạo mới Account
         Account account = new Account();
-        account.setUserId(user.getUserId().intValue());
+        account.setUserId(user.getUserId());
         account.setUsername(info.getUsername());
         account.setPassword(Sha256PasswordEncoder.encode(info.getPassword())); // mã hóa mật khẩu
         account.setStatus("ACTIVE");
