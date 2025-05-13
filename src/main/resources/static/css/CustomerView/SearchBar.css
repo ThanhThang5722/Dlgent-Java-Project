@@ -1,0 +1,68 @@
+/* Search Bar Component Styles */
+.search-bar {
+    background-color: white;
+    padding: 15px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.search-input {
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: 14px;
+    height: 50px !important;
+}
+
+.rounded-input {
+    border-radius: 6px !important;
+    border: 1.5px solid #aaaaaa !important;
+    padding: 10px 15px !important;
+    height: 50px !important;
+}
+
+.rounded-start-input {
+    border-radius: 6px 0 0 6px !important;
+    border-right: none !important;
+}
+
+.rounded-start-0 {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.search-btn {
+    background-color: #2a65db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 25px;
+    font-weight: bold;
+    font-size: 14px;
+    position: relative;
+    z-index: 1;
+}
+
+/* DateRangePicker Styles */
+.daterangepicker td.in-range {
+    background-color: #9cc4ee !important;
+}
+
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+    background-color: #0071c2 !important;
+    color: #ffffff !important;
+}
+
+.daterangepicker td.disabled {
+    color: #ccc !important;
+    text-decoration: line-through !important;
+    background-color: #f8f8f8 !important;
+    cursor: not-allowed !important;
+}
+
+.daterangepicker td.start-date {
+    border-radius: 4px 0 0 4px !important;
+}
+
+.daterangepicker td.end-date {
+    border-radius: 0 4px 4px 0 !important;
+}

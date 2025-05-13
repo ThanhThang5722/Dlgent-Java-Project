@@ -3,6 +3,7 @@ body {
     background-color: #f5f5f5;
 }
 
+/* Search bar and input styles */
 .search-bar {
     background-color: white;
     padding: 15px 0;
@@ -16,16 +17,33 @@ body {
     height: 50px !important;
 }
 
-select.form-select.rounded-input {
+/* Form elements with consistent height */
+.form-element-height {
     height: 50px !important;
+}
+
+select.form-select.rounded-input,
+.rounded-input,
+.input-group-text,
+.search-btn {
+    height: 50px !important;
+}
+
+select.form-select.rounded-input {
     line-height: 50px;
+}
+
+.form-select.rounded-input {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex;
+    align-items: center;
 }
 
 .rounded-input {
     border-radius: 6px !important;
     border: 1.5px solid #aaaaaa !important;
     padding: 10px 15px !important;
-    height: 50px !important;
 }
 
 .rounded-start-input {
@@ -41,16 +59,43 @@ select.form-select.rounded-input {
 .input-group-text {
     color: #0071c2;
     border: 1.5px solid #aaaaaa !important;
-    height: 50px !important;
-}
-
-.input-group-text i {
-    font-size: 1.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+.input-group-text i {
+    font-size: 1.5rem;
+}
+
+/* Search button styles */
+.search-btn {
+    background-color: #2a65db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 25px;
+    font-weight: bold;
+    font-size: 14px;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-btn:hover {
+    background-color: #1a56cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-btn i {
+    font-size: 1.5rem;
+}
+
+/* Resort card styles */
 .resort-card {
     border-radius: 4px;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
@@ -61,9 +106,10 @@ select.form-select.rounded-input {
 }
 
 .resort-img {
-    height: 200px;
     width: 100%;
+    height: 170px;
     object-fit: cover;
+    border-radius: 5px 0 0 5px;
 }
 
 .small-images {
@@ -80,19 +126,20 @@ select.form-select.rounded-input {
     border-radius: 2px;
 }
 
+/* Rating styles */
 .rating-badge {
-    background-color: #003580;
+    background-color: #0071c2;
     color: white;
-    padding: 6px 8px;
-    border-radius: 6px 6px 6px 0;
-    font-weight: bold;
-    font-size: 16px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
 }
 
 .rating-text {
-    color: #003580;
+    color: #0071c2;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .reviews-count {
@@ -100,6 +147,17 @@ select.form-select.rounded-input {
     font-size: 13px;
 }
 
+.star-rating-container {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.star-rating-container i {
+    font-size: 14px;
+}
+
+/* Price and discount styles */
 .discount-badge {
     background-color: #eb5050;
     color: white;
@@ -122,6 +180,7 @@ select.form-select.rounded-input {
     font-weight: bold;
 }
 
+/* Service badges */
 .service-badge {
     background-color: #f5f5f5;
     color: #333;
@@ -138,6 +197,7 @@ select.form-select.rounded-input {
     background-color: #f9e6f1;
 }
 
+/* Filter styles */
 .filter-card {
     background-color: white;
     border-radius: 4px;
@@ -162,6 +222,7 @@ select.form-select.rounded-input {
     font-size: 13px;
 }
 
+/* Sort buttons */
 .sort-btn {
     background-color: white;
     border: 1px solid #ddd;
@@ -178,6 +239,7 @@ select.form-select.rounded-input {
     border-color: #0071c2;
 }
 
+/* Location and availability */
 .location-icon {
     color: #0071c2;
     margin-right: 5px;
@@ -199,6 +261,7 @@ select.form-select.rounded-input {
     font-size: 13px;
 }
 
+/* Map styles */
 .map-search {
     background-color: white;
     border-radius: 4px;
@@ -231,6 +294,7 @@ select.form-select.rounded-input {
     font-size: 24px;
 }
 
+/* Search and budget */
 .search-text {
     border: 1px solid #e7e7e7;
     border-radius: 4px;
@@ -251,6 +315,7 @@ select.form-select.rounded-input {
     color: #666;
 }
 
+/* Property details */
 .property-name {
     font-weight: 600;
     font-size: 17px;
@@ -294,20 +359,17 @@ select.form-select.rounded-input {
     font-size: 13px;
 }
 
-/* Custom styles cho daterangepicker */
+/* Custom styles for daterangepicker */
 .daterangepicker td.in-range {
     background-color: #9cc4ee;
-    /* Màu nền nhạt cho khoảng từ ngày bắt đầu đến ngày kết thúc */
 }
 
 .daterangepicker td.active,
 .daterangepicker td.active:hover {
     background-color: #0071c2;
-    /* Màu đậm cho ngày được chọn */
     color: #ffffff;
 }
 
-/* Style cho ngày trước ngày hiện tại hoặc ngày đã chọn */
 .daterangepicker td.disabled {
     color: #ccc !important;
     text-decoration: line-through;
@@ -315,7 +377,6 @@ select.form-select.rounded-input {
     cursor: not-allowed;
 }
 
-/* Style cho ngày đã được chọn */
 .daterangepicker td.start-date {
     border-radius: 4px 0 0 4px;
 }
@@ -324,76 +385,7 @@ select.form-select.rounded-input {
     border-radius: 0 4px 4px 0;
 }
 
-.search-btn {
-    background-color: #2a65db;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 10px 25px;
-    font-weight: bold;
-    font-size: 14px;
-    position: relative;
-    z-index: 1;
-    transition: all 0.3s ease;
-    height: 50px !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.search-btn:hover {
-    background-color: #1a56cc;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.search-btn i {
-    font-size: 1.5rem;
-}
-
-.form-select.rounded-input {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    display: flex;
-    align-items: center;
-    height: 50px !important;
-}
-
 /* Custom width classes */
 .w-70 {
     width: 70% !important;
-}
-
-/* Custom styles cho resort image */
-.resort-img {
-    width: 100%;
-    height: 170px;
-    object-fit: cover;
-    border-radius: 5px 0 0 5px;
-}
-
-/* Styles cho star rating */
-.star-rating-container {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-}
-
-.star-rating-container i {
-    font-size: 14px;
-}
-
-.rating-text {
-    font-weight: bold;
-    font-size: 16px;
-    color: #0071c2;
-}
-
-.rating-badge {
-    background-color: #0071c2;
-    color: white;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
 }
