@@ -1,5 +1,8 @@
 <!-- Search Bar Component -->
-<div th:fragment="searchBar" class="search-bar mb-3" style="background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+<div th:fragment="searchBar" class="search-bar mb-3">
+    <!-- Thêm link CSS cho SearchBar -->
+    <link rel="stylesheet" th:href="@{/css/CustomerView/SearchBar.css}">
+    
     <div class="container">
         <form th:action="@{/tim-kiem-resort/ket-qua}" method="get" class="row g-2 align-items-center">
             <div class="col-md-3">
@@ -122,3 +125,5 @@
         });
     });
 </script>
+
+
