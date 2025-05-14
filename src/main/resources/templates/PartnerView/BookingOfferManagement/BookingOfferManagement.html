@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="vn">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="${bootstrapUrl}"/>
-    <link rel="stylesheet" th:href="@{/css/PartnerDashboard/ResortListStyle.css}"/>
+    <link rel="stylesheet" th:href="${bootstrapUrl}" />
+    <link rel="stylesheet" th:href="@{/css/PartnerDashboard/ResortListStyle.css}" />
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <title>Room Type Management</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 
 </head>
+
 <body>
     <div class="sidebar">
         <h4 class="text-center text-white">Partner Dashboard</h4>
@@ -23,7 +25,7 @@
             <li><a th:href="@{/partner/withdraw?doiTacId={doiTacId}(doiTacId=${doiTacId})}">Rút tiền</a></li>
         </ul>
     </div>
-    
+
     <div class="content">
         <div class="row">
             <div class="col-12">
@@ -33,27 +35,26 @@
                         <label for="filterResort" class="form-label">Chọn khu nghỉ dưỡng</label>
                         <select id="filterResort" class="form-select">
                             <option value="">Tất cả khu nghỉ dưỡng</option>
-                            <option th:each="resort : ${listKhuNghiDuong}" 
-                                    th:value="${resort.id}" 
-                                    th:text="${resort.ten}"></option>
+                            <option th:each="resort : ${listKhuNghiDuong}" th:value="${resort.id}"
+                                th:text="${resort.ten}"></option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="filterRoomType" class="form-label">Chọn loại phòng</label>
                         <select id="filterRoomType" class="form-select">
                             <option value="">Tất cả loại phòng</option>
-                            <option th:each="loaiPhong : ${listLoaiPhong}" 
-                                    th:value="${loaiPhong.id}" 
-                                    th:text="${loaiPhong.tenLoaiPhong}"
-                                    th:attr="data-resort-id=${loaiPhong.khuNghiDuong != null ? loaiPhong.khuNghiDuong.id : ''}"></option>
+                            <option th:each="loaiPhong : ${listLoaiPhong}" th:value="${loaiPhong.id}"
+                                th:text="${loaiPhong.tenLoaiPhong}"
+                                th:attr="data-resort-id=${loaiPhong.khuNghiDuong != null ? loaiPhong.khuNghiDuong.id : ''}">
+                            </option>
                         </select>
                     </div>
                 </div>
             </div>
-            
+
             <div class="container mt-4">
                 <h1>Quản lý Gói Đặt Phòng</h1>
-            
+
                 <!-- Lặp qua từng loại phòng -->
                 <div class="row mb-3" th:each="roomType : ${roomTypes}">
                     <div class="col-md-12">
@@ -74,48 +75,54 @@
 
                                             </div>
                                             <!-- Ảnh nhỏ phụ -->
-                                            <div class="d-flex justify-content-center" th:if="${roomType.hinhAnh.size() > 1}">
+                                            <div class="d-flex justify-content-center"
+                                                th:if="${roomType.hinhAnh.size() > 1}">
                                                 <div th:each="img, i : ${roomType.hinhAnh}"
-                                                     th:if="${i.index > 0 && i.index < 3}"
-                                                     style="width: 100px; height: 52px; overflow: hidden; margin-right: 5px; margin-bottom: 1px;">
+                                                    th:if="${i.index > 0 && i.index < 3}"
+                                                    style="width: 100px; height: 52px; overflow: hidden; margin-right: 5px; margin-bottom: 1px;">
                                                     <img th:src="@{${img.url}}" class="img-fluid rounded-start"
-                                                         style="width: 100%; height: 100%; object-fit: cover; object-position: center;"
-                                                         alt="Ảnh loại phòng nhỏ">
+                                                        style="width: 100%; height: 100%; object-fit: cover; object-position: center;"
+                                                        alt="Ảnh loại phòng nhỏ">
                                                 </div>
                                             </div>
                                         </div>
-            
+
                                         <!-- Tiện ích -->
                                         <div class="card-body">
                                             <h6 class="card-subtitle mb-2 text-muted">Tiện ích:</h6>
                                             <ul class="list-unstyled">
-                                                <li th:each="ti, tiStat : ${roomType.tienIch}" th:if="${tiStat.index < 3}">
-                                                    <i class="bi bi-check-lg me-2"></i><span th:text="${ti.loaiTienIch}">Tên tiện ích</span>
+                                                <li th:each="ti, tiStat : ${roomType.tienIch}"
+                                                    th:if="${tiStat.index < 3}">
+                                                    <i class="bi bi-check-lg me-2"></i><span
+                                                        th:text="${ti.loaiTienIch}">Tên tiện ích</span>
                                                 </li>
                                             </ul>
                                             <div th:if="${roomType.tienIch.size() > 2}">
-                                                <a href="#" class="text-decoration-none" 
-                                                   th:attr="data-room-type-id=${roomType.id},data-room-type-name=${roomType.tenLoaiPhong}"
-                                                   onclick="openTienIchDetailModal(this)">
-                                                    <i class="bi bi-plus-circle"></i> Xem thêm tiện ích (<span th:text="${roomType.tienIch.size() - 3}"></span>)
+                                                <a href="#" class="text-decoration-none"
+                                                    th:attr="data-room-type-id=${roomType.id},data-room-type-name=${roomType.tenLoaiPhong}"
+                                                    onclick="openTienIchDetailModal(this)">
+                                                    <i class="bi bi-plus-circle"></i> Xem thêm tiện ích (<span
+                                                        th:text="${roomType.tienIch.size() - 3}"></span>)
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-            
+
                                 <!-- Cột gói đặt phòng -->
                                 <div class="col-md-9">
                                     <div class="goi-dat-phong card-body">
-                                        <div class="mb-2 text-end" style="display: flex; justify-content: space-between; align-items: center;">
-                                            <h6 class="card-subtitle mt-3 mb-2 text-muted" style="max-width: max-content;">Gói Đặt Phòng:</h6>
+                                        <div class="mb-2 text-end"
+                                            style="display: flex; justify-content: space-between; align-items: center;">
+                                            <h6 class="card-subtitle mt-3 mb-2 text-muted"
+                                                style="max-width: max-content;">Gói Đặt Phòng:</h6>
                                             <button class="btn btn-primary btn-sm"
-                                                    th:attr="data-room-type-id=${roomType.id}"
-                                                    onclick="openAddBookingPackageModal(this)">
+                                                th:attr="data-room-type-id=${roomType.id}"
+                                                onclick="openAddBookingPackageModal(this)">
                                                 <i class="bi bi-plus-circle me-1"></i> Thêm Gói Đặt Phòng
                                             </button>
                                         </div>
-                                        
+
                                         <div class="list-group">
                                             <li class="list-group-item d-flex justify-content-between align-items-center"
                                                 th:each="goi : ${roomType.dsGoiDatPhongs}">
@@ -124,14 +131,18 @@
                                                         <strong>Gói bao gồm các dịch vụ:</strong><br>
                                                         <ul class="list-unstyled">
                                                             <li th:each="dv : ${goi.dichVuMacDinhs}">
-                                                                <i class="bi bi-check-lg me-2"></i><span th:text="${dv.dichVuKhuNghiDuong.dichVu.serviceName}">Tên dịch vụ</span>
+                                                                <i class="bi bi-check-lg me-2"></i><span
+                                                                    th:text="${dv.dichVuKhuNghiDuong.dichVu.serviceName}">Tên
+                                                                    dịch vụ</span>
                                                             </li>
                                                         </ul>
                                                     </div>
-                                                    <strong>Giá:</strong> <span th:text="${#numbers.formatDecimal(goi.tongGiaTien, 0, 'POINT', 2, 'COMMA')}">0</span> VND
+                                                    <strong>Giá:</strong> <span
+                                                        th:text="${#numbers.formatDecimal(goi.tongGiaTien, 0, 'POINT', 2, 'COMMA')}">0</span>
+                                                    VND
                                                 </div>
                                                 <div>
-                                                    <button class="btn btn-warning btn-sm me-2" 
+                                                    <button class="btn btn-warning btn-sm me-2"
                                                         th:attr="data-room-type-id=${roomType.id}, data-package-id=${goi.id}"
                                                         onclick="openEditBookingPackageModal(this)">Sửa</button>
                                                     <button class="btn btn-danger btn-sm"
@@ -142,60 +153,55 @@
                                         </div>
                                     </div>
                                 </div>
-            
+
                             </div>
                         </div>
                     </div>
                 </div>
-            
-            </div>            
+
+            </div>
         </div>
     </div>
-    
+
 
     <!-- Modal Dịch Vụ -->
     <div class="modal fade" id="tienIchModal" tabindex="-1" aria-labelledby="tienIchModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-success text-white">
-            <h5 class="modal-title">Tiện ích cho loại phòng: <span id="roomTypeNameTienIch"></span></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-            </div>
-            <div class="modal-body">
-            <form id="tienIchForm">
-                <div class="row" id="updateDichVuCheckboxContainer">
-                    <!-- Render tất cả tiện ích bằng Thymeleaf -->
-                    <div class="col-6 mb-2"
-                            th:each="dichVu : ${danhSachDichVu}">
-                        <div class="form-check">
-                        <input class="form-check-input dichVuCheckbox"
-                                type="checkbox"
-                                th:id="'dichVu_' + ${dichVu.id}"
-                                th:name="dichVuIds"
-                                th:value="${dichVu.id}"
-                                data-tien-ich-id = "${dichVu.id}" />
-                        <label class="form-check-label"
-                                    th:for="'dichVu_' + ${dichVu.id}"
-                                th:text="${dichVu.loaiTienIch}">Tên tiện ích</label>
-                        </div>
-                    </div>
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Tiện ích cho loại phòng: <span id="roomTypeNameTienIch"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                 </div>
-                <input type="hidden" id="selectedRoomTypeId" name="roomTypeId" />
-            </form>
+                <div class="modal-body">
+                    <form id="tienIchForm">
+                        <div class="row" id="updateDichVuCheckboxContainer">
+                            <!-- Render tất cả tiện ích bằng Thymeleaf -->
+                            <div class="col-6 mb-2" th:each="dichVu : ${danhSachDichVu}">
+                                <div class="form-check">
+                                    <input class="form-check-input dichVuCheckbox" type="checkbox"
+                                        th:id="'dichVu_' + ${dichVu.id}" th:name="dichVuIds" th:value="${dichVu.id}"
+                                        data-tien-ich-id="${dichVu.id}" />
+                                    <label class="form-check-label" th:for="'dichVu_' + ${dichVu.id}"
+                                        th:text="${dichVu.loaiTienIch}">Tên tiện ích</label>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="selectedRoomTypeId" name="roomTypeId" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="submitTienIch()">Lưu thay đổi</button>
+                </div>
             </div>
-            <div class="modal-footer">
-            <button class="btn btn-primary" onclick="submitTienIch()">Lưu thay đổi</button>
-            </div>
-        </div>
         </div>
     </div>
     <!-- Footer or additional sections can go here -->
-    
+
     <script>
-        document.getElementById('insertBtn').addEventListener('click', function() {
+        document.getElementById('insertBtn').addEventListener('click', function () {
             document.getElementById('insertFormContainer').style.display = 'block';
         });
-        document.getElementById('cancelBtn').addEventListener('click', function() {
+        document.getElementById('cancelBtn').addEventListener('click', function () {
             document.getElementById('insertFormContainer').style.display = 'none';
         });
     </script>
@@ -210,15 +216,16 @@
             document.querySelectorAll(".tienIchCheckbox").forEach(cb => cb.checked = false);
 
             // Gọi API để lấy tiện ích của loại phòng này
-            
-            }
+
+        }
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Modal Thêm/Sửa Gói Đặt Phòng -->
-    <div class="modal fade" id="bookingPackageModal" tabindex="-1" aria-labelledby="bookingPackageModalLabel" aria-hidden="true">
+    <div class="modal fade" id="bookingPackageModal" tabindex="-1" aria-labelledby="bookingPackageModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
@@ -230,7 +237,8 @@
                     <input type="hidden" id="currentPackageId">
 
                     <div class="alert alert-info">
-                        Chọn các dịch vụ để thêm vào gói đặt phòng. Giá gói sẽ được tính tự động dựa trên giá các dịch vụ đã chọn.
+                        Chọn các dịch vụ để thêm vào gói đặt phòng. Giá gói sẽ được tính tự động dựa trên giá các dịch
+                        vụ đã chọn.
                     </div>
 
                     <div class="mb-3">
@@ -270,49 +278,49 @@
         // Khai báo biến toàn cục để lưu trữ dữ liệu
         let selectedServices = [];
         let totalPrice = 0;
-        
+
         // Hàm mở modal thêm gói đặt phòng
         function openAddBookingPackageModal(button) {
             // Reset dữ liệu
             selectedServices = [];
             totalPrice = 0;
-            
+
             // Lấy ID loại phòng
             const roomTypeId = button.getAttribute("data-room-type-id");
             document.getElementById("currentRoomTypeId").value = roomTypeId;
             document.getElementById("currentPackageId").value = ""; // Đặt rỗng vì đây là thêm mới
             document.getElementById("bookingPackageModalLabel").textContent = "Thêm Gói Đặt Phòng";
-            
+
             // Lấy danh sách dịch vụ từ server
             fetchServicesForResort(roomTypeId);
-            
+
             // Hiển thị modal
             const modal = new bootstrap.Modal(document.getElementById('bookingPackageModal'));
             modal.show();
         }
-        
+
         // Hàm mở modal sửa gói đặt phòng
         function openEditBookingPackageModal(button) {
             // Reset dữ liệu
             selectedServices = [];
             totalPrice = 0;
-            
+
             // Lấy ID loại phòng và ID gói đặt phòng
             const roomTypeId = button.getAttribute("data-room-type-id");
             const packageId = button.getAttribute("data-package-id");
-            
+
             document.getElementById("currentRoomTypeId").value = roomTypeId;
             document.getElementById("currentPackageId").value = packageId;
             document.getElementById("bookingPackageModalLabel").textContent = "Sửa Gói Đặt Phòng";
-            
+
             // Lấy danh sách dịch vụ từ server
             fetchServicesForResort(roomTypeId, packageId);
-            
+
             // Hiển thị modal
             const modal = new bootstrap.Modal(document.getElementById('bookingPackageModal'));
             modal.show();
         }
-        
+
         // Hàm lấy danh sách dịch vụ của khu nghỉ dưỡng
         function fetchServicesForResort(roomTypeId, packageId = null) {
             // Lấy ID khu nghỉ dưỡng từ ID loại phòng (giả sử API này tồn tại)
@@ -330,7 +338,7 @@
                 .then(response => response.json())
                 .then(services => {
                     renderServicesTable(services);
-                    
+
                     // Nếu là chế độ sửa, lấy thông tin gói đặt phòng hiện tại
                     if (packageId) {
                         return fetch(`/api/resort/booking-offer/${packageId}`);
@@ -345,7 +353,7 @@
                     if (packageData) {
                         // Đánh dấu các dịch vụ đã chọn
                         const serviceIds = packageData.dichVuMacDinhs.map(dv => dv.dichVuId);
-                        
+
                         checkSelectedServices(serviceIds);
                     }
                 })
@@ -354,26 +362,26 @@
                     alert('Có lỗi xảy ra khi tải dữ liệu.');
                 });
         }
-        
+
         // Hàm hiển thị bảng dịch vụ
         function renderServicesTable(services) {
             const tableBody = document.getElementById('serviceTableBody');
             tableBody.innerHTML = '';
-            
+
             services.forEach(service => {
                 if (service.daCo) {  // Chỉ hiển thị dịch vụ mà khu nghỉ dưỡng đã có
                     const row = document.createElement('tr');
-                    
+
                     // Cột tên dịch vụ
                     const nameCell = document.createElement('td');
                     nameCell.textContent = service.serviceName;
                     row.appendChild(nameCell);
-                    
+
                     // Cột giá dịch vụ
                     const priceCell = document.createElement('td');
                     priceCell.textContent = new Intl.NumberFormat('vi-VN').format(service.price) + ' VND';
                     row.appendChild(priceCell);
-                    
+
                     // Cột giảm giá (%)
                     const discountCell = document.createElement('td');
                     const discountInput = document.createElement('input');
@@ -386,14 +394,14 @@
                     discountInput.addEventListener('change', updateDiscountedPrice);
                     discountCell.appendChild(discountInput);
                     row.appendChild(discountCell);
-                    
+
                     // Cột giá sau giảm
                     const discountedPriceCell = document.createElement('td');
                     discountedPriceCell.className = 'discounted-price';
                     discountedPriceCell.dataset.serviceId = service.serviceId;
                     discountedPriceCell.textContent = new Intl.NumberFormat('vi-VN').format(service.price) + ' VND';
                     row.appendChild(discountedPriceCell);
-                    
+
                     // Cột checkbox
                     const checkCell = document.createElement('td');
                     const checkbox = document.createElement('input');
@@ -401,79 +409,79 @@
                     checkbox.className = 'form-check-input service-checkbox';
                     checkbox.dataset.serviceId = service.serviceId;
                     checkbox.dataset.price = service.price;
-                    checkbox.addEventListener('change', function() {
+                    checkbox.addEventListener('change', function () {
                         // Bật/tắt trường discount khi checkbox được chọn/bỏ chọn
                         const discountInput = document.querySelector(`.discount-input[data-service-id="${service.serviceId}"]`);
                         discountInput.disabled = !this.checked;
-                        
+
                         // Cập nhật tổng giá
                         updateTotalPrice();
                     });
                     checkCell.appendChild(checkbox);
                     row.appendChild(checkCell);
-                    
+
                     tableBody.appendChild(row);
-                    
+
                     // Mặc định disable trường discount khi chưa chọn dịch vụ
                     discountInput.disabled = true;
                 }
             });
         }
-        
+
         // Hàm cập nhật giá sau giảm khi thay đổi % giảm giá
         function updateDiscountedPrice(event) {
             const discountInput = event.target;
             const serviceId = discountInput.dataset.serviceId;
             const discountPercent = parseFloat(discountInput.value);
-            
+
             // Giới hạn giá trị discount từ 0-100%
             if (discountPercent < 0) discountInput.value = 0;
             if (discountPercent > 100) discountInput.value = 100;
-            
+
             const checkbox = document.querySelector(`.service-checkbox[data-service-id="${serviceId}"]`);
             const originalPrice = parseFloat(checkbox.dataset.price);
-            
+
             // Tính giá sau giảm
             const discountAmount = originalPrice * (discountPercent / 100);
             const discountedPrice = originalPrice - discountAmount;
-            
+
             // Cập nhật giá hiển thị
             const discountedPriceCell = document.querySelector(`.discounted-price[data-service-id="${serviceId}"]`);
             discountedPriceCell.textContent = new Intl.NumberFormat('vi-VN').format(discountedPrice) + ' VND';
-            
+
             // Cập nhật tổng giá nếu dịch vụ đã được chọn
             if (checkbox.checked) {
                 updateTotalPrice();
             }
         }
-        
+
         // Hàm đánh dấu các dịch vụ đã chọn (dùng khi sửa gói)
         function checkSelectedServices(serviceIds) {
             // Tìm các dịch vụ mặc định trong gói
             const packageId = document.getElementById('currentPackageId').value;
-            
+
             fetch(`/api/resort/booking-offer/${packageId}`)
                 .then(response => response.json())
                 .then(packageData => {
                     console.log("Package data:", packageData);
-                    
+
                     // Đánh dấu các dịch vụ đã chọn và cập nhật giá giảm
                     packageData.dichVuMacDinhs.forEach(dichVu => {
                         const checkbox = document.querySelector(`.service-checkbox[data-service-id="${dichVu.dichVuId}"]`);
                         if (checkbox) {
                             checkbox.checked = true;
-                            
+
                             // Cập nhật giảm giá
                             const discountInput = document.querySelector(`.discount-input[data-service-id="${dichVu.dichVuId}"]`);
                             if (discountInput) {
                                 discountInput.disabled = false;
                                 discountInput.value = dichVu.giamGia;
-                                
+
                                 // Cập nhật giá hiển thị
                                 const event = new Event('change');
                                 discountInput.dispatchEvent(event);
                             }
-                            
+
                             // Thêm vào danh sách đã chọn (sẽ được cập nhật lại trong updateTotalPrice)
                             selectedServices.push({
                                 id: dichVu.dichVuId,
@@ -481,7 +489,7 @@
                             });
                         }
                     });
-                    
+
                     // Cập nhật tổng giá
                     updateTotalPrice();
                 })
@@ -489,68 +497,68 @@
                     console.error('Lỗi khi lấy thông tin gói đặt phòng:', error);
                 });
         }
-        
+
         // Hàm cập nhật tổng giá
         function updateTotalPrice() {
             // Reset danh sách dịch vụ đã chọn
             selectedServices = [];
             let totalDiscountedPrice = 0;
-            
+
             // Lấy tất cả các checkbox đã chọn
             document.querySelectorAll('.service-checkbox:checked').forEach(checkbox => {
                 const serviceId = parseInt(checkbox.dataset.serviceId);
                 const originalPrice = parseFloat(checkbox.dataset.price);
-                
+
                 // Lấy % giảm giá
                 const discountInput = document.querySelector(`.discount-input[data-service-id="${serviceId}"]`);
                 const discountPercent = parseFloat(discountInput.value) || 0;
-                
+
                 // Tính giá sau giảm
                 const discountAmount = originalPrice * (discountPercent / 100);
                 const discountedPrice = originalPrice - discountAmount;
-                
+
                 // Cộng vào tổng giá
                 totalDiscountedPrice += discountedPrice;
-                
+
                 // Thêm vào danh sách đã chọn
                 selectedServices.push({
                     id: serviceId,
                     discount: discountPercent
                 });
             });
-            
+
             // Hiển thị tổng giá
             document.getElementById('totalPrice').textContent = new Intl.NumberFormat('vi-VN').format(totalDiscountedPrice) + ' VND';
         }
-        
+
         // Xử lý nút lưu
-        document.getElementById('saveBookingPackageBtn').addEventListener('click', function() {
+        document.getElementById('saveBookingPackageBtn').addEventListener('click', function () {
             const roomTypeId = document.getElementById('currentRoomTypeId').value;
             const packageId = document.getElementById('currentPackageId').value;
-            
+
             // Kiểm tra đã chọn ít nhất 1 dịch vụ
             if (selectedServices.length === 0) {
                 alert('Vui lòng chọn ít nhất một dịch vụ cho gói đặt phòng.');
                 return;
             }
-            
+
             // Dữ liệu gửi lên server
             const data = {
                 loaiPhongId: parseInt(roomTypeId),
                 dsDichVuId: selectedServices.map(service => service.id),
                 dsGiamGia: selectedServices.map(service => service.discount)
             };
-            
+
             // API endpoint và method
             let url = '/api/resort/booking-offer';
             let method = 'POST';
-            
+
             // Nếu là chế độ sửa
             if (packageId) {
                 url += `/${packageId}`;
                 method = 'PUT';
             }
-            
+
             // Gửi request
             fetch(url, {
                 method: method,
@@ -559,44 +567,44 @@
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Lỗi khi lưu gói đặt phòng');
-                }
-                return response.json();
-            })
-            .then(result => {
-                alert('Lưu gói đặt phòng thành công!');
-                // Đóng modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('bookingPackageModal'));
-                modal.hide();
-                // Tải lại trang để cập nhật dữ liệu
-                location.reload();
-            })
-            .catch(error => {
-                console.error('Lỗi:', error);
-                alert('Có lỗi xảy ra khi lưu gói đặt phòng.');
-            });
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Lỗi khi lưu gói đặt phòng');
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    alert('Lưu gói đặt phòng thành công!');
+                    // Đóng modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('bookingPackageModal'));
+                    modal.hide();
+                    // Tải lại trang để cập nhật dữ liệu
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Lỗi:', error);
+                    alert('Có lỗi xảy ra khi lưu gói đặt phòng.');
+                });
         });
-        
+
         // Xử lý xóa gói đặt phòng
         function deleteBookingPackage(packageId) {
             if (confirm('Bạn có chắc chắn muốn xóa gói đặt phòng này?')) {
                 fetch(`/api/resort/booking-offer/${packageId}`, {
                     method: 'DELETE'
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Lỗi khi xóa gói đặt phòng');
-                    }
-                    alert('Xóa gói đặt phòng thành công!');
-                    // Tải lại trang để cập nhật dữ liệu
-                    location.reload();
-                })
-                .catch(error => {
-                    console.error('Lỗi:', error);
-                    alert('Có lỗi xảy ra khi xóa gói đặt phòng.');
-                });
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Lỗi khi xóa gói đặt phòng');
+                        }
+                        alert('Xóa gói đặt phòng thành công!');
+                        // Tải lại trang để cập nhật dữ liệu
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Lỗi:', error);
+                        alert('Có lỗi xảy ra khi xóa gói đặt phòng.');
+                    });
             }
         }
     </script>
@@ -604,8 +612,8 @@
     <script>
         // Lưu tất cả room type rows có trong trang
         let allRoomTypeRows = [];
-        
-        document.addEventListener("DOMContentLoaded", function() {
+
+        document.addEventListener("DOMContentLoaded", function () {
             // Lưu tất cả các room type rows khi trang tải
             const roomTypeRows = document.querySelectorAll(".row.mb-3");
             roomTypeRows.forEach(row => {
@@ -617,26 +625,26 @@
                         element: row,
                         roomTypeId: roomTypeId
                     });
-                    
+
                     // Thêm data attribute vào row để dễ dàng lọc
                     row.setAttribute("data-room-type-id", roomTypeId);
                 }
             });
-            
+
             // Xử lý sự kiện khi thay đổi khu nghỉ dưỡng
             document.getElementById("filterResort").addEventListener("change", updateFilters);
-            
+
             // Xử lý sự kiện khi thay đổi loại phòng
             document.getElementById("filterRoomType").addEventListener("change", updateFilters);
-            
+
             // Cập nhật dropdown loại phòng dựa trên khu nghỉ dưỡng đã chọn
             function updateRoomTypeOptions() {
                 const selectedResortId = document.getElementById("filterResort").value;
                 const roomTypeSelect = document.getElementById("filterRoomType");
-                
+
                 // Reset lại loại phòng
                 roomTypeSelect.selectedIndex = 0;
-                
+
                 // Ẩn/hiện các option loại phòng dựa trên khu nghỉ dưỡng được chọn
                 const options = roomTypeSelect.querySelectorAll("option");
                 options.forEach(option => {
@@ -653,26 +661,26 @@
                     }
                 });
             }
-            
+
             // Hàm cập nhật bộ lọc
             function updateFilters() {
                 const selectedResortId = document.getElementById("filterResort").value;
                 const selectedRoomTypeId = document.getElementById("filterRoomType").value;
-                
+
                 // Cập nhật danh sách loại phòng trong dropdown khi chọn khu nghỉ dưỡng
                 if (this.id === "filterResort") {
                     updateRoomTypeOptions();
                 }
-                
+
                 // Lọc các room type rows
                 allRoomTypeRows.forEach(item => {
                     const row = item.element;
                     const roomTypeId = item.roomTypeId;
-                    
+
                     // Lấy resort ID từ DOM nếu có
                     const resortIdContainer = row.querySelector(".loai-phong");
                     let resortId = "";
-                    
+
                     // Tìm resort ID trong các phần tử con
                     if (roomTypeId) {
                         // Tìm resort ID từ option trong dropdown loại phòng
@@ -681,20 +689,20 @@
                             resortId = roomTypeOption.getAttribute("data-resort-id");
                         }
                     }
-                    
+
                     // Áp dụng bộ lọc
                     let shouldShow = true;
-                    
+
                     // Lọc theo khu nghỉ dưỡng nếu có
                     if (selectedResortId && resortId && selectedResortId !== resortId) {
                         shouldShow = false;
                     }
-                    
+
                     // Lọc theo loại phòng nếu có
                     if (shouldShow && selectedRoomTypeId && roomTypeId !== selectedRoomTypeId) {
                         shouldShow = false;
                     }
-                    
+
                     // Hiển thị hoặc ẩn row
                     row.style.display = shouldShow ? "" : "none";
                 });
@@ -703,7 +711,8 @@
     </script>
 
     <!-- Modal Xem Chi Tiết Tiện Ích -->
-    <div class="modal fade" id="tienIchDetailModal" tabindex="-1" aria-labelledby="tienIchDetailModalLabel" aria-hidden="true">
+    <div class="modal fade" id="tienIchDetailModal" tabindex="-1" aria-labelledby="tienIchDetailModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-info text-white">
@@ -726,23 +735,23 @@
         function openTienIchDetailModal(element) {
             const roomTypeId = element.getAttribute("data-room-type-id");
             const roomTypeName = element.getAttribute("data-room-type-name");
-            
+
             // Cập nhật tên loại phòng trong modal
             document.getElementById("roomTypeNameTienIchDetail").textContent = roomTypeName;
-            
+
             // Tìm tất cả tiện ích của loại phòng này
             const roomTypeCard = element.closest('.card');
             const allTienIch = roomTypeCard.querySelectorAll('.list-unstyled li');
             const hiddenTienIch = roomTypeCard.querySelectorAll('.list-unstyled li.d-none');
-            
+
             // Xóa nội dung cũ trong modal
             const modalContent = document.getElementById("tienIchDetailContent");
             modalContent.innerHTML = '';
-            
+
             // Clone tất cả tiện ích và thêm vào modal
             const tienIchContainer = roomTypeCard.querySelector('.list-unstyled').cloneNode(true);
             const tienIchItems = tienIchContainer.querySelectorAll('li');
-            
+
             // Thêm các tiện ích vào modal
             tienIchItems.forEach(item => {
                 // Tạo cột cho mỗi tiện ích
@@ -751,11 +760,12 @@
                 col.appendChild(item.cloneNode(true));
                 modalContent.appendChild(col);
             });
-            
+
             // Hiển thị modal
             const modal = new bootstrap.Modal(document.getElementById('tienIchDetailModal'));
             modal.show();
         }
     </script>
 </body>
+
 </html>
