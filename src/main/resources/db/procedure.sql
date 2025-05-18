@@ -37,7 +37,7 @@ BEGIN
                 OR REGEXP_LIKE(TRIM(LOWER(p_tu_khoa)), TRIM(LOWER(p_tp.ten_thanh_pho)))
                 OR REGEXP_LIKE(TRIM(LOWER(p_tu_khoa)), TRIM(LOWER(knd.ten)))
                 OR REGEXP_LIKE(TRIM(LOWER(p_tu_khoa)), TRIM(LOWER(knd.dia_chi))) )
-          AND  p.tinh_trang = 'Available'
+          AND  p.TRANG_THAI = 'Available'
           AND  lp.so_nguoi  >= p_so_nguoi
           AND  NOT EXISTS (
                  SELECT 1
@@ -77,7 +77,7 @@ BEGIN
     FROM LOAI_PHONG lp 
     JOIN PHONG p ON p.ID_LOAI_PHONG = lp.ID
     WHERE lp.ID_KHU_NGHI_DUONG = p_resortId
-    AND p.TINH_TRANG = 'Available'
+    AND p.TRANG_THAI = 'Available'
     AND NOT EXISTS (
            SELECT 1
            FROM   thoigian_phong_ban tpb
@@ -86,7 +86,7 @@ BEGIN
              AND  tpb.ngay_ket_thuc > p_ngay_nhan);
 END; 
       
---FUCNTION tính dánh giá trung bình resort
+--FUCNTION tï¿½nh dï¿½nh giï¿½ trung bï¿½nh resort
 CREATE OR REPLACE FUNCTION tinhDanhGiaTBResort(
   p_resortId IN NUMBER
 ) RETURN NUMBER
@@ -104,7 +104,8 @@ EXCEPTION
   WHEN NO_DATA_FOUND THEN
     RETURN 0;
   WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('L?i khi tính dánh giá: ' || SQLERRM);
+    DBMS_OUTPUT.PUT_LINE('L?i khi tï¿½nh dï¿½nh giï¿½: ' || SQLERRM);
     RETURN 0;
 END;
 /
+

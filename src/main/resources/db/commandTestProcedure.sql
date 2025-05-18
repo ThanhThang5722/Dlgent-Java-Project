@@ -13,7 +13,7 @@ DECLARE
     v_so_luong_danh_gia NUMBER;
 BEGIN
     TimResortVaPhong(
-        p_tu_khoa   => 'qu?n 1',
+        p_tu_khoa   => 'quận 1',
         p_ngay_nhan => TO_TIMESTAMP('2025-01-01 14:00:00'
                                     ,'YYYY-MM-DD HH24:MI:SS'),
         p_ngay_tra  => TO_TIMESTAMP('2025-01-03 12:00:00'
@@ -53,7 +53,6 @@ BEGIN
     CLOSE v_cursor;
 END;
 /
-
 
 --TimLoaiPhong
 DECLARE

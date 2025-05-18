@@ -1,3 +1,16 @@
+// Hàm để lấy giá trị cookie theo tên
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+// Hàm để lấy userId từ cookie
+function getUserIdFromCookie() {
+    return getCookie('user_id');
+}
+
 $(document).ready(function () {
     // Date Range Picker
     $('#dateRange').daterangepicker({
@@ -48,6 +61,12 @@ $(document).ready(function () {
 
         $('.rating-text-select').text(ratingText);
     });
+
+    // Tự động điền userId từ cookie vào input field
+    const userId = getUserIdFromCookie();
+    if (userId) {
+        $('#khachHangId').val(userId);
+    }
 
     // Cập nhật số lượng mục trong giỏ hàng
     updateCartCount();

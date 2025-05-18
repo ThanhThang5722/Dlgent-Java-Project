@@ -626,10 +626,7 @@
 
                         <input type="hidden" name="resortId" th:value="${resort.id}">
 
-                        <label for="khachHangId" class="form-label fw-bold">ID Khách
-                            Hàng</label>
-                        <input type="number" class="form-control" id="khachHangId" name="khachHangId"
-                            placeholder="Nhập ID" required>
+                        <input type="hidden" class="form-control" id="khachHangId" name="khachHangId" th:value="${userId}">
 
                         <div class="mb-4">
                             <label class="form-label fw-bold">Đánh giá của bạn</label>
