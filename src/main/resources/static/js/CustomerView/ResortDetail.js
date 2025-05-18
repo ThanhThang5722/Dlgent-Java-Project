@@ -80,7 +80,7 @@ $(document).ready(function () {
 
         // Tạo đối tượng dữ liệu để gửi đi
         const data = {
-            khachHangId: 1, // Mặc định là khách hàng có ID = 1
+            // Không cần chỉ định khachHangId, server sẽ lấy từ cookie
             goiDatPhongId: packageId || roomTypeId, // Nếu không có packageId thì dùng roomTypeId
             ngayBatDau: checkIn,
             ngayKetThuc: checkOut

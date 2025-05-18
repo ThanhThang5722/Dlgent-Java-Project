@@ -64,5 +64,5 @@ public class Customer {
     public void setTinhTrang(String tinhTrang) {
         this.tinhTrang = tinhTrang;
     }
-    
+
 }

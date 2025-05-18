@@ -226,8 +226,17 @@
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Sử dụng ID mặc định là 1
-    // Không cần tải thông tin khách hàng vì đã được Thymeleaf điền vào form
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+
+    function getUserId() {
+        return getCookie('user_id');
+    }
 
     // Cho phép chỉnh sửa khi click vào icon
     document.querySelectorAll('.edit-icon').forEach(function(icon) {
@@ -299,7 +308,7 @@
             return;
         }
 
-        const userId = document.getElementById('userId').value;
+        const userId = getUserId();
 
         const updatedData = {
             tenTaiKhoan: document.getElementById('tenTaiKhoan').value,
@@ -310,24 +319,24 @@
             diaChi: document.getElementById('diaChi').value
         };
 
-            const response = await fetch(`/user/profile/${userId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updatedData)
-            });
+        const response = await fetch(`/user/profile/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedData)
+        });
 
-            if (response.ok) {
-                alert("Cập nhật thông tin thành công!");
-                // Đặt lại trạng thái readonly cho các trường
-                document.querySelectorAll('.form-control-custom:not([disabled])').forEach(input => {
-                    input.setAttribute('readonly', true);
-                });
-            } else {
-                const errorData = await response.json();
-                alert("Lỗi khi cập nhật: " + (errorData.message || response.status));
-            }
+        if (response.ok) {
+            alert("Cập nhật thông tin thành công!");
+            // Đặt lại trạng thái readonly cho các trường
+            document.querySelectorAll('.form-control-custom:not([disabled])').forEach(input => {
+                input.setAttribute('readonly', true);
+            });
+        } else {
+            const errorData = await response.json();
+            alert("Lỗi khi cập nhật: " + (errorData.message || response.status));
+        }
     }
 
     // Chặn submit mặc định và gọi hàm cập nhật

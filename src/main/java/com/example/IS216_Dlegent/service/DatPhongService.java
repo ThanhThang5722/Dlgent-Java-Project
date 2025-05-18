@@ -38,7 +38,7 @@ public class DatPhongService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy đặt phòng"));
 
         // Cập nhật trạng thái
-        datPhong.setTinhTrang(trangThaiMoi);
+        datPhong.setTrangThai(trangThaiMoi);
         datPhong.setTenTKNH("zalopay");
         datPhongRepo.save(datPhong);
 
@@ -71,7 +71,7 @@ public class DatPhongService {
         ChiTietDatPhong chiTietDatPhong = chiTietRepo.findById(id).get();
         LocalDateTime currentDate = LocalDateTime.now();
 
-        if (!chiTietDatPhong.getTinhTrang().equals("Đã thanh toán")) {
+        if (!chiTietDatPhong.getTrangThai().equals("Đã thanh toán")) {
             return ResponseEntity.badRequest().body("Phòng chưa được thanh toán");
         }
 
@@ -83,7 +83,7 @@ public class DatPhongService {
                 return ResponseEntity.ok().body("Đã quá thời gian hủy phòng");
             }
 
-            chiTietDatPhong.setTinhTrang("Đã hủy");
+            chiTietDatPhong.setTrangThai("Đã hủy");
             capNhatTinhTrangPhong();
 
             chiTietRepo.save(chiTietDatPhong);

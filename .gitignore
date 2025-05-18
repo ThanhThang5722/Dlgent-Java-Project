@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .memories
+!**/src/main/resources/db
 
 ### STS ###
 .apt_generated

@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,12 +35,15 @@ public class ChiTietDatPhongService {
     @Autowired
     DatPhongRepository datPhongRepository;
 
-    public List<ChiTietDatPhongDTO> getChiTietDatPhongByDatPhongId() {
-        List<DatPhong> datPhongs = datPhongRepository.findByKhachHang_Id(1L);
+    private final Logger logger = LoggerFactory.getLogger(ChiTietDatPhongService.class);
+
+    public List<ChiTietDatPhongDTO> getChiTietDatPhongByDatPhongId(Long khachHangId) {
+        logger.info("Getting cart items for khachHang ID: {}", khachHangId);
+        List<DatPhong> datPhongs = datPhongRepository.findByKhachHang_Id(khachHangId);
 
         datPhongId = null;
         for (DatPhong datPhong : datPhongs) {
-            if (datPhong.getTinhTrang().equals("Pending")) {
+            if (datPhong.getTrangThai().equals("Pending")) {
                 datPhongId = datPhong.getId();
             }
         }
@@ -57,7 +62,7 @@ public class ChiTietDatPhongService {
                         ctdp.getTongGiaTien().intValue(),
                         ctdp.getNgayBatDau().toString(),
                         ctdp.getNgayKetThuc().toString(),
-                        ctdp.getTinhTrang()))
+                        ctdp.getTrangThai()))
                 .collect(Collectors.toList());
 
         return chiTietDatPhongDTOs;
@@ -75,7 +80,7 @@ public class ChiTietDatPhongService {
         DatPhong datPhong = new DatPhong();
         // tim datphong co tinhtrang pending
         for (DatPhong dp : datPhongs) {
-            if (dp.getTinhTrang().equals("Pending")) {
+            if (dp.getTrangThai().equals("Pending")) {
                 datPhong = dp;
             }
         }
@@ -85,7 +90,7 @@ public class ChiTietDatPhongService {
                     .orElse(null);
 
             datPhong.setKhachHang(khachHang);
-            datPhong.setTinhTrang("Pending");
+            datPhong.setTrangThai("Pending");
             datPhong.setThoiGianTao(LocalDateTime.now());
             datPhong.setTongGiaTien(BigDecimal.ZERO);
 
@@ -115,7 +120,7 @@ public class ChiTietDatPhongService {
 
         // Tính tổng tiền, chưa rõ cách tính nên set zero
         chiTietDatPhong.setTongGiaTien(BigDecimal.ZERO);
-        chiTietDatPhong.setTinhTrang("Pending");
+        chiTietDatPhong.setTrangThai("Pending");
 
         chiTietDatPhong = chiTietDatPhongRepository.save(chiTietDatPhong);
 
@@ -127,7 +132,7 @@ public class ChiTietDatPhongService {
                 chiTietDatPhong.getTongGiaTien().intValue(),
                 chiTietDatPhong.getNgayBatDau().toString(),
                 chiTietDatPhong.getNgayKetThuc().toString(),
-                chiTietDatPhong.getTinhTrang());
+                chiTietDatPhong.getTrangThai());
 
         return ResponseEntity.ok(dto);
     }

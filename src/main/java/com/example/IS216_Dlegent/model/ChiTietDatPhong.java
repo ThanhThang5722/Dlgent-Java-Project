@@ -40,15 +40,15 @@ public class ChiTietDatPhong {
     @Column(name = "NGAY_KET_THUC", nullable = false)
     private LocalDateTime ngayKetThuc;
 
-    @Column(name = "TINH_TRANG", nullable = false, length = 255)
-    private String tinhTrang;
+    @Column(name = "TRANG_THAI", nullable = false, length = 255)
+    private String trangThai;
 
     public ChiTietDatPhong() {
     }
 
     public ChiTietDatPhong(Long id, DatPhong datPhong, GoiDatPhong goiDatPhong, GiamGia giamGia, int soLuongPhong,
             Integer soLuongDichVuYeuCau, BigDecimal tongGiaTien, LocalDateTime ngayBatDau, LocalDateTime ngayKetThuc,
-            String tinhTrang) {
+            String trangThai) {
         this.id = id;
         this.datPhong = datPhong;
         this.goiDatPhong = goiDatPhong;
@@ -58,7 +58,7 @@ public class ChiTietDatPhong {
         this.tongGiaTien = tongGiaTien;
         this.ngayBatDau = ngayBatDau;
         this.ngayKetThuc = ngayKetThuc;
-        this.tinhTrang = tinhTrang;
+        this.trangThai = trangThai;
     }
 
     public Long getId() {
@@ -133,12 +133,12 @@ public class ChiTietDatPhong {
         this.ngayKetThuc = ngayKetThuc;
     }
 
-    public String getTinhTrang() {
-        return tinhTrang;
+    public String getTrangThai() {
+        return trangThai;
     }
 
-    public void setTinhTrang(String tinhTrang) {
-        this.tinhTrang = tinhTrang;
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
     }
 
     @Override
@@ -146,7 +146,7 @@ public class ChiTietDatPhong {
         return "ChiTietDatPhong [id=" + id + ", datPhong=" + datPhong + ", goiDatPhong=" + goiDatPhong + ", giamGia="
                 + giamGia + ", soLuongPhong=" + soLuongPhong + ", soLuongDichVuYeuCau=" + soLuongDichVuYeuCau
                 + ", tongGiaTien=" + tongGiaTien + ", ngayBatDau=" + ngayBatDau + ", ngayKetThuc=" + ngayKetThuc
-                + ", tinhTrang=" + tinhTrang + "]";
+                + ", trangThai=" + trangThai + "]";
     }
 
 }

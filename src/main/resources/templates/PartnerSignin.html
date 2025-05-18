@@ -28,7 +28,7 @@
             event.preventDefault();
             var username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
-            
+
             try {
                 let response = await fetch('http://localhost:8080/api/partner-signin', {
                     method: 'POST',
@@ -37,7 +37,7 @@
                     },
                     body: JSON.stringify({ username: username, password: password })
                 });
-                
+
                 if (response.ok) {
                     let data = await response.json();
                     document.cookie = `token=${data.token}; path=/; HttpOnly`;
@@ -52,8 +52,8 @@
                     if(response.status === 406) {
                         message = ''
                     }
-                    
-                    message = 
+
+                    message =
                     alert(`Login failed ${data.message}`);
                 }
             } catch (error) {
