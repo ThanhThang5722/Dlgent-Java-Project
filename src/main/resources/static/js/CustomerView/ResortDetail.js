@@ -111,14 +111,20 @@ $(document).ready(function () {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
+            redirect: 'follow'
         })
             .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return;
+                }
+
                 if (response.ok) {
                     // Hiển thị thông báo thành công
                     alert('Đã thêm vào giỏ hàng thành công!');
                     // Cập nhật số lượng mục trong giỏ hàng
-                    updateCartCount();
+                    // updateCartCount();
                 } else {
                     // Hiển thị thông báo lỗi
                     alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
@@ -131,26 +137,26 @@ $(document).ready(function () {
     });
 });
 
-// Hàm cập nhật số lượng mục trong giỏ hàng
-function updateCartCount() {
-    fetch('/gio-hang/count')
-        .then(response => response.json())
-        .then(data => {
-            // Cập nhật số lượng mục trong giỏ hàng
-            const cartCountElement = document.querySelector('.cart-count');
-            if (cartCountElement) {
-                cartCountElement.textContent = data.count;
-
-                // Ẩn badge nếu không có mục nào trong giỏ hàng
-                if (data.count === 0) {
-                    cartCountElement.style.display = 'none';
-                } else {
-                    cartCountElement.style.display = 'inline-block';
-                }
-            }
-            console.log('Số lượng mục trong giỏ hàng:', data.count);
-        })
-        .catch(error => {
-            console.error('Lỗi khi lấy số lượng mục trong giỏ hàng:', error);
-        });
-}
+// // Hàm cập nhật số lượng mục trong giỏ hàng
+// function updateCartCount() {
+//     fetch('/gio-hang/count')
+//         .then(response => response.json())
+//         .then(data => {
+//             // Cập nhật số lượng mục trong giỏ hàng
+//             const cartCountElement = document.querySelector('.cart-count');
+//             if (cartCountElement) {
+//                 cartCountElement.textContent = data.count;
+//
+//                 // Ẩn badge nếu không có mục nào trong giỏ hàng
+//                 if (data.count === 0) {
+//                     cartCountElement.style.display = 'none';
+//                 } else {
+//                     cartCountElement.style.display = 'inline-block';
+//                 }
+//             }
+//             console.log('Số lượng mục trong giỏ hàng:', data.count);
+//         })
+//         .catch(error => {
+//             console.error('Lỗi khi lấy số lượng mục trong giỏ hàng:', error);
+//         });
+// }

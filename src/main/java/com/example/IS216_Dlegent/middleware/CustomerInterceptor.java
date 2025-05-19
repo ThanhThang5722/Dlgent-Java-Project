@@ -30,12 +30,11 @@ public class CustomerInterceptor implements HandlerInterceptor {
         // Get auth token from cookie
         String authToken = CookieUtils.getCookieValue(request, "auth_token");
         
-        logger.info("Checking auth token from cookie: {}", authToken);
+        logger.info("Checking auth token from cookie customer: {}", authToken);
 
         // Check if token is valid
         if (authToken == null || !verifyTokenService.isValidToken(authToken)) {
-            logger.warn("Unauthorized request - Missing or invalid token");
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+            response.sendRedirect("/customer-signin");
             return false;
         }
 

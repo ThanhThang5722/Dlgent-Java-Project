@@ -47,7 +47,8 @@ public class WebConfig implements WebMvcConfigurer {
                                 "/api/signin", "/api/partner-signin", "/api/signup",
                                 "/", "/getstarted", "/customer-signin", "/customer-signup", "/partner-signin",
                                 "/partner-signup",
-                                "/api/account/customer", "/api/account/partner"
+                                "/api/account/customer", "/api/account/partner",
+                                "/tim-kiem-resort/**", "/resort-detail/**"
                 };
 
                 // Định nghĩa các đường dẫn tài nguyên tĩnh cần loại trừ khỏi tất cả các interceptor
@@ -67,7 +68,7 @@ public class WebConfig implements WebMvcConfigurer {
 
                 // Áp dụng CustomerInterceptor cho các đường dẫn của khách hàng
                 registry.addInterceptor(customerInterceptor)
-                                .addPathPatterns("/user/**", "/api/cart/**", "/gio-hang/**")
+                                .addPathPatterns("/user/**", "/api/cart/**", "/gio-hang/**", "/api/zalopay/**")
                                 .excludePathPatterns(staticResourcePaths);
 
                 registry.addInterceptor(authInterceptor)
