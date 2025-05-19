@@ -160,3 +160,28 @@ $(document).ready(function () {
 //             console.error('Lỗi khi lấy số lượng mục trong giỏ hàng:', error);
 //         });
 // }
+
+document.getElementById('open-popup-btn').addEventListener('click', function() {
+    var img360Url = document.getElementById('resortData').getAttribute('data-img360-url');
+
+    window.scrollTo(0, 0);
+
+    // Set the iframe src to img360Url
+    document.getElementById('iframe-popup').src = img360Url;
+
+    // Show the popup
+    var popup = document.getElementById('popup');
+    popup.style.display = 'flex';
+
+    // Prevent body scrolling when popup is open
+    document.body.style.overflow = 'hidden';
+});
+
+document.getElementById('close-popup').addEventListener('click', function() {
+    // Close the popup and clear the iframe source
+    document.getElementById('popup').style.display = 'none';
+    document.getElementById('iframe-popup').src = '';
+
+    // Restore body scrolling
+    document.body.style.overflow = '';
+});
