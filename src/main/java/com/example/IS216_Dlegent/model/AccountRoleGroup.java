@@ -9,18 +9,19 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "ACCOUNT_ROLE_GROUP")
 public class AccountRoleGroup {
-    
+
     @Id
     @GeneratedValue
     private Long id;
 
     @Column(name = "ACCOUNT_ID")
     private Long accountId;
-    
+
     @Column(name = "ROLE_GROUP_ID")
     private Long roleGroupId;
 
-    public AccountRoleGroup(){}
+    public AccountRoleGroup() {
+    }
 
     public Long getAccountId() {
         return accountId;
@@ -43,5 +44,4 @@ public class AccountRoleGroup {
         this.roleGroupId = roleGroupId;
     }
 
-    
 }

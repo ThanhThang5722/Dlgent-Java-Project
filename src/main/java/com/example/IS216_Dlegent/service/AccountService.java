@@ -1,6 +1,6 @@
 package com.example.IS216_Dlegent.service;
 
-import java.lang.foreign.Linker.Option;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,6 +103,23 @@ public class AccountService {
         return accountToken.isPresent() &&
                 (accountToken.get().getIsRevoked() == 0) &&
                 accountToken.get().getExpiresAt().after(new Date());
+    }
+
+    /**
+     * Revoke a token
+     *
+     * @param token The token to revoke
+     * @return true if token was revoked, false if token was not found
+     */
+    public boolean revokeToken(String token) {
+        Optional<AccountToken> accountTokenOpt = accountTokenRepository.findByTokenValue(token);
+        if (accountTokenOpt.isPresent()) {
+            AccountToken accountToken = accountTokenOpt.get();
+            accountToken.setIsRevoked(1); // 1 = revoked
+            accountTokenRepository.save(accountToken);
+            return true;
+        }
+        return false;
     }
 
     public List<RoleGroup> getRoleGroupsByUsername(String username) {

@@ -46,11 +46,18 @@ import com.example.IS216_Dlegent.service.KhoMaGiamGiaService;
 import com.example.IS216_Dlegent.service.KhuNghiDuongService;
 import com.example.IS216_Dlegent.service.LoaiPhongService;
 import com.example.IS216_Dlegent.service.ThongTinTaiKhoanService;
+import com.example.IS216_Dlegent.utils.CookieUtils;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import com.example.IS216_Dlegent.service.MaGiamGiaService;
 import com.example.IS216_Dlegent.service.AccountService;
 
 @Controller
 public class KhachHangViewController {
+
+    @Autowired
+    private HttpServletRequest request;
 
     @Autowired
     private KhuNghiDuongService khuNghiDuongService;
@@ -85,34 +92,14 @@ public class KhachHangViewController {
     @Autowired
     private AccountService accountService;
 
-    @GetMapping("/user/profile")
-    public String profilePage(Model model) {
-        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
-        model.addAttribute("bootstrapUrl", bootstrapUrl);
 
-   
-        Long userId = 1L;
-
-     
-        Optional<KhachHang> khachHangOpt = khachHangRepository.findById(userId);
-        if (khachHangOpt.isPresent()) {
-            KhachHang khachHang = khachHangOpt.get();
-            model.addAttribute("khachHang", khachHang);
-            model.addAttribute("diemTichLuy", khachHang.getDiemTichLuy());
-        } else {
-            model.addAttribute("diemTichLuy", 0);
-        }
-
-        return "CustomerView/Profile";
-    }
 
     @GetMapping("/user/point-redemption")
     public String pointRedemptionPage(Model model) {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);
 
-        // Mặc định userId là 1
-        Long userId = 1L;
+        Long userId = CookieUtils.getUserIdFromCookie(request);
 
         // Lấy điểm tích lũy của khách hàng
         Integer diemTichLuy = diemService.getDiemByUserId(userId);
@@ -130,8 +117,7 @@ public class KhachHangViewController {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);
 
-        // Mặc định userId là 1
-        Long userId = 1L;
+        Long userId = CookieUtils.getUserIdFromCookie(request);
 
         // Lấy danh sách mã giảm giá của khách hàng
         List<MaGiamGiaDTO> maGiamGias = khoMaGiamGiaService.getMaGiamGiaByKhachHangId(userId);
@@ -144,17 +130,15 @@ public class KhachHangViewController {
     public String myBookingPage(Model model) {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);
-        System.out.println("TEST: Calling bookingListService.getBookingHistory(1L)");
-        BookingListDTO bookingList = bookingListService.getBookingHistory(1L);
+
+        Long userId = CookieUtils.getUserIdFromCookie(request);
+
+        BookingListDTO bookingList = bookingListService.getBookingHistory(userId);
         System.out.println("BookingList: " + bookingList);
 
         List<BookedRoomDTO> upcomingRoom = bookingList.getUpcomingRoom();
         List<BookedRoomDTO> completedRoom = bookingList.getCompletedRoom();
         List<BookedRoomDTO> cancelledRoom = bookingList.getCancelledRoom();
-
-        System.out.println("Upcoming rooms: " + upcomingRoom.size());
-        System.out.println("Completed rooms: " + completedRoom.size());
-        System.out.println("Cancelled rooms: " + cancelledRoom.size());
 
         model.addAttribute("cancelledBookings", cancelledRoom);
         model.addAttribute("upcomingBookings", upcomingRoom);
@@ -176,14 +160,6 @@ public class KhachHangViewController {
         }
 
         return "CustomerView/BookingDetail";
-    }
-
-    @GetMapping("/user/purchase")
-    public String purchasePage(Model model) {
-        String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
-        model.addAttribute("bootstrapUrl", bootstrapUrl);
-
-        return "CustomerView/Purchase";
     }
 
     @GetMapping("/tim-kiem-resort")
@@ -275,7 +251,9 @@ public class KhachHangViewController {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);
 
-        List<ChiTietDatPhongDTO> cartItems = chiTietDatPhongService.getChiTietDatPhongByDatPhongId();
+        Long khachHangId = CookieUtils.getUserIdFromCookie(request);
+
+        List<ChiTietDatPhongDTO> cartItems = chiTietDatPhongService.getChiTietDatPhongByDatPhongId(khachHangId);
 
         // tổng tiền
         int totalPrice = cartItems.stream()
@@ -293,13 +271,11 @@ public class KhachHangViewController {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);
 
-        // Mặc định userId là 1
-        Long userId = 1L;
+        Long userId = CookieUtils.getUserIdFromCookie(request);
 
         Optional<KhachHang> khachHangOpt = khachHangRepository.findById(userId);
         if (khachHangOpt.isPresent()) {
             KhachHang khachHang = khachHangOpt.get();
-            model.addAttribute("khachHang", khachHang);
             model.addAttribute("userId", khachHang.getTaiKhoan().getAccountId());
         }
 
@@ -309,21 +285,23 @@ public class KhachHangViewController {
     @Autowired
     ThongTinTaiKhoanService thongTinTaiKhoanService;
 
-    @GetMapping("/user/profile/{id}")
-    public String userProfile(@PathVariable Long id,Model model){
+    @GetMapping("/user/profile")
+    public String userProfile(Model model) {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);
 
-        ThongTinCaNhanKhachHangDTO thongTinCaNhanKhachHangDTO = thongTinTaiKhoanService.getThongTinCaNhanKhachHang(id);
+        Long khachHangId = CookieUtils.getUserIdFromCookie(request);
+
+        ThongTinCaNhanKhachHangDTO thongTinCaNhanKhachHangDTO = thongTinTaiKhoanService.getThongTinCaNhanKhachHang(khachHangId);
 
         model.addAttribute("thongTinCaNhanDto", thongTinCaNhanKhachHangDTO);
-        System.out.println("hehe" + thongTinCaNhanKhachHangDTO);
 
         return "Profile/CustomerProfile";
     }
 
     @PutMapping("/user/profile/{id}")
-    public ResponseEntity<?> editProfile(@RequestBody ThongTinCaNhanKhachHangDTO thongTinCaNhanKhachHangDTO, @PathVariable Long id){
+    public ResponseEntity<?> editProfile(@RequestBody ThongTinCaNhanKhachHangDTO thongTinCaNhanKhachHangDTO,
+            @PathVariable Long id) {
 
         thongTinTaiKhoanService.setThongTinCaNhanKhachHang(id, thongTinCaNhanKhachHangDTO);
         return ResponseEntity.ok().build();

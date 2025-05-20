@@ -1,3 +1,16 @@
+// Hàm để lấy giá trị cookie theo tên
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+// Hàm để lấy userId từ cookie
+function getUserIdFromCookie() {
+    return getCookie('user_id');
+}
+
 $(document).ready(function () {
     // Date Range Picker
     $('#dateRange').daterangepicker({
@@ -49,6 +62,12 @@ $(document).ready(function () {
         $('.rating-text-select').text(ratingText);
     });
 
+    // Tự động điền userId từ cookie vào input field
+    const userId = getUserIdFromCookie();
+    if (userId) {
+        $('#khachHangId').val(userId);
+    }
+
     // Cập nhật số lượng mục trong giỏ hàng
     updateCartCount();
 });
@@ -80,7 +99,7 @@ $(document).ready(function () {
 
         // Tạo đối tượng dữ liệu để gửi đi
         const data = {
-            khachHangId: 1, // Mặc định là khách hàng có ID = 1
+            // Không cần chỉ định khachHangId, server sẽ lấy từ cookie
             goiDatPhongId: packageId || roomTypeId, // Nếu không có packageId thì dùng roomTypeId
             ngayBatDau: checkIn,
             ngayKetThuc: checkOut
@@ -92,14 +111,20 @@ $(document).ready(function () {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
+            redirect: 'follow'
         })
             .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return;
+                }
+
                 if (response.ok) {
                     // Hiển thị thông báo thành công
                     alert('Đã thêm vào giỏ hàng thành công!');
                     // Cập nhật số lượng mục trong giỏ hàng
-                    updateCartCount();
+                    // updateCartCount();
                 } else {
                     // Hiển thị thông báo lỗi
                     alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
@@ -112,26 +137,51 @@ $(document).ready(function () {
     });
 });
 
-// Hàm cập nhật số lượng mục trong giỏ hàng
-function updateCartCount() {
-    fetch('/gio-hang/count')
-        .then(response => response.json())
-        .then(data => {
-            // Cập nhật số lượng mục trong giỏ hàng
-            const cartCountElement = document.querySelector('.cart-count');
-            if (cartCountElement) {
-                cartCountElement.textContent = data.count;
+// // Hàm cập nhật số lượng mục trong giỏ hàng
+// function updateCartCount() {
+//     fetch('/gio-hang/count')
+//         .then(response => response.json())
+//         .then(data => {
+//             // Cập nhật số lượng mục trong giỏ hàng
+//             const cartCountElement = document.querySelector('.cart-count');
+//             if (cartCountElement) {
+//                 cartCountElement.textContent = data.count;
+//
+//                 // Ẩn badge nếu không có mục nào trong giỏ hàng
+//                 if (data.count === 0) {
+//                     cartCountElement.style.display = 'none';
+//                 } else {
+//                     cartCountElement.style.display = 'inline-block';
+//                 }
+//             }
+//             console.log('Số lượng mục trong giỏ hàng:', data.count);
+//         })
+//         .catch(error => {
+//             console.error('Lỗi khi lấy số lượng mục trong giỏ hàng:', error);
+//         });
+// }
 
-                // Ẩn badge nếu không có mục nào trong giỏ hàng
-                if (data.count === 0) {
-                    cartCountElement.style.display = 'none';
-                } else {
-                    cartCountElement.style.display = 'inline-block';
-                }
-            }
-            console.log('Số lượng mục trong giỏ hàng:', data.count);
-        })
-        .catch(error => {
-            console.error('Lỗi khi lấy số lượng mục trong giỏ hàng:', error);
-        });
-}
+document.getElementById('open-popup-btn').addEventListener('click', function() {
+    var img360Url = document.getElementById('resortData').getAttribute('data-img360-url');
+
+    window.scrollTo(0, 0);
+
+    // Set the iframe src to img360Url
+    document.getElementById('iframe-popup').src = img360Url;
+
+    // Show the popup
+    var popup = document.getElementById('popup');
+    popup.style.display = 'flex';
+
+    // Prevent body scrolling when popup is open
+    document.body.style.overflow = 'hidden';
+});
+
+document.getElementById('close-popup').addEventListener('click', function() {
+    // Close the popup and clear the iframe source
+    document.getElementById('popup').style.display = 'none';
+    document.getElementById('iframe-popup').src = '';
+
+    // Restore body scrolling
+    document.body.style.overflow = '';
+});
