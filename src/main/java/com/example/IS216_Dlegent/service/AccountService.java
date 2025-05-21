@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.example.IS216_Dlegent.encoder.Sha256PasswordEncoder;
 import com.example.IS216_Dlegent.model.Account;
 import com.example.IS216_Dlegent.model.AccountToken;
+import com.example.IS216_Dlegent.model.KhachHang;
 import com.example.IS216_Dlegent.model.RoleGroup;
 import com.example.IS216_Dlegent.model.User;
 import com.example.IS216_Dlegent.payload.request.LoginRequest;
@@ -24,6 +25,7 @@ import com.example.IS216_Dlegent.payload.request.PasswordChangeRequest;
 import com.example.IS216_Dlegent.payload.respsonse.PasswordChangeResponse;
 import com.example.IS216_Dlegent.repository.AccountRepo;
 import com.example.IS216_Dlegent.repository.AccountTokenRepo;
+import com.example.IS216_Dlegent.repository.KhachHangRepository;
 import com.example.IS216_Dlegent.repository.UserRepo;
 
 @Service
@@ -32,6 +34,9 @@ public class AccountService {
     private final AccountRepo accountRepository;
     private final AccountTokenRepo accountTokenRepository;
     private final UserRepo userRepo;
+
+    @Autowired
+    KhachHangRepository khachHangRepository;
 
     public AccountService(AccountRepo accountRepository, AccountTokenRepo accountTokenRepository, UserRepo userRepo) {
         this.accountRepository = accountRepository;
@@ -143,22 +148,21 @@ public class AccountService {
                     "Mật khẩu và xác nhận mật khẩu không khớp. Vui lòng kiểm tra lại và nhập lại.", false);
         }
 
-        Optional<Account> accountOpt = accountRepository.findById(request.getUserId());
-        if (!accountOpt.isPresent()) {
+        Optional<KhachHang> khachHangOpt = khachHangRepository.findById(request.getUserId());
+        if (!khachHangOpt.isPresent()) {
             return new PasswordChangeResponse("Tài khoản không tồn tại", false);
         }
-
-        Account account = accountOpt.get();
+        KhachHang khachHang = khachHangOpt.get();
 
         String currentPasswordHash = Sha256PasswordEncoder.encode(request.getCurrentPassword());
-        if (!currentPasswordHash.equals(account.getPassword())) {
+        if (!currentPasswordHash.equals(khachHang.getTaiKhoan().getPassword())) {
             return new PasswordChangeResponse(
                     "Mật khẩu hiện tại bạn đã nhập không chính xác. Vui lòng kiểm tra lại và thử lại.", false);
         }
 
         String newPasswordHash = Sha256PasswordEncoder.encode(request.getNewPassword());
-        account.setPassword(newPasswordHash);
-        accountRepository.save(account);
+        khachHang.getTaiKhoan().setPassword(newPasswordHash);
+        accountRepository.save(khachHang.getTaiKhoan());
 
         return new PasswordChangeResponse("Đổi mật khẩu thành công", true);
     }

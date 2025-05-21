@@ -273,11 +273,7 @@ public class KhachHangViewController {
 
         Long userId = CookieUtils.getUserIdFromCookie(request);
 
-        Optional<KhachHang> khachHangOpt = khachHangRepository.findById(userId);
-        if (khachHangOpt.isPresent()) {
-            KhachHang khachHang = khachHangOpt.get();
-            model.addAttribute("userId", khachHang.getTaiKhoan().getAccountId());
-        }
+        model.addAttribute("userId", userId);
 
         return "CustomerView/ChangePassword";
     }
