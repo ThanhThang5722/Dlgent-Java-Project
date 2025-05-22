@@ -4,6 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.IS216_Dlegent.payload.dto.Top6ResortDTO;
+import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
+import com.example.IS216_Dlegent.repository.jdbc.JdbcResortRepository;
+import com.example.IS216_Dlegent.repository.jdbc.JdbcTop6ResortRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.IS216_Dlegent.model.KhuNghiDuong;
 import com.example.IS216_Dlegent.payload.request.InsertResortRequest;
 import com.example.IS216_Dlegent.repository.KhuNghiDuongRepo;
-import com.example.IS216_Dlegent.repository.jdbc.JdbcResortRepository;
-import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
+
 
 @Service
 public class KhuNghiDuongService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private JdbcTop6ResortRepository jdbcTop6ResortRepository;
 
     @Transactional
     public boolean insertResort(String token, InsertResortRequest request) {
@@ -87,7 +93,7 @@ public class KhuNghiDuongService {
     }
 
     public List<ResortSearchResponse> searchResorts(String tenResort, LocalDateTime checkIn, LocalDateTime checkOut,
-            int soNguoi) {
+                                                    int soNguoi) {
         if (tenResort == null || tenResort.trim().isEmpty()) {
             tenResort = "";
         }
@@ -101,5 +107,9 @@ public class KhuNghiDuongService {
         }
 
         return jdbcResortRepository.searchResorts(tenResort, checkIn, checkOut, soNguoi);
+    }
+
+    public List<Top6ResortDTO> getTop6ResortsByRating(){
+        return jdbcTop6ResortRepository.getTop6ResortsByRating();
     }
 }
