@@ -1,4 +1,4 @@
-package com.example.IS216_Dlegent.repository;
+package com.example.IS216_Dlegent.payload.dto;
 
 public class PartnerRegistrationDTO {
     // NGUOI_DUNG

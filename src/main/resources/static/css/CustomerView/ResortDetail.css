@@ -11,6 +11,15 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f8f9fa;
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+/* Container styles */
+.container {
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 /* Header styles */
@@ -103,7 +112,9 @@ body {
 
 /* Main content area */
 .main-content {
-    padding: 20px 0;
+    padding: 20px 40px;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 /* Tabs */
@@ -114,6 +125,9 @@ body {
     padding: 0;
     margin-bottom: 20px;
     list-style: none;
+    max-width: 100%;
+    overflow-x: auto;
+    flex-wrap: wrap;
 }
 
 .tab-item {
@@ -135,6 +149,8 @@ body {
     align-items: center;
     gap: 15px;
     margin-bottom: 15px;
+    max-width: 100%;
+    flex-wrap: wrap;
 }
 
 .util-link {
@@ -182,6 +198,12 @@ body {
     text-decoration: underline;
 }
 
+/* Resort header section */
+.resort-header-section {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 /* Resort title */
 .resort-title {
     font-size: 28px;
@@ -192,6 +214,17 @@ body {
 .resort-category {
     color: #555;
     margin-bottom: 10px;
+}
+
+#open-popup-btn {
+    max-width: 100%;
+    margin-bottom: 15px;
+    padding: 8px 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 /* Rating */
@@ -286,6 +319,8 @@ body {
     gap: 5px;
     height: 450px;
     margin-bottom: 30px;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .gallery-item {
@@ -388,6 +423,8 @@ body {
 /* Rooms section */
 .rooms-section {
     margin-top: 30px;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .section-title {
@@ -516,12 +553,15 @@ body {
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .facilities-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
+    max-width: 100%;
 }
 
 .facility-category {
@@ -575,12 +615,16 @@ body {
 /* Reviews section */
 .reviews-section {
     margin-top: 30px;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .review-stats {
     display: flex;
+    flex-wrap: wrap;
     gap: 30px;
     margin-bottom: 20px;
+    max-width: 100%;
 }
 
 .overall-rating {
@@ -688,6 +732,8 @@ footer {
     background-color: white;
     padding: 30px 0;
     border-top: 1px solid var(--border-color);
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .footer-section {
@@ -1005,4 +1051,55 @@ footer {
 .btn-submit-review:active {
     transform: translateY(0);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+#popup iframe {
+    width: 90vw;
+    height: 80vh;
+    border: none;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#close-popup {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 10000;
+    background-color: rgba(0, 0, 0, 0.7);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+#close-popup:hover {
+    background-color: rgba(255, 0, 0, 0.7);
+    transform: scale(1.1);
 }

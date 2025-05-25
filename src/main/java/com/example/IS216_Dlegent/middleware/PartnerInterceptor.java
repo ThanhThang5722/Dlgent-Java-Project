@@ -3,11 +3,11 @@ package com.example.IS216_Dlegent.middleware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.servlet.http.Cookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.example.IS216_Dlegent.service.VerifyTokenService;
+import com.example.IS216_Dlegent.utils.CookieUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,30 +23,24 @@ public class PartnerInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String authToken = null;
-
-        // Retrieve the "auth_token" cookie
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("auth_token".equals(cookie.getName())) {
-                    authToken = cookie.getValue();
-                    break;
-                }
-            }
-        }
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
+        // Get auth token from cookie
+        String authToken = CookieUtils.getCookieValue(request, "auth_token");
 
         logger.info("Checking auth token from cookie: {}", authToken);
 
+        // Check if token is valid
         if (authToken == null || !verifyTokenService.isValidToken(authToken)) {
             logger.warn("Unauthorized request - Missing or invalid token");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
             return false;
         }
 
-        if (!verifyTokenService.isPartner(authToken)) {
-            logger.warn("Unauthorized request - User does not have Partner role");
+        // Check if user has partner role
+        String userRole = CookieUtils.getUserRoleFromCookie(request);
+        if (!"PARTNER".equals(userRole)) {
+            logger.warn("Forbidden request - User does not have Partner role");
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden - Partner role required");
             return false;
         }

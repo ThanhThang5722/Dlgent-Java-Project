@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.IS216_Dlegent.utils.CookieUtils;
+
 import com.example.IS216_Dlegent.encoder.Sha256PasswordEncoder;
 import com.example.IS216_Dlegent.model.Account;
 import com.example.IS216_Dlegent.model.DoiTac;
@@ -48,22 +50,22 @@ public class SignInAPIController {
     private CustomerRepository customerRepository;
 
     private final Logger logger = LoggerFactory.getLogger(SignInController.class);
-    
+
     @PostMapping("/api/signin")
     public ResponseEntity<?> submitUsernamePassword(@RequestBody LoginRequest userLogin) {
         logger.info("Received request: {}", userLogin);
         try {
             logger.info("Login attempt with username: {}", userLogin.getUsername());
-            
+
             boolean isValid = accountService.verifyAccount(userLogin);
             logger.info("Authentication result: {}", isValid);
 
             Account account = accountService.getAccountByUsername(userLogin.getUsername()).get();
             Optional<Customer> checkKhach = customerRepository.findByAccount(account);
 
-            if(isValid && checkKhach.isPresent()) {
+            if (isValid && checkKhach.isPresent()){
                 Customer khachHang = checkKhach.get();
-                if(!khachHang.getTinhTrang().equals("ACTIVE")) {
+                if (!khachHang.getTinhTrang().equals("ACTIVE")) {
                     return ResponseEntity.status(406).body(new LoginResponse("Your account is not active", null, null));
                 }
 
@@ -73,28 +75,33 @@ public class SignInAPIController {
                 String formattedDate = dateFormat.format(currentTime);
                 String token = userLogin.getUsername() + '_' + formattedDate;
                 logger.info("Generated token for userc: {}", userLogin.getUsername());
-                
+
                 try {
                     accountService.saveToken(userLogin.getUsername(), token, Duration.ofMinutes(10));
                     logger.info("Token saved successfully");
                 } catch (Exception e) {
                     logger.error("Error saving token: {}", e.getMessage(), e);
-                    return ResponseEntity.status(500).body(new LoginResponse("Error creating session", null,null));
+                    return ResponseEntity.status(500).body(new LoginResponse("Error creating session", null, null));
                 }
 
-                ResponseCookie cookie = ResponseCookie.from("auth_token", token)
-                        .httpOnly(true)
-                        .secure(true)
-                        .path("/")
-                        .maxAge(Duration.ofMinutes(10))
-                        .build();
-                
-                // Create Return success API and set cookies with the token
-                
-                return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(new LoginResponse("Login successful", token, khachHang.getId()));
+                // Create auth token cookie
+                ResponseCookie authCookie = CookieUtils.createSecureCookie("auth_token", token, 10);
+
+                // Create user ID cookie
+                ResponseCookie userIdCookie = CookieUtils.createSecureCookie("user_id", khachHang.getId().toString(),
+                        10);
+
+                // Create user role cookie
+                ResponseCookie roleCookie = CookieUtils.createSecureCookie("user_role", "CUSTOMER", 10);
+
+                // Create Return success API and set cookies with the token and user info
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.SET_COOKIE, authCookie.toString())
+                        .header(HttpHeaders.SET_COOKIE, userIdCookie.toString())
+                        .header(HttpHeaders.SET_COOKIE, roleCookie.toString())
+                        .body(new LoginResponse("Login successful", token, khachHang.getId()));
             }
-            
+
             return ResponseEntity.status(401).body(new LoginResponse("Invalid username or password", null, null));
         } catch (Exception e) {
             logger.error("Error during login process: {}", e.getMessage(), e);
@@ -107,8 +114,7 @@ public class SignInAPIController {
         try {
             userService.SignUp(info);
             return ResponseEntity.ok().build();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Error during User Sign Up process: {}", e.getMessage(), e);
             return ResponseEntity.status(500).body(new LoginResponse("Server error during login", null, null));
         }
@@ -120,16 +126,16 @@ public class SignInAPIController {
         logger.info("Received request: {}", userLogin);
         try {
             logger.info("Login attempt with username: {}", userLogin.getUsername());
-            
+
             boolean isValid = accountService.verifyAccount(userLogin);
             logger.info("Authentication result: {}", isValid);
             Account account = accountService.getAccountByUsername(userLogin.getUsername()).get();
 
             Optional<DoiTac> checkDoiTac = doiTacRepository.findByAccount(account);
-            if(isValid && checkDoiTac.isPresent()) {
+            if (isValid && checkDoiTac.isPresent()) {
                 DoiTac doiTac = checkDoiTac.get();
                 System.out.println(doiTac.getAccount().getUsername());
-                if(!doiTac.getTinhTrang().equals("ACTIVE")) {
+                if (!doiTac.getTinhTrang().equals("ACTIVE")) {
                     return ResponseEntity.status(401).body(new LoginResponse("Your account is not active", null, null));
                 }
                 // Create new token valid for 10 minutes and save to database
@@ -138,27 +144,32 @@ public class SignInAPIController {
                 String formattedDate = dateFormat.format(currentTime);
                 String token = userLogin.getUsername() + '_' + formattedDate;
                 logger.info("Generated token for userc: {}", userLogin.getUsername());
-                
+
                 try {
                     accountService.saveToken(userLogin.getUsername(), token, Duration.ofMinutes(10));
                     logger.info("Token saved successfully");
                 } catch (Exception e) {
                     logger.error("Error saving token: {}", e.getMessage(), e);
-                    return ResponseEntity.status(500).body(new LoginResponse("Error creating session", null,null));
+                    return ResponseEntity.status(500).body(new LoginResponse("Error creating session", null, null));
                 }
 
-                ResponseCookie cookie = ResponseCookie.from("auth_token", token)
-                        .httpOnly(true)
-                        .secure(true)
-                        .path("/")
-                        .maxAge(Duration.ofMinutes(10))
-                        .build();
-                
-                // Create Return success API and set cookies with the token
-                return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(new LoginResponse("Login successful", token, doiTac.getId()));
+                // Create auth token cookie
+                ResponseCookie authCookie = CookieUtils.createSecureCookie("auth_token", token, 10);
+
+                // Create user ID cookie
+                ResponseCookie userIdCookie = CookieUtils.createSecureCookie("user_id", doiTac.getId().toString(), 10);
+
+                // Create user role cookie
+                ResponseCookie roleCookie = CookieUtils.createSecureCookie("user_role", "PARTNER", 10);
+
+                // Create Return success API and set cookies with the token and user info
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.SET_COOKIE, authCookie.toString())
+                        .header(HttpHeaders.SET_COOKIE, userIdCookie.toString())
+                        .header(HttpHeaders.SET_COOKIE, roleCookie.toString())
+                        .body(new LoginResponse("Login successful", token, doiTac.getId()));
             }
-            
+
             return ResponseEntity.status(401).body(new LoginResponse("Invalid username or password", null, null));
         } catch (Exception e) {
             logger.error("Error during login process: {}", e.getMessage(), e);

@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.example.IS216_Dlegent.model.DoiTac;
 import com.example.IS216_Dlegent.model.LichSuRutTien;
 import com.example.IS216_Dlegent.payload.dto.DoiTacDTO;
@@ -28,6 +31,9 @@ import com.example.IS216_Dlegent.service.KhachHangService;
 @RestController
 @RequestMapping("/api/admin")
 public class AdminAPI {
+
+    private static final Logger logger = LoggerFactory.getLogger(AdminAPI.class);
+
     @Autowired
     private LichSuRutTienRepository lichSuRutTienRepository;
 
@@ -36,6 +42,12 @@ public class AdminAPI {
 
     @Autowired
     private KhachHangService khachHangService;
+
+    @GetMapping("/auth-status")
+    public ResponseEntity<?> getAuthStatus() {
+        logger.info("Admin API: Checking authentication status");
+        return ResponseEntity.ok("Authenticated successfully");
+    }
 
     @PutMapping("/withdraw/{id}")
     public ResponseEntity<?> duyetRutTien(@PathVariable Long id) {

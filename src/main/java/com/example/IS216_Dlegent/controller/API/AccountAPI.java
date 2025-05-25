@@ -1,24 +1,16 @@
 package com.example.IS216_Dlegent.controller.API;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.IS216_Dlegent.model.Mail;
 import com.example.IS216_Dlegent.payload.request.UserRegistrationDTO;
-import com.example.IS216_Dlegent.repository.PartnerRegistrationDTO;
+import com.example.IS216_Dlegent.payload.dto.PartnerRegistrationDTO;
 import com.example.IS216_Dlegent.service.*;
-import jakarta.mail.internet.MimeMessage;
-import jakarta.servlet.http.HttpServletResponse;
-
-import java.net.http.HttpHeaders;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 

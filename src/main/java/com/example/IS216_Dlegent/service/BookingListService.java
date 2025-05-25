@@ -59,7 +59,7 @@ public class BookingListService {
         for (DatPhong datPhong : datPhongs) {
             List<ChiTietDatPhong> chiTietDatPhongs = chiTietDatPhongRepository.findByDatPhong_Id(datPhong.getId());
 
-            if (!datPhong.getTinhTrang().equals("Đã thanh toán")) {
+            if (!datPhong.getTrangThai().equals("Đã thanh toán")) {
                 continue;
             }
 
@@ -81,7 +81,7 @@ public class BookingListService {
 
                 bookedRoomDTO.setHinhPhongUrl(hinhPhong.get(0).getUrl());
 
-                if (chiTietDatPhong.getTinhTrang().equals("Đã hủy")) {
+                if (chiTietDatPhong.getTrangThai().equals("Đã hủy")) {
                     bookingListDTO.getCancelledRoom().add(bookedRoomDTO);
                 } else if (chiTietDatPhong.getNgayKetThuc().isBefore(currentDate)) {
                     bookingListDTO.getCompletedRoom().add(bookedRoomDTO);
@@ -114,7 +114,7 @@ public class BookingListService {
 
         // Xác định trạng thái đặt phòng
         String tinhTrang;
-        if (chiTietDatPhong.getTinhTrang().equals("Đã hủy")) {
+        if (chiTietDatPhong.getTrangThai().equals("Đã hủy")) {
             tinhTrang = "cancelled";
         } else if (chiTietDatPhong.getNgayKetThuc().isBefore(currentDate)) {
             tinhTrang = "completed";

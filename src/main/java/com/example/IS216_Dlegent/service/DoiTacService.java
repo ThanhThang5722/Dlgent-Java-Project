@@ -15,17 +15,11 @@ import com.example.IS216_Dlegent.model.Account;
 import com.example.IS216_Dlegent.model.AccountRoleGroup;
 import com.example.IS216_Dlegent.model.DoiTac;
 import com.example.IS216_Dlegent.model.User;
-import com.example.IS216_Dlegent.payload.request.UserRegistrationDTO;
 import com.example.IS216_Dlegent.repository.AccountRepo;
 import com.example.IS216_Dlegent.repository.AccountRoleGroupRepo;
 import com.example.IS216_Dlegent.repository.DoiTacRepository;
-import com.example.IS216_Dlegent.repository.PartnerRegistrationDTO;
-import com.example.IS216_Dlegent.model.Account;
-import com.example.IS216_Dlegent.model.DoiTac;
-import com.example.IS216_Dlegent.model.User;
+import com.example.IS216_Dlegent.payload.dto.PartnerRegistrationDTO;
 import com.example.IS216_Dlegent.payload.dto.DoiTacDTO;
-import com.example.IS216_Dlegent.repository.AccountRepo;
-import com.example.IS216_Dlegent.repository.DoiTacRepository;
 import com.example.IS216_Dlegent.repository.UserRepo;
 
 @Service

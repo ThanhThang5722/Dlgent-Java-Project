@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.example.IS216_Dlegent.utils.CookieUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +56,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/partner")
 public class PartnerViewController {
+    Logger logger = LoggerFactory.getLogger(PartnerViewController.class);
+
     @Autowired
     private KhuNghiDuongService khuNghiDuongService;
     
@@ -151,7 +155,7 @@ public class PartnerViewController {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);
         model.addAttribute("doiTacId", doiTacId);
-        
+
         // Lấy danh sách khu nghỉ dưỡng để hiển thị trong dropdown
         List<KhuNghiDuong> listKhuNghiDuong = khuNghiDuongService.getKhuNghiDuongsByDoiTacId(doiTacId);
         model.addAttribute("listKhuNghiDuong", listKhuNghiDuong);

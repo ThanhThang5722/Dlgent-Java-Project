@@ -1,0 +1,28 @@
+.sidebar {
+    background-color: #343a40;
+    min-height: 100vh;
+    padding: 20px 0;
+    position: fixed;
+    width: 250px;
+}
+.sidebar ul li {
+    padding: 10px 20px;
+}
+.sidebar ul li a {
+    color: #f8f9fa;
+    text-decoration: none;
+    display: block;
+}
+.sidebar ul li a:hover {
+    color: #007bff;
+}
+.content {
+    margin-left: 250px;
+    padding: 20px;
+}
+.tools {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}

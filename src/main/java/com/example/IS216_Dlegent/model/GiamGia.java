@@ -31,8 +31,8 @@ public class GiamGia {
     @Column(name = "NGAY_KET_THUC", nullable = false)
     private LocalDateTime ngayKetThuc;
 
-    @Column(name = "TINH_TRANG", nullable = false, length = 255)
-    private String tinhTrang;
+    @Column(name = "TRANG_THAI", nullable = false, length = 255)
+    private String trangThai;
 
     @OneToOne(mappedBy = "giamGia", fetch = FetchType.EAGER)
     private DoiDiem doiDiem;
@@ -49,7 +49,7 @@ public class GiamGia {
         this.mucToiDa = mucToiDa;
         this.ngayBatDau = ngayBatDau;
         this.ngayKetThuc = ngayKetThuc;
-        this.tinhTrang = tinhTrang;
+        this.trangThai = tinhTrang;
         this.doiDiem = doiDiem;
     }
 
@@ -109,12 +109,12 @@ public class GiamGia {
         this.ngayKetThuc = ngayKetThuc;
     }
 
-    public String getTinhTrang() {
-        return tinhTrang;
+    public String gettrangThai() {
+        return trangThai;
     }
 
-    public void setTinhTrang(String tinhTrang) {
-        this.tinhTrang = tinhTrang;
+    public void settrangThai(String tinhTrang) {
+        this.trangThai = tinhTrang;
     }
 
     public DoiDiem getDoiDiem() {

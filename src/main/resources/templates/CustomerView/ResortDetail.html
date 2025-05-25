@@ -149,6 +149,10 @@
             </ul>
         </div>
     </nav> -->
+    <div id="popup">
+        <span id="close-popup">&times;</span>
+        <iframe id="iframe-popup" src="" title="Iframe Content"></iframe>
+    </div>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -185,6 +189,12 @@
 
                 <h1 class="resort-title" th:text="${resort.ten}">Beach Resort & Spa</h1>
                 <div class="resort-category">Resort</div>
+
+                <div id="resortData"
+                     th:data-img360-url="${resort.img360Url}">
+                </div>
+
+                <button id="open-popup-btn">Virtual Tour</button>
 
                 <div class="rating-container">
                     <div class="rating-badge" th:text="${resort.danhGia}">8.9</div>
@@ -626,10 +636,7 @@
 
                         <input type="hidden" name="resortId" th:value="${resort.id}">
 
-                        <label for="khachHangId" class="form-label fw-bold">ID Khách
-                            Hàng</label>
-                        <input type="number" class="form-control" id="khachHangId" name="khachHangId"
-                            placeholder="Nhập ID" required>
+                        <input type="hidden" class="form-control" id="khachHangId" name="khachHangId" th:value="${userId}">
 
                         <div class="mb-4">
                             <label class="form-label fw-bold">Đánh giá của bạn</label>

@@ -106,18 +106,14 @@
                     <div th:if="${booking != null && booking.dichVuMacDinhs != null && !booking.dichVuMacDinhs.empty}">
                         <div class="service-item" th:each="dichVu : ${booking.dichVuMacDinhs}">
                             <i class="bi bi-check-circle-fill"></i>
-                            <span th:text="${dichVu.servicesOfResort.dichVu.tenDichVu}">Wifi miễn phí</span>
+                            <span th:text="${dichVu.dichVuKhuNghiDuong.dichVu.serviceName}">Dịch vụ</span>
                         </div>
                     </div>
                     <div
                         th:unless="${booking != null && booking.dichVuMacDinhs != null && !booking.dichVuMacDinhs.empty}">
                         <div class="service-item">
                             <i class="bi bi-check-circle-fill"></i>
-                            <span>Wifi miễn phí</span>
-                        </div>
-                        <div class="service-item">
-                            <i class="bi bi-check-circle-fill"></i>
-                            <span>Bữa sáng miễn phí</span>
+                            <span>Dịch vụ</span>
                         </div>
                     </div>
                 </div>
@@ -130,7 +126,7 @@
                     <div th:if="${booking != null && booking.dichVuYeuCaus != null && !booking.dichVuYeuCaus.empty}">
                         <div class="service-item" th:each="dichVu : ${booking.dichVuYeuCaus}">
                             <i class="bi bi-check-circle-fill"></i>
-                            <span th:text="${dichVu.servicesOfResort.dichVu.tenDichVu}">Đưa đón sân bay</span>
+                            <span th:text="${dichVu.servicesOfResort.dichVu.serviceName}">Dịch vụ</span>
                         </div>
                     </div>
                     <div

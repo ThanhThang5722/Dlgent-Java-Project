@@ -1,0 +1,51 @@
+.form-background {
+  width: 100%;
+  height: 90%;
+  background: url("https://cdn.bootstrapstudio.io/placeholders/1400x800.png"), var(--bs-success);
+}
+
+.background {
+  width: 100%;
+  height: 80vh;
+  position: relative;
+}
+
+.background-form {
+  width: 100%;
+  height: 100%;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.search-form {
+  width: 70%;
+  height: 70%;
+  position: initial;
+  display: block;
+  border-top-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+  background: var(--bs-body-bg);
+  border-top-right-radius: 50px;
+  border-bottom-left-radius: 50px;
+}
+
+input {
+  width: 80%!important;
+}
+
+.introduction-text {
+  width: 60%;
+}
+
+.introduction-label {
+  width: 40%;
+}
+
+.introduction-label {
+}
+

@@ -19,8 +19,8 @@ public class DatPhong {
     @Column(name = "THOI_GIAN_TAO", nullable = false)
     private LocalDateTime thoiGianTao;
 
-    @Column(name = "TINH_TRANG", nullable = false, length = 255)
-    private String tinhTrang;
+    @Column(name = "TRANG_THAI", nullable = false, length = 255)
+    private String trangThai;
 
     @Column(name = "TONG_GIATIEN", nullable = false, precision = 12, scale = 2)
     private BigDecimal tongGiaTien;
@@ -34,14 +34,15 @@ public class DatPhong {
     @Column(name = "TEN_NGANHANG", nullable = true, length = 255)
     private String tenNganHang;
 
-    public DatPhong() {}
+    public DatPhong() {
+    }
 
-    public DatPhong(Long id, KhachHang khachHang, LocalDateTime thoiGianTao, String tinhTrang, BigDecimal tongGiaTien,
+    public DatPhong(Long id, KhachHang khachHang, LocalDateTime thoiGianTao, String trangThai, BigDecimal tongGiaTien,
             String taiKhoanNganHang, String tenTKNH, String tenNganHang) {
         this.id = id;
         this.khachHang = khachHang;
         this.thoiGianTao = thoiGianTao;
-        this.tinhTrang = tinhTrang;
+        this.trangThai = trangThai;
         this.tongGiaTien = tongGiaTien;
         this.taiKhoanNganHang = taiKhoanNganHang;
         this.tenTKNH = tenTKNH;
@@ -72,12 +73,12 @@ public class DatPhong {
         this.thoiGianTao = thoiGianTao;
     }
 
-    public String getTinhTrang() {
-        return tinhTrang;
+    public String getTrangThai() {
+        return trangThai;
     }
 
-    public void setTinhTrang(String tinhTrang) {
-        this.tinhTrang = tinhTrang;
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
     }
 
     public BigDecimal getTongGiaTien() {
@@ -114,10 +115,9 @@ public class DatPhong {
 
     @Override
     public String toString() {
-        return "DatPhong [id=" + id + ", khachHang=" + khachHang + ", thoiGianTao=" + thoiGianTao + ", tinhTrang="
-                + tinhTrang + ", tongGiaTien=" + tongGiaTien + ", taiKhoanNganHang=" + taiKhoanNganHang + ", tenTKNH="
+        return "DatPhong [id=" + id + ", khachHang=" + khachHang + ", thoiGianTao=" + thoiGianTao + ", trangThai="
+                + trangThai + ", tongGiaTien=" + tongGiaTien + ", taiKhoanNganHang=" + taiKhoanNganHang + ", tenTKNH="
                 + tenTKNH + ", tenNganHang=" + tenNganHang + "]";
     }
 
-    
 }
