@@ -28,8 +28,10 @@ public class UploadController {
             @RequestParam("roomTypeId") Long roomTypeId) {
         try {
             String imageUrl = cloudinaryService.uploadFile(file);
-
+            System.out.println("Image uploaded successfully: " + imageUrl);
             HinhPhong hinhPhong = new HinhPhong(roomTypeId,imageUrl, 0L);
+            System.out.println("Image URL: " + imageUrl);
+            System.out.println("Room Type ID: " + roomTypeId);
             HinhPhong saved = hinhPhongService.save(hinhPhong);
             return ResponseEntity.ok(saved);
         } catch (Exception e) {

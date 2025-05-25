@@ -2,24 +2,40 @@ package com.example.IS216_Dlegent.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.IS216_Dlegent.model.DoiTac;
+import com.example.IS216_Dlegent.model.HoaDon;
 import com.example.IS216_Dlegent.payload.SSR.BienDongSoDuDTO;
+import com.example.IS216_Dlegent.payload.dto.HoaDonDTO;
+import com.example.IS216_Dlegent.repository.DoiTacRepository;
+import com.example.IS216_Dlegent.repository.HoaDonJPA;
 import com.example.IS216_Dlegent.repository.HoaDonRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 
 @Service
 public class HoaDonService {
 
     @Autowired
     private HoaDonRepository hoaDonRepository;
+    
+    @Autowired
+    private HoaDonJPA hoaDonJPA;
+    
+    @Autowired
+    private DoiTacRepository doiTacRepository;
+    
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -74,4 +90,33 @@ public class HoaDonService {
                 .getResultList();
     }
     
+    public List<HoaDonDTO> getHoaDonByDoiTac(Long doiTacId) {
+        // Lấy đối tác từ ID
+        Optional<DoiTac> doiTacOpt = doiTacRepository.findById(doiTacId);
+        if (!doiTacOpt.isPresent()) {
+            return new ArrayList<>();
+        }
+        
+        // Lấy danh sách hóa đơn từ repository
+        List<HoaDon> hoaDons = hoaDonJPA.findByDoiTacOrderByThoiGianThanhToanDesc(doiTacOpt.get());
+        List<HoaDonDTO> hoaDonDTOs = new ArrayList<>();
+        
+        // Chuyển đổi sang DTO
+        for (HoaDon hoaDon : hoaDons) {
+            String tenKhachHang = hoaDon.getKhachHang().getTaiKhoan().getUsername();
+            String tenResort = hoaDon.getChiTietDatPhong().getGoiDatPhong().getLoaiPhong().getKhuNghiDuong().getTen();
+            
+            HoaDonDTO dto = new HoaDonDTO(
+                hoaDon.getId(),
+                tenKhachHang,
+                tenResort,
+                hoaDon.getTongGiaTien(),
+                hoaDon.getThoiGianThanhToan()
+            );
+            
+            hoaDonDTOs.add(dto);
+        }
+        
+        return hoaDonDTOs;
+    }
 }

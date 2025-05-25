@@ -189,78 +189,8 @@ public class PartnerViewController {
     public String getReportDashboardView(@RequestParam Long doiTacId, Model model) {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);
-
-        List<DanhGiaDTO> topDanhGia = danhGiaService.getTop10DanhGiaFormattedByDoiTac(doiTacId);
-        model.addAttribute("topDanhGia", topDanhGia);
         model.addAttribute("doiTacId", doiTacId);
-        int hoaDonTrongNgay = hoaDonRepository.demHoaDonTrongNgay(doiTacId);
-        model.addAttribute("todaysBookings", hoaDonTrongNgay);
-        BigDecimal tongDonThang = Optional.ofNullable(hoaDonRepository.tongHoaDonThangHienTai(doiTacId)).orElse(BigDecimal.ZERO);
-        tongDonThang = tongDonThang != null ? tongDonThang : BigDecimal.ZERO;
-        model.addAttribute("monthRevenue", tongDonThang.doubleValue());
-        int tongSoLuotDat = hoaDonRepository.tongSoLuotDat(doiTacId);
-        model.addAttribute("totalBookings", tongSoLuotDat);
-        BigDecimal soDu = doiTacService.getSoDu(doiTacId);
-        soDu = soDu != null ? soDu : BigDecimal.ZERO;
-        model.addAttribute("currentBalance", soDu);
-
-        BigDecimal[] doanhThu = hoaDonService.layDoanhThu12ThangHienTai();
-        model.addAttribute("doanhThu", doanhThu);
-
-        /*List<BienDongSoDuDTO> bienDongList = hoaDonService.layLichSuBienDongSoDu(doiTacId);
-
-        List<String> labels = bienDongList.stream()
-            .map(item -> item.getNgay().toString()) // hoặc format theo ý
-            .collect(Collectors.toList());
-
-        List<BigDecimal> balanceData = bienDongList.stream()
-            .map(item -> item.getThayDoiSoDu())
-            .collect(Collectors.toList());
-
-        model.addAttribute("labels", labels);
-        model.addAttribute("balanceData", balanceData);*/
-
-        List<Object[]> bienDong = hoaDonService.getBalanceChanges(doiTacId);
-
-        List<String> labels = new ArrayList<>();
-        List<BigDecimal> balanceData = new ArrayList<>();
-
-        for (Object[] row : bienDong) {
-            Timestamp timestamp = (Timestamp) row[0];
-            LocalDate ngay = timestamp.toLocalDateTime().toLocalDate();
-            BigDecimal thayDoi = (BigDecimal) row[1];
-
-            labels.add(ngay.format(DateTimeFormatter.ofPattern("dd/MM")));
-            balanceData.add(thayDoi);
-        }
-
         
-        model.addAttribute("labels", labels);
-        model.addAttribute("balanceData", balanceData);
-
-
-        // Tỉ lệ Khu nghỉ dưỡng được đặt theo phần %
-        List<Object[]> results = hoaDonRepository.getPopularResorts();
-
-        List<String> labelsKhuNghiDuong = new ArrayList<>();
-        List<Double> percentages = new ArrayList<>();
-
-        long total = results.stream()
-            .mapToLong(r -> ((Number) r[1]).longValue())
-            .sum();
-
-        for (Object[] row : results) {
-            String resortName = (String) row[0];
-            Long count = ((Number) row[1]).longValue(); 
-
-            labelsKhuNghiDuong.add(resortName);
-            double percent = total == 0 ? 0 : (count * 100.0) / total;
-            percentages.add(Math.round(percent * 10.0) / 10.0); // làm tròn 1 chữ số sau dấu phẩy
-        }
-
-        model.addAttribute("resortLabels", labelsKhuNghiDuong);
-        model.addAttribute("resortData", percentages);
-
         return "/PartnerView/Report/ReportDashboard";
     }
     
@@ -273,6 +203,4 @@ public class PartnerViewController {
         model.addAttribute("rutTienList", danhSachRutTien);
         return "/PartnerView/Withdraw/Withdraw";
     }
-    
-
 }
