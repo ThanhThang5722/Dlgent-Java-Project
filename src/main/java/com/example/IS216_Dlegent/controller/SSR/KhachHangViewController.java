@@ -308,9 +308,17 @@ public class KhachHangViewController {
         ThongTinCaNhanKhachHangDTO thongTinCaNhanKhachHangDTO = thongTinTaiKhoanService
                 .getThongTinCaNhanKhachHang(khachHangId);
 
-        model.addAttribute("thongTinCaNhanDto", thongTinCaNhanKhachHangDTO);
+        // Map DTO data to model attributes for the new template
+        if (thongTinCaNhanKhachHangDTO != null) {
+            model.addAttribute("khachHang", thongTinCaNhanKhachHangDTO);
+            model.addAttribute("diemTichLuy", thongTinCaNhanKhachHangDTO.getDiemTichLuy());
+        }
 
-        return "Profile/CustomerProfile";
+        // Add login status for header component
+        model.addAttribute("isLoggedIn", khachHangId != null);
+        model.addAttribute("cartCount", 0); // Default cart count, replace with actual data if available
+
+        return "CustomerView/Profile";
     }
 
     @PutMapping("/user/profile/{id}")

@@ -17,7 +17,7 @@ public class CookieUtils {
 
     /**
      * Get a cookie value by name
-     * 
+     *
      * @param request The HTTP request
      * @param name    The cookie name
      * @return The cookie value or null if not found
@@ -36,7 +36,7 @@ public class CookieUtils {
 
     /**
      * Create a secure HTTP-only cookie
-     * 
+     *
      * @param name   The cookie name
      * @param value  The cookie value
      * @param maxAge The cookie max age in minutes
@@ -53,7 +53,7 @@ public class CookieUtils {
 
     /**
      * Extract user ID from auth token cookie
-     * 
+     *
      * @param request The HTTP request
      * @return The user ID or null if not found
      */
@@ -71,7 +71,7 @@ public class CookieUtils {
 
     /**
      * Get user role from cookie
-     * 
+     *
      * @param request The HTTP request
      * @return The user role or null if not found
      */
@@ -81,7 +81,7 @@ public class CookieUtils {
 
     /**
      * Check if user has a specific role
-     * 
+     *
      * @param request The HTTP request
      * @param role    The role to check
      * @return true if user has the role, false otherwise
@@ -93,14 +93,14 @@ public class CookieUtils {
 
     /**
      * Create a cookie to expire/delete it
-     * 
+     *
      * @param name The cookie name
      * @return A ResponseCookie object set to expire
      */
     public static ResponseCookie createExpiredCookie(String name) {
         return ResponseCookie.from(name, "")
-                .httpOnly(true)
-                .secure(true)
+                .httpOnly(false)
+                .secure(false)
                 .path("/")
                 .maxAge(0)
                 .build();
