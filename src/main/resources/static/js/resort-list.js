@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const utf8EncodedData = JSON.stringify(data);
         // Use the Fetch API to send the data to the backend
-        fetch('http://localhost:8080/api/resort/insert', {
+        fetch('/api/resort/insert', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8'
@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log(updatedData);
 
         // Gửi PUT request đến API
-        fetch(`http://localhost:8080/api/resort/${resortId}`, {
+        fetch(`/api/resort/${resortId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
