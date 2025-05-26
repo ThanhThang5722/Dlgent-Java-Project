@@ -16,21 +16,23 @@
 
 <body>
     <nav class="navbar navbar-expand-md sticky-top navbar-shrink py-3" id="mainNav">
-        <div class="container"><a class="navbar-brand d-flex align-items-center" href="/"><span
-                    style="font-size: 24px;">DLEGENT</span></a><button data-bs-toggle="collapse" class="navbar-toggler"
-                data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span
-                    class="navbar-toggler-icon"></span></button>
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <span style="font-size: 24px;">DLEGENT</span></a>
+                <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
+                    <span class="visually-hidden">Toggle navigation</span>
+                    <spanclass="navbar-toggler-icon"></spanclass=></button>
             <div class="collapse navbar-collapse d-xl-flex" id="navcol-1">
                 <ul class="navbar-nav d-xl-flex mx-auto">
-                    <li class="nav-item"><a class="nav-link active" href="/homepage.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/services.html">Services</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/projects.html">Projects</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/contacts.html">Contacts</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/homepage.html"></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/services.html"></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/projects.html"></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contacts.html"></a></li>
                 </ul>
-                <a class="btn btn-primary shadow" role="button" href="/customer-signin"
+                <a class="btn btn-primary shadow" role="button" href="/customer-signup"
                     style="background: var(--bs-success);border-color: var(--bs-success);border-top-color: rgb(255,;border-right-color: 255,;border-bottom-color: 255);border-left-color: 255,;margin: 5px;">Sign
                     up</a>
-                <a class="btn btn-primary shadow" role="button" href="/customer-signup"
+                <a class="btn btn-primary shadow" role="button" href="/customer-signin"
                     style="background: rgb(255,255,255);color: rgb(0,0,0);border-color: rgb(195,195,195);">Login</a>
             </div>
         </div>
@@ -81,57 +83,58 @@
                             </div>
                             <span th:with="roundedRating=${T(java.lang.Math).round(resort.danhGia)}">
 
-                            <!-- 1 sao -->
-                            <span th:if="${roundedRating} == 1">
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star" style="color: gray;"></i>
-                                <i class="bi bi-star" style="color: gray;"></i>
-                                <i class="bi bi-star" style="color: gray;"></i>
-                                <i class="bi bi-star" style="color: gray;"></i>
-                            </span>
+                                <!-- 1 sao -->
+                                <span th:if="${roundedRating} == 1">
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star" style="color: gray;"></i>
+                                    <i class="bi bi-star" style="color: gray;"></i>
+                                    <i class="bi bi-star" style="color: gray;"></i>
+                                    <i class="bi bi-star" style="color: gray;"></i>
+                                </span>
 
-                                                        <!-- 2 sao -->
-                            <span th:if="${roundedRating} == 2">
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star" style="color: gray;"></i>
-                                <i class="bi bi-star" style="color: gray;"></i>
-                                <i class="bi bi-star" style="color: gray;"></i>
-                            </span>
+                                <!-- 2 sao -->
+                                <span th:if="${roundedRating} == 2">
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star" style="color: gray;"></i>
+                                    <i class="bi bi-star" style="color: gray;"></i>
+                                    <i class="bi bi-star" style="color: gray;"></i>
+                                </span>
 
-                                                        <!-- 3 sao -->
-                            <span th:if="${roundedRating} == 3">
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star" style="color: gray;"></i>
-                                <i class="bi bi-star" style="color: gray;"></i>
-                            </span>
+                                <!-- 3 sao -->
+                                <span th:if="${roundedRating} == 3">
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star" style="color: gray;"></i>
+                                    <i class="bi bi-star" style="color: gray;"></i>
+                                </span>
 
-                                                        <!-- 4 sao -->
-                            <span th:if="${roundedRating} == 4">
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star" style="color: gray;"></i>
-                            </span>
+                                <!-- 4 sao -->
+                                <span th:if="${roundedRating} == 4">
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star" style="color: gray;"></i>
+                                </span>
 
-                                                        <!-- 5 sao -->
-                            <span th:if="${roundedRating} == 5">
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                            </span>
+                                <!-- 5 sao -->
+                                <span th:if="${roundedRating} == 5">
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                </span>
 
-                        </span>
+                            </span>
 
                         </div>
                         <div class="d-xl-flex d-xxl-flex justify-content-between align-items-xl-center align-items-xxl-end"
                             style="height: 25%;">
-                            <p th:text="${#numbers.formatDecimal(resort.giaThapNhat, 0, 'COMMA', 0, 'POINT')} + 'đ'" style="font-weight: bold;margin-bottom: 0px;font-size: 20px;margin-right: 8px;">
+                            <p th:text="${#numbers.formatDecimal(resort.giaThapNhat, 0, 'COMMA', 0, 'POINT')} + 'đ'"
+                                style="font-weight: bold;margin-bottom: 0px;font-size: 20px;margin-right: 8px;">
                                 1.600.000đ</p><a
                                 class="btn btn-primary d-xxl-flex justify-content-xxl-center align-items-xxl-center"
                                 role="button" data-bss-hover-animate="pulse"

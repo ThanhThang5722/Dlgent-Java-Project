@@ -1,138 +1,175 @@
-/* Header Styles */
-.main-header {
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 10px 0;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    border-bottom: 1px solid #e0e0e0;
+/* Import fonts giống Homepage */
+@import url('https://fonts.googleapis.com/css?family=Inter:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900');
+
+/* Navbar Styles - giống Homepage */
+.navbar {
+  background-color: white !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+
+/* Font stack giống Homepage */
+.navbar-brand {
+  font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 
-/* Logo */
-.logo-container {
-    display: flex;
-    align-items: center;
+.navbar-brand span {
+  font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 
-.logo {
-    font-size: 20px;
-    font-weight: bold;
-    color: #003580;
-    text-decoration: none;
-    background-color: #f0f0f0;
-    padding: 6px 12px;
-    border-radius: 4px;
-    letter-spacing: 1px;
-}
-
-.logo:hover {
-    color: #0071c2;
-}
-
-/* Right Menu */
-.right-menu {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
+/* Right Menu - sử dụng Bootstrap classes */
 
 /* Cart Button */
 .cart-button {
-    position: relative;
-    color: #333;
-    font-size: 1.3rem;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: relative;
+  color: #198754;
+  font-size: 1.4rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(25, 135, 84, 0.05);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
 }
 
 .cart-button:hover {
-    color: #0071c2;
+  color: #157347;
+  background: rgba(25, 135, 84, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(25, 135, 84, 0.15);
+  border-color: rgba(25, 135, 84, 0.2);
 }
 
 .cart-count {
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    background-color: #e74c3c;
-    color: white;
-    font-size: 10px;
-    font-weight: bold;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+  border: 2px solid white;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 /* User Account */
 .user-account {
-    position: relative;
+  position: relative;
 }
 
 .avatar-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    border-radius: 50%;
-    overflow: hidden;
+  background: rgba(25, 135, 84, 0.05);
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 6px 12px 6px 6px;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(25, 135, 84, 0.1);
+}
+
+.avatar-button:hover {
+  background: rgba(25, 135, 84, 0.1);
+  border-color: rgba(25, 135, 84, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(25, 135, 84, 0.15);
+}
+
+/* Tắt mũi tên mặc định của Bootstrap */
+.avatar-button::after {
+  display: none;
 }
 
 .avatar-img {
-    width: 32px !important;
-    height: 32px !important;
-    border-radius: 50% !important;
-    object-fit: cover !important;
-    border: 2px solid #f0f0f0 !important;
-    overflow: hidden !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 3px solid rgba(25, 135, 84, 0.2) !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
 }
 
 .avatar-button:hover .avatar-img {
-    border-color: #0071c2;
+  border-color: #198754 !important;
+  box-shadow: 0 0 0 2px rgba(25, 135, 84, 0.1);
+}
+
+/* Icon mũi tên */
+.avatar-button .bi-chevron-down {
+  color: #198754;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.avatar-button:hover .bi-chevron-down {
+  color: #157347;
+}
+
+.avatar-button[aria-expanded="true"] .bi-chevron-down {
+  transform: rotate(180deg);
+  color: #157347;
 }
 
 /* Dropdown Menu */
 .dropdown-menu {
-    padding: 8px 0;
-    border-radius: 8px;
-    border: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    min-width: 200px;
-    margin-top: 8px;
+  padding: 12px 0;
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 8px 25px rgba(25, 135, 84, 0.15);
+  min-width: 220px;
+  margin-top: 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fffe 100%);
+  backdrop-filter: blur(10px);
 }
 
 .dropdown-item {
-    padding: 8px 16px;
-    color: #333;
-    font-size: 13px;
+  padding: 12px 20px;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 2px 8px;
 }
 
 .dropdown-item:hover {
-    background-color: #f8f9fa;
-    color: #0071c2;
+  background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%);
+  color: #198754;
+  transform: translateX(4px);
 }
 
 .dropdown-item i {
-    color: #0071c2;
+  color: #198754;
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
 }
 
 .dropdown-divider {
-    margin: 6px 0;
+  margin: 8px 12px;
+  border-color: rgba(25, 135, 84, 0.1);
 }
 
-/* Header Divider */
-.header-divider {
-    height: 1px;
-    background-color: #e0e0e0;
-    width: 100%;
-}
+

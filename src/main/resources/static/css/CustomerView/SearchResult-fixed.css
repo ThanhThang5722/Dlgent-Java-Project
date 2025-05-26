@@ -1,9 +1,30 @@
 body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: #f5f5f5;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Gradient ở góc phải dưới */
+body::before {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 60%;
+    height: 60%;
+    background: linear-gradient(135deg, transparent 0%, rgba(25, 135, 84, 0.15) 50%, rgba(34, 197, 94, 0.1) 100%);
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 100% 0 0 0;
 }
 
 /* Search bar and input styles */
+.applyBtn {
+    background-color:#198754 !important;
+    border-color: #198754 !important;
+}
+
 .search-bar {
     background-color: white;
     padding: 15px 0;
@@ -22,15 +43,20 @@ body {
     height: 50px !important;
 }
 
-select.form-select.rounded-input,
-.rounded-input,
-.input-group-text,
-.search-btn {
-    height: 50px !important;
-}
-
 select.form-select.rounded-input {
     line-height: 50px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23198754' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+select.form-select.rounded-input:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
 }
 
 .form-select.rounded-input {
@@ -38,6 +64,36 @@ select.form-select.rounded-input {
     padding-bottom: 0 !important;
     display: flex;
     align-items: center;
+}
+
+.form-select.rounded-input:focus {
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.form-select.rounded-input:hover {
+    border-color: #198754;
+    background-color: rgba(25, 135, 84, 0.02);
+}
+
+/* Dropdown options styling */
+.form-select.rounded-input option {
+    padding: 12px 20px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: white;
+}
+
+.form-select.rounded-input option:hover {
+    background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%);
+    color: #198754;
+}
+
+.form-select.rounded-input option:checked {
+    background: linear-gradient(135deg, #198754 0%, #22c55e 100%);
+    color: white;
 }
 
 .rounded-input {
@@ -57,7 +113,7 @@ select.form-select.rounded-input {
 }
 
 .input-group-text {
-    color: #0071c2;
+    color: #198754;
     border: 1.5px solid #aaaaaa !important;
     display: flex;
     align-items: center;
@@ -70,7 +126,7 @@ select.form-select.rounded-input {
 
 /* Search button styles */
 .search-btn {
-    background-color: #2a65db;
+    background-color: #198754;
     color: white;
     border: none;
     border-radius: 6px;
@@ -86,9 +142,9 @@ select.form-select.rounded-input {
 }
 
 .search-btn:hover {
-    background-color: #1a56cc;
+    background-color: #157347;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
 }
 
 .search-btn i {
@@ -97,19 +153,31 @@ select.form-select.rounded-input {
 
 /* Resort card styles */
 .resort-card {
-    border-radius: 4px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 15px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
     background-color: white;
     overflow: hidden;
-    border: 1px solid #e7e7e7;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.resort-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(25, 135, 84, 0.12);
 }
 
 .resort-img {
     width: 100%;
-    height: 170px;
+    height: 200px;
     object-fit: cover;
-    border-radius: 5px 0 0 5px;
+    border-radius: 16px 0 0 16px;
+    transition: transform 0.3s ease;
+}
+
+.resort-card:hover .resort-img {
+    transform: scale(1.05);
 }
 
 .small-images {
@@ -128,16 +196,50 @@ select.form-select.rounded-input {
 
 /* Rating styles */
 .rating-badge {
-    background-color: #0071c2;
     color: white;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 4px 8px;
+    border-radius: 6px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+/* Rating badge colors based on score (thang 5) - màu hòa nhã */
+.rating-excellent {
+    background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
+}
+
+.rating-very-good {
+    background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.25);
+}
+
+.rating-good {
+    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+}
+
+.rating-fair {
+    background: linear-gradient(135deg, #eab308 0%, #facc15 100%);
+    box-shadow: 0 2px 8px rgba(234, 179, 8, 0.25);
+}
+
+.rating-average {
+    background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+    box-shadow: 0 2px 8px rgba(217, 119, 6, 0.25);
+}
+
+.rating-no-rating {
+    background: linear-gradient(135deg, #71717a 0%, #a1a1aa 100%);
+    box-shadow: 0 2px 8px rgba(113, 113, 122, 0.25);
 }
 
 .rating-text {
-    color: #0071c2;
+    color: #198754;
     font-weight: bold;
     font-size: 16px;
 }
@@ -199,19 +301,27 @@ select.form-select.rounded-input {
 
 /* Filter styles */
 .filter-card {
-    background-color: white;
-    border-radius: 4px;
-    padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e7e7e7;
+    background: linear-gradient(145deg, #ffffff 0%, #f8fffe 100%);
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(25, 135, 84, 0.08);
+    border: 1px solid rgba(25, 135, 84, 0.1);
+    transition: all 0.3s ease;
+}
+
+.filter-card:hover {
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.15);
+    border-color: rgba(25, 135, 84, 0.2);
 }
 
 .filter-title {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: bold;
-    margin-bottom: 12px;
-    color: #333;
+    margin-bottom: 15px;
+    color: #198754;
+    border-bottom: 2px solid rgba(25, 135, 84, 0.1);
+    padding-bottom: 8px;
 }
 
 .filter-item {
@@ -225,24 +335,33 @@ select.form-select.rounded-input {
 /* Sort buttons */
 .sort-btn {
     background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 15px;
-    padding: 6px 15px;
-    margin-right: 8px;
-    color: #333;
+    border: 1px solid rgba(25, 135, 84, 0.2);
+    border-radius: 20px;
+    padding: 8px 18px;
+    margin-right: 10px;
+    color: #198754;
     font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.sort-btn:hover {
+    background-color: rgba(25, 135, 84, 0.05);
+    border-color: rgba(25, 135, 84, 0.3);
 }
 
 .sort-btn.active {
-    background-color: #0071c2;
+    background: linear-gradient(135deg, #198754 0%, #22c55e 100%);
     color: white;
-    border-color: #0071c2;
+    border-color: #198754;
+    box-shadow: 0 2px 8px rgba(25, 135, 84, 0.3);
 }
 
 /* Location and availability */
 .location-icon {
-    color: #0071c2;
+    color: #EA4335;
     margin-right: 5px;
+    font-size: 1.1rem;
 }
 
 .only-left {
@@ -256,8 +375,8 @@ select.form-select.rounded-input {
 }
 
 .free-service {
-    color: #008009;
-    font-weight: 500;
+    color: #198754;
+    font-weight: 600;
     font-size: 13px;
 }
 
@@ -290,7 +409,7 @@ select.form-select.rounded-input {
 }
 
 .map-icon {
-    color: #e21a8c;
+    color: #198754;
     font-size: 24px;
 }
 
@@ -361,12 +480,12 @@ select.form-select.rounded-input {
 
 /* Custom styles for daterangepicker */
 .daterangepicker td.in-range {
-    background-color: #9cc4ee;
+    background-color: rgba(25, 135, 84, 0.2);
 }
 
 .daterangepicker td.active,
 .daterangepicker td.active:hover {
-    background-color: #0071c2;
+    background-color: #198754;
     color: #ffffff;
 }
 
@@ -388,4 +507,62 @@ select.form-select.rounded-input {
 /* Custom width classes */
 .w-70 {
     width: 70% !important;
+}
+
+/* Enhanced form elements with green theme */
+.form-check-input:checked {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.form-check-input:focus {
+    border-color: rgba(25, 135, 84, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+.form-range::-webkit-slider-thumb {
+    background-color: #198754;
+}
+
+.form-range::-moz-range-thumb {
+    background-color: #198754;
+    border: none;
+}
+
+.form-range:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+/* Enhanced service badges */
+.badge.text-bg-secondary {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+    color: #198754 !important;
+    border: 1px solid rgba(25, 135, 84, 0.2);
+}
+
+/* Enhanced price styling */
+.current-price {
+    color: #198754;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Enhanced address text */
+.address-text {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Enhanced property name */
+.property-name {
+    font-weight: 600;
+    font-size: 17px;
+    color: #2d3748;
+}
+
+/* Enhanced resort card hover effects */
+.resort-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(25, 135, 84, 0.12);
+    border: 1px solid rgba(25, 135, 84, 0.1);
 }

@@ -1,9 +1,13 @@
 package com.example.IS216_Dlegent.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.IS216_Dlegent.model.ServicesOfResort;
+import com.example.IS216_Dlegent.payload.dto.DichVuDTO;
 import com.example.IS216_Dlegent.payload.respsonse.ServicesOfResortResponse;
 import com.example.IS216_Dlegent.repository.ServicesOfResortRepository;
 
@@ -13,10 +17,10 @@ public class ServicesOfResortService {
     @Autowired
     private ServicesOfResortRepository repository;
 
-    public ServicesOfResortResponse  getByResortIdAndDichVuId(Long resortId, Long dichVuId) {
+    public ServicesOfResortResponse getByResortIdAndDichVuId(Long resortId, Long dichVuId) {
         return repository.findByKhuNghiDuongIdAndDichVuId(resortId, dichVuId)
-                     .map(this::convertToResponse)
-                     .orElse(null);
+                .map(this::convertToResponse)
+                .orElse(null);
     }
 
     private ServicesOfResortResponse convertToResponse(ServicesOfResort entity) {
@@ -27,7 +31,17 @@ public class ServicesOfResortService {
                 entity.getDichVu().getId(),
                 entity.getDichVu().getServiceName(),
                 entity.getGia(),
-                entity.getIsDeleted()
-        );
+                entity.getIsDeleted());
+    }
+
+    public List<DichVuDTO> getDichVuByResortId(Long resortId) {
+        return repository.findByKhuNghiDuong_IdAndIsDeletedFalse(resortId)
+                .stream()
+                .map(entity -> new DichVuDTO(
+                        entity.getDichVu().getId(),
+                        entity.getDichVu().getServiceName(),
+                        entity.getDichVu().getMoTa(),
+                        entity.getGia()))
+                .collect(Collectors.toList());
     }
 }

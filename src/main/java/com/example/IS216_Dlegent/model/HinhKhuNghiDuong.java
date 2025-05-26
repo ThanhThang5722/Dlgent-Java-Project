@@ -46,4 +46,8 @@ public class HinhKhuNghiDuong {
     public void setId(Long id) {
         this.id = id;
     }
+    @Override
+    public String toString() {
+        return "HinhKhuNghiDuong [id=" + id + ", idKhuNghiDuong=" + idKhuNghiDuong + ", url=" + url + "]";
+    }
 }

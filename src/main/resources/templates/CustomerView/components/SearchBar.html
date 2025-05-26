@@ -2,13 +2,13 @@
 <div th:fragment="searchBar" class="search-bar mb-3">
     <!-- Thêm link CSS cho SearchBar -->
     <link rel="stylesheet" th:href="@{/css/CustomerView/SearchBar.css}">
-    
+
     <div class="container">
         <form th:action="@{/tim-kiem-resort/ket-qua}" method="get" class="row g-2 align-items-center">
             <div class="col-md-3">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0 rounded-start-input">
-                        <i class="bi bi-geo-alt text-primary"></i>
+                        <i class="bi bi-geo-alt text-success"></i>
                     </span>
                     <input type="text" class="form-control search-input rounded-input border-start-0 rounded-start-0"
                         id="searchTerm" name="searchTerm" th:value="${searchTerm}" placeholder="Điểm đến của bạn?">
@@ -18,9 +18,10 @@
                 <div class="position-relative" style="z-index: 1;">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0 rounded-start-input">
-                            <i class="bi bi-calendar3 text-primary"></i>
+                            <i class="bi bi-calendar3 text-success"></i>
                         </span>
-                        <input type="text" class="form-control date-range-picker rounded-input border-start-0 rounded-start-0"
+                        <input type="text"
+                            class="form-control date-range-picker rounded-input border-start-0 rounded-start-0"
                             id="dateRange" name="dateRange"
                             th:value="${checkIn != null ? #temporals.format(checkIn, 'dd/MM/yyyy') + ' - ' + #temporals.format(checkOut, 'dd/MM/yyyy') : ''}"
                             placeholder="Chọn ngày đến - ngày đi">
@@ -35,10 +36,10 @@
             <div class="col-md-3">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0 rounded-start-input">
-                        <i class="bi bi-person text-primary"></i>
+                        <i class="bi bi-person text-success"></i>
                     </span>
-                    <select class="form-select search-input rounded-input border-start-0 rounded-start-0"
-                        id="soNguoi" name="soNguoi">
+                    <select class="form-select search-input rounded-input border-start-0 rounded-start-0" id="soNguoi"
+                        name="soNguoi">
                         <option value="1" th:selected="${soNguoi == 1}">1 người</option>
                         <option value="2" th:selected="${soNguoi == 2}">2 người</option>
                         <option value="3" th:selected="${soNguoi == 3}">3 người</option>
@@ -61,7 +62,7 @@
 
 <!-- JavaScript for DateRangePicker -->
 <script th:fragment="searchBarScript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#dateRange').daterangepicker({
             autoUpdateInput: false,
             minDate: moment(), // Chỉ cho phép chọn từ ngày hiện tại trở đi
@@ -125,5 +126,3 @@
         });
     });
 </script>
-
-

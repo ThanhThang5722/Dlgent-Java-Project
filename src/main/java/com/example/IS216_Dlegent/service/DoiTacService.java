@@ -54,12 +54,13 @@ public class DoiTacService {
         doiTac.setSoDu(soDuHienTai.subtract(soTien));
         doiTacRepository.save(doiTac);
     }
+
     public void SignIn() {
 
     }
 
     public void SignUp(PartnerRegistrationDTO info) {
-        if(userRepo.existsByEmail(info.getEmail())) {
+        if (userRepo.existsByEmail(info.getEmail())) {
             throw new RuntimeException("Email đã tồn tại!");
         }
         if (userRepo.existsByPhoneNumber(info.getPhoneNumber())) {
@@ -142,7 +143,7 @@ public class DoiTacService {
                 continue;
             }
 
-            if (doiTac.getAccount().getStatus().equals("PENDING")) {
+            if (doiTac.getAccount().getStatus().equals("INACTIVE")) {
                 doiTacDTOs.add(new DoiTacDTO(
                         doiTac.getId(),
                         doiTac.getDiaChi(),

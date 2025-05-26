@@ -218,7 +218,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const resortIds = Array.from(checkedBoxes).map(checkbox => checkbox.getAttribute("data-id"));
 
         // Gửi DELETE request đến API
-        fetch("http://localhost:8080/api/resort", {
+        fetch("/api/resort", {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

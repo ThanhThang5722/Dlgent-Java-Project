@@ -4,7 +4,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     var password = document.getElementById('password').value;
     
     try {
-        let response = await fetch('http://localhost:8080/api/signin', {
+        let response = await fetch('/api/signin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
