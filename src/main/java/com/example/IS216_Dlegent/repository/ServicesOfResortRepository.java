@@ -14,5 +14,5 @@ public interface ServicesOfResortRepository extends JpaRepository<ServicesOfReso
     List<ServicesOfResort> findByKhuNghiDuong_IdAndIsDeletedFalse(Long resortId);
     Optional<ServicesOfResort> findByKhuNghiDuong_IdAndDichVu_Id(Long resortId, Long serviceId);
     List<ServicesOfResort> findByKhuNghiDuong_Id(Long resortId);
-    
+    List<ServicesOfResort> findByDichVuId(Long serviceId);
 }

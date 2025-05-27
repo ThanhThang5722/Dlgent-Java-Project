@@ -23,7 +23,7 @@ public class ServicesOfResortService {
                 .orElse(null);
     }
 
-    private ServicesOfResortResponse convertToResponse(ServicesOfResort entity) {
+    public ServicesOfResortResponse convertToResponse(ServicesOfResort entity) {
         return new ServicesOfResortResponse(
                 entity.getId(),
                 entity.getKhuNghiDuong().getId(),
@@ -44,4 +44,5 @@ public class ServicesOfResortService {
                         entity.getGia()))
                 .collect(Collectors.toList());
     }
+
 }
