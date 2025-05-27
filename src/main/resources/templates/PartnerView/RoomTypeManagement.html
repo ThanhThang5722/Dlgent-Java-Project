@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <title>Room Type Management</title>
+    <style>
+        .sidebar a:hover {
+            background-color: #5da182; /* Màu nền khi hover */
+        }
+    </style>
 </head>
 <body>
     <div class="sidebar bg-dark text-white shadow" style="min-height: 100vh; padding-left: 0; padding-right: 0; padding-top: 1.5rem; padding-bottom: 1.5rem;">
@@ -18,7 +23,7 @@
                     <i class="bi bi-house-door-fill me-2"></i> Danh sách khu nghỉ dưỡng
                 </a>
             </li>
-            <li class="nav-item mb-2">
+            <li class="nav-item mb-2" style="background-color: #198754;">
                 <a class="nav-link text-white" th:href="@{/partner/room-type-list/{doiTacId}(doiTacId=${doiTacId})}">
                     <i class="bi bi-building me-2"></i> Danh sách loại phòng
                 </a>
@@ -48,6 +53,7 @@
     <div class="content">
         <div class="row">
             <div class="col-12">
+                <h4>Quản lý loại phòng</h4>
                 <div class="tools">
                     <h5>Tools</h5>
                     <div class="mb-3">
@@ -211,7 +217,7 @@
                                         onclick="openTienIchModal(this)">
                                         Tiện ích
                                     </a>
-                                    <a th:href="@{/partner/booking-offer?(roomTypeId=${roomType.id})}" class="btn btn-primary">Gói đặt phòng</a>
+                                    <!--<a th:href="@{/partner/booking-offer?(roomTypeId=${roomType.id})}" class="btn btn-primary">Gói đặt phòng</a>-->
                                 </td>
                                 <td style="display: none;" th:data-id="${roomType.khuNghiDuong.id}"></td>
                             </tr>

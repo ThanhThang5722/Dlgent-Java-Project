@@ -6,9 +6,10 @@ public class InsertGoiDatPhongRequest {
     private Long loaiPhongId;
     private List<Long> dsDichVuId;
     private List<Integer> dsGiamGia;
-    public InsertGoiDatPhongRequest(Long loaiPhongId, List<Long> dsDichVuId) {
+    public InsertGoiDatPhongRequest(Long loaiPhongId, List<Long> dsDichVuId, List<Integer> dsGiamGia) {
         this.loaiPhongId = loaiPhongId;
         this.dsDichVuId = dsDichVuId;
+        this.dsGiamGia = dsGiamGia;
     }
     public InsertGoiDatPhongRequest() {}
     public Long getLoaiPhongId() {

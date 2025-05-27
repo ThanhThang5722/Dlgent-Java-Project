@@ -8,13 +8,17 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <title>Partner Dash board</title>
-    
+    <style>
+        .sidebar a:hover {
+            background-color: #5da182; /* Màu nền khi hover */
+        }
+    </style>
 </head>
 <body>
     <div class="sidebar bg-dark text-white shadow" style="min-height: 100vh; padding-left: 0; padding-right: 0; padding-top: 1.5rem; padding-bottom: 1.5rem;">
         <h4 class="text-center mb-4">Partner Dashboard</h4>
         <ul class="nav flex-column nav-pills">
-            <li class="nav-item mb-2">
+            <li class="nav-item mb-2" style="background-color: #198754;"> 
                 <a class="nav-link text-white" th:href="@{/partner/{doiTacId}(doiTacId=${doiTacId})}">
                     <i class="bi bi-house-door-fill me-2"></i> Danh sách khu nghỉ dưỡng
                 </a>
@@ -51,6 +55,7 @@
         <div class="row">
             <!-- Tools Zone (always stacked) -->
             <div class="col-12">
+                <h4>Quản lý khu nghỉ dưỡng</h4>
                 <div class="tools">
                     <h5>Tools</h5>
     
@@ -191,7 +196,6 @@
                           <!-- Dịch vụ sẽ được render ở đây -->
                         </tbody>
                       </table>
-                      <div class="alert alert-info">Hiển thị tất cả dịch vụ - dù có hay không</div>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-primary" onclick="saveServices()">Lưu</button>

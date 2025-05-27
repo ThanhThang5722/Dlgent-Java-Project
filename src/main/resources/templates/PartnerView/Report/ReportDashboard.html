@@ -64,6 +64,9 @@
             font-weight: normal;
             opacity: 0.8;
         }
+        .sidebar a:hover {
+            background-color: #5da182; /* Màu nền khi hover */
+        }
     </style>
 </head>
 <body>
@@ -91,7 +94,7 @@
                     <i class="bi bi-calendar-check me-2"></i> Quản lý đặt phòng
                 </a>
             </li>
-            <li class="nav-item mb-2">
+            <li class="nav-item mb-2" style="background-color: #198754;">
                 <a class="nav-link text-white" th:href="@{/partner/report?doiTacId={doiTacId}(doiTacId=${doiTacId})}">
                     <i class="bi bi-bar-chart-line me-2"></i> Báo cáo doanh thu
                 </a>
@@ -109,9 +112,6 @@
             <div class="row mb-4">
                 <div class="col-12">
                     <h2>Báo cáo doanh thu
-                        <button id="refreshBtn" class="btn btn-sm btn-primary refresh-button">
-                            <i class="bi bi-arrow-clockwise"></i> Làm mới dữ liệu
-                        </button>
                     </h2>
                 </div>
             </div>
