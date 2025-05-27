@@ -26,7 +26,7 @@ public class GoiDatPhongDTO {
         }
         
         // Tạo danh sách dịch vụ mặc định và tính lại tổng giá tiền
-        BigDecimal tongGia = BigDecimal.ZERO;
+        BigDecimal tongGia = goiDatPhong.getLoaiPhong().getGia() != null ? goiDatPhong.getTongGiaTien() : BigDecimal.ZERO;
         if (goiDatPhong.getDichVuMacDinhs() != null) {
             for (DichVuMacDinh dvmd : goiDatPhong.getDichVuMacDinhs()) {
                 DichVuMacDinhDTO dichVuDTO = new DichVuMacDinhDTO(dvmd);

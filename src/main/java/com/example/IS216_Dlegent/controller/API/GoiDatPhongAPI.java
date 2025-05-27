@@ -99,10 +99,13 @@ public class GoiDatPhongAPI {
         try {
             // 1. Tạo gói đặt phòng mới
         GoiDatPhong goiDatPhong = new GoiDatPhong();
-        goiDatPhong.setLoaiPhong(new LoaiPhong(request.getLoaiPhongId()));
+        LoaiPhong loaiPhong = loaiPhongService.getLoaiPhongById(request.getLoaiPhongId());
+        goiDatPhong.setLoaiPhong(loaiPhong);
+        goiDatPhong.setTongGiaTien(loaiPhong.getGia());
+        Long idKhuNghiDuong = loaiPhong.getKhuNghiDuong().getId();
             
             // Tính tổng giá tiền ban đầu (sẽ được cập nhật sau khi thêm dịch vụ)
-            goiDatPhong.setTongGiaTien(BigDecimal.ZERO);
+            //goiDatPhong.setTongGiaTien(BigDecimal.ZERO);
             
             // 2. Lưu gói đặt phòng để lấy ID
             goiDatPhong = goiDatPhongService.insertGoiDatPhong(goiDatPhong);
@@ -123,7 +126,7 @@ public class GoiDatPhongAPI {
                     
                     // Tìm dịch vụ của khu nghỉ dưỡng
                     ServicesOfResort dichVuKhuNghiDuong = servicesOfResortRepository
-                            .findById(dichVuId)
+                            .findByKhuNghiDuongIdAndDichVuId(idKhuNghiDuong, dichVuId)
                             .orElse(null);
                     
                     if (dichVuKhuNghiDuong != null) {
@@ -159,22 +162,31 @@ public class GoiDatPhongAPI {
     
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBookingService(@PathVariable Long id, @RequestBody InsertGoiDatPhongRequest request) {
+        System.out.println("checkpoint PUT: " + request);
         try {
+            System.out.println("Checkpoint PUT 2");
             // 1. Tìm gói đặt phòng cần cập nhật
             GoiDatPhong goiDatPhong = goiDatPhongService.getGoiDatPhongById(id);
             if (goiDatPhong == null) {
                 return ResponseEntity.notFound().build();
             }
             
+            System.out.println("Checkpoint PUT 2");
             // 2. Xóa tất cả dịch vụ mặc định hiện tại
             List<DichVuMacDinh> currentDichVus = dichVuMacDinhService.findByGoiDatPhongId(id);
+            System.out.println("Checkpoint PUT 3 " + currentDichVus.isEmpty());
+            Long idKhuNghiDuong = goiDatPhong.getLoaiPhong().getKhuNghiDuong().getId();
+            //Long idKhuNghiDuong = 5L;
+            System.out.println("Checkpoint PUT 3.5: " + idKhuNghiDuong);
             for (DichVuMacDinh dv : currentDichVus) {
                 dichVuMacDinhService.delete(dv.getId());
             }
+
+            System.out.println("Checkpoint PUT 4");
             
             // 3. Thêm các dịch vụ mặc định mới
             List<DichVuMacDinh> dsDichVuMacDinh = new ArrayList<>();
-            
+            System.out.println("Có vẻ không có danh sách dịch vụ nào được gửi lên");
             if (request.getDsDichVuId() != null && !request.getDsDichVuId().isEmpty()) {
                 for (int i = 0; i < request.getDsDichVuId().size(); i++) {
                     Long dichVuId = request.getDsDichVuId().get(i);
@@ -185,10 +197,14 @@ public class GoiDatPhongAPI {
                         giamGia = BigDecimal.valueOf(request.getDsGiamGia().get(i));
                     }
                     
+                    // ServicesOfResort dichVuKhuNghiDuong = servicesOfResortRepository
+                    //         .findById(dichVuId)
+                    //         .orElse(null);
+                    System.out.println("Ddang trong PUT ne hahahahahahah");
                     ServicesOfResort dichVuKhuNghiDuong = servicesOfResortRepository
-                            .findById(dichVuId)
-                            .orElse(null);
-                    
+                             .findByKhuNghiDuongIdAndDichVuId(idKhuNghiDuong, dichVuId)
+                             .orElse(null);           
+                    System.out.println("Dich vu khu nghi duong: " + dichVuKhuNghiDuong);
                     if (dichVuKhuNghiDuong != null) {
                         DichVuMacDinh dichVuMacDinh = new DichVuMacDinh();
                         dichVuMacDinh.setDichVuKhuNghiDuong(dichVuKhuNghiDuong);

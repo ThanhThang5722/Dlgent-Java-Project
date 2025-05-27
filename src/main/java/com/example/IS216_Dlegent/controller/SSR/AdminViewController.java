@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.IS216_Dlegent.model.Discount;
 import com.example.IS216_Dlegent.model.LichSuRutTien;
 import com.example.IS216_Dlegent.repository.LichSuRutTienRepository;
 import com.example.IS216_Dlegent.service.LichSuRutTienService;
+import com.example.IS216_Dlegent.service.DiscountService;
 import com.example.IS216_Dlegent.service.KhachHangService;
 
 @Controller
@@ -20,6 +22,8 @@ public class AdminViewController {
 
     @Autowired
     private LichSuRutTienService lichSuRutTienService;
+    @Autowired
+    private DiscountService discountService;
 
     @Autowired
     private KhachHangService khachHangService;
@@ -51,8 +55,10 @@ public class AdminViewController {
     }
 
     @GetMapping("/discount")
-    public String getDiscountMangamentView(@RequestParam String param) {
-        return new String();
+    public String getDiscountMangamentView(Model model) {
+        List<Discount> discounts = discountService.getAll(); 
+        model.addAttribute("discounts", discounts);
+        return "/AdminView/DiscountManagement/DiscountManagement";
     }
 
     @GetMapping("/withdraw")
