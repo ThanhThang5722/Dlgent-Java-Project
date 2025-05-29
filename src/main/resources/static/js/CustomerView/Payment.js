@@ -1,17 +1,19 @@
 // Hàm xử lý thanh toán qua ZaloPay
-function processZaloPayPayment(datPhongId) {
+function processZaloPayPayment(datPhongId,totalPrice) {
     // Lấy tổng số tiền từ trang
-    const totalPriceElement = document.querySelector('.text-danger.fs-5 span');
-    if (!totalPriceElement) {
-        alert('Không thể xác định số tiền thanh toán');
-        return;
-    }
+    // const totalPriceElement = document.querySelector(".text-danger.fs-5 span");
+    // if (!totalPriceElement) {
+    //     alert('Không thể xác định số tiền thanh toán');
+    //     return;
+    // }
 
-    // Lấy giá trị số tiền và loại bỏ dấu phẩy
-    const totalPriceText = totalPriceElement.textContent;
-    const amount = totalPriceText.replace(/,/g, '');
+    // // Lấy giá trị số tiền và loại bỏ dấu phẩy
+    // const totalPriceText = totalPriceElement.textContent;
+    // const amount = totalPriceText.replace(/,/g, '');
 
 //TODO: sửa lại ID đặt phòng đang bị sai
+
+    console.log('Total price:', totalPrice);
 
     if (!datPhongId) {
         alert('Không thể xác định thông tin đặt phòng');
@@ -30,7 +32,7 @@ function processZaloPayPayment(datPhongId) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ amount: amount })
+        body: JSON.stringify({ amount: totalPrice })
     })
     .then(response => {
         if (!response.ok) {
@@ -74,9 +76,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (paymentButton) {
         paymentButton.addEventListener('click', function(event) {
             const datPhongId = this.getAttribute('data-dat-phong-id');
+            const totalPrice = this.getAttribute('data-total-price');
 
             event.preventDefault();
-            processZaloPayPayment(datPhongId);
+            processZaloPayPayment(datPhongId,totalPrice);
         });
     }
 });
