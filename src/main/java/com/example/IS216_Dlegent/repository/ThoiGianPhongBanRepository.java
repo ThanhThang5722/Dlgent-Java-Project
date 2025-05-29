@@ -15,9 +15,11 @@ public interface ThoiGianPhongBanRepository extends JpaRepository<ThoiGianPhongB
         SELECT t FROM ThoiGianPhongBan t
         JOIN FETCH t.phong p
         JOIN FETCH p.loaiPhong
-        JOIN FETCH t.khachHang
+        JOIN FETCH t.hoaDon h
+        JOIN FETCH h.khachHang
         ORDER BY t.ngayBatDau DESC
     """)
     public List<ThoiGianPhongBan> findLichSuPhongBan();
     
+    ThoiGianPhongBan findByHoaDon_Id(Long hoaDonId);
 }

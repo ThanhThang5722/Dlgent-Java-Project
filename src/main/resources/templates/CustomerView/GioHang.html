@@ -80,13 +80,19 @@
                                     <span class="date-badge">
                                         <i class="bi bi-calendar-check"></i> Check-in:
                                     </span>
-                                    <span th:text="${item.ngayBatDau}">01/01/2023</span>
+                                    <span th:with="dateParts=${item.ngayBatDau.split('T')[0].split('-')}" 
+                                          th:text="${dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0] + ' 14:00'}">
+                                        01/01/2023 14:00
+                                    </span>
                                 </div>
                                 <div>
                                     <span class="date-badge">
                                         <i class="bi bi-calendar-x"></i> Check-out:
                                     </span>
-                                    <span th:text="${item.ngayKetThuc}">03/01/2023</span>
+                                    <span th:with="dateParts=${item.ngayKetThuc.split('T')[0].split('-')}" 
+                                          th:text="${dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0] + ' 12:00'}">
+                                        03/01/2023 12:00
+                                    </span>
                                 </div>
                             </div>
                             <div class="col-md-6 text-md-end">

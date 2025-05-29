@@ -21,19 +21,19 @@ public class ThoiGianPhongBan {
     private LocalDateTime ngayKetThuc;
 
     @ManyToOne
-    @JoinColumn(name = "ID_KHACH_HANG", nullable = false)
-    private KhachHang khachHang;
+    @JoinColumn(name = "ID_HOA_DON", nullable = false)
+    private HoaDon hoaDon;
 
     public ThoiGianPhongBan() {
     }
 
     public ThoiGianPhongBan(Long id, Phong phong, LocalDateTime ngayBatDau, LocalDateTime ngayKetThuc,
-            KhachHang khachHang) {
+        HoaDon khachHang) {
         this.id = id;
         this.phong = phong;
         this.ngayBatDau = ngayBatDau;
         this.ngayKetThuc = ngayKetThuc;
-        this.khachHang = khachHang;
+        this.hoaDon = khachHang;
     }
 
     public Long getId() {
@@ -68,12 +68,12 @@ public class ThoiGianPhongBan {
         this.ngayKetThuc = ngayKetThuc;
     }
 
-    public KhachHang getKhachHang() {
-        return khachHang;
+    public HoaDon getHoaDon() {
+        return hoaDon;
     }
 
-    public void setKhachHang(KhachHang khachHang) {
-        this.khachHang = khachHang;
+    public void setHoaDon(HoaDon hoaDon) {
+        this.hoaDon = hoaDon;
     }
     
 }
