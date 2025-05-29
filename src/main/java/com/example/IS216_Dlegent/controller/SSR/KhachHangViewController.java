@@ -276,7 +276,6 @@ public class KhachHangViewController {
         int totalPrice = cartItems.stream()
                 .mapToInt(item -> item.getTongGiaTien())
                 .sum();
-
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("totalPrice", totalPrice);
 

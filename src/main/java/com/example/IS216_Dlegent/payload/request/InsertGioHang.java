@@ -1,10 +1,13 @@
 package com.example.IS216_Dlegent.payload.request;
 
+import java.math.BigDecimal;
+
 public class InsertGioHang {
     private Long khachHangId;
     private Long goiDatPhongId;
     // private Integer soLuongPhong;
     // private Integer soLuongDichVuYeuCau;
+    private BigDecimal tongGiaTien;
     private String ngayBatDau;
     private String ngayKetThuc;
     private String tinhTrang = "Pending";
@@ -15,6 +18,15 @@ public class InsertGioHang {
     public InsertGioHang(Long khachHangId, Long goiDatPhongId, String ngayBatDau, String ngayKetThuc) {
         this.khachHangId = khachHangId;
         this.goiDatPhongId = goiDatPhongId;
+        this.ngayBatDau = ngayBatDau;
+        this.ngayKetThuc = ngayKetThuc;
+    }
+
+    public InsertGioHang(Long khachHangId, Long goiDatPhongId, BigDecimal tongGiaTien, String ngayBatDau,
+            String ngayKetThuc) {
+        this.khachHangId = khachHangId;
+        this.goiDatPhongId = goiDatPhongId;
+        this.tongGiaTien = tongGiaTien;
         this.ngayBatDau = ngayBatDau;
         this.ngayKetThuc = ngayKetThuc;
     }
@@ -57,6 +69,14 @@ public class InsertGioHang {
 
     public void setTinhTrang(String tinhTrang) {
         this.tinhTrang = tinhTrang;
+    }
+
+    public BigDecimal getTongGiaTien() {
+        return tongGiaTien;
+    }
+
+    public void setTongGiaTien(BigDecimal tongGiaTien) {
+        this.tongGiaTien = tongGiaTien;
     }
 
 }

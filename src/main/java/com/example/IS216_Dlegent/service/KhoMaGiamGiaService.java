@@ -66,6 +66,7 @@ public class KhoMaGiamGiaService {
                     GiamGia giamGia = kho.getGiamGia();
                     return new MaGiamGiaDTO(
                             giamGia.getId(),
+                            giamGia.getLoaiPhong().getId(),
                             giamGia.getLoaiGiamGia(),
                             giamGia.getGiaTri(),
                             giamGia.getMucToiDa(),
@@ -73,7 +74,7 @@ public class KhoMaGiamGiaService {
                             giamGia.getNgayKetThuc().format(formatter),
                             giamGia.getDoiDiem().getGiaTri(),
                             "CODE" + giamGia.getId(),
-                            "ACTIVE");
+                            giamGia.getTrangThai());
                 })
                 .collect(Collectors.toList());
 

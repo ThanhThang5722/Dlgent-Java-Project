@@ -1,6 +1,7 @@
 package com.example.IS216_Dlegent.controller.API;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +41,15 @@ public class MaGiamGiaAPI {
     @PutMapping("/quy-doi/{id}")
     public ResponseEntity<?> quyDoiDiem(@PathVariable Long id, @RequestBody QuyDoiRequest quyDoiRequest) {
         return maGiamGiaService.quyDoiDiem(id, quyDoiRequest.getUserId());
+    }
+
+    @GetMapping("/kho-ma-giam-gia/{loaiPhongId}/{khachHangId}")
+    public  ResponseEntity<?> getKhoMaGiamGiaByLoaiPhong(@PathVariable Long loaiPhongId, @PathVariable Long khachHangId) {
+        return maGiamGiaService.getKhoMaGiamGiaByLoaiPhong(loaiPhongId, khachHangId);
+    }
+
+    @PutMapping("/kho-ma-giam-gia/ap-dung")
+    public ResponseEntity<?> apDungMaGiamGia(@RequestBody Map<String, Object> request) {
+        return maGiamGiaService.apDungMaGiamGia(request);
     }
 }
