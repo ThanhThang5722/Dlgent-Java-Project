@@ -87,6 +87,7 @@ function toggleAuthMode() {
 /**
  * Handle signin form submission
  */
+
 async function handleSignin(event) {
     event.preventDefault();
 
@@ -119,17 +120,16 @@ async function handleSignin(event) {
         if (response.ok) {
             showAlert('Đăng nhập thành công!', 'success');
 
-            // Store token if provided
-            if (data.token) {
-                document.cookie = `token=${data.token}; path=/; HttpOnly`;
-            }
+            // Set cookies with correct field names from API response
+            document.cookie = `user_id=${data.roleId}; path=/; HttpOnly`;
+            const userRole = currentUserType === 'customer' ? 'CUSTOMER' : 'PARTNER';
+            document.cookie = `user_role=${userRole}; path=/; HttpOnly`;
 
-            // Redirect based on user type
             setTimeout(() => {
                 if (currentUserType === 'customer') {
                     window.location.href = '/homepage';
                 } else {
-                    window.location.href = '/admin/partner-account'; // Redirect to partner management page
+                    window.location.href = `/partner/${data.roleId}`;
                 }
             }, 1500);
 
