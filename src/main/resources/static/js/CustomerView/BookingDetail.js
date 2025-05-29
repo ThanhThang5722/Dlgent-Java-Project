@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (cancelBtn) {
         cancelBtn.addEventListener('click', function () {
-            if (confirm('Bạn có chắc chắn muốn hủy đặt phòng này không? Việc hủy có thể sẽ không được hoàn tiền.')) {
+            if (confirm("Bạn có chắc chắn muốn hủy đặt phòng này không? Việc hủy có thể sẽ không được hoàn tiền.")) {
                 // Lấy ID đặt phòng từ URL
                 const urlParams = new URLSearchParams(window.location.search);
                 const bookingId = urlParams.get('id');
@@ -31,6 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         });
                 }
             }
-        });
+    });
     }
 });

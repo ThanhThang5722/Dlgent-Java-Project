@@ -90,6 +90,8 @@ function initializeAddToCart() {
         const roomTypeId = button.data('room-type-id');
         let packageId = button.data('package-id');
 
+        const tongGiaTien = button.data('tong-gia-tien');
+
         // Lấy thông tin ngày từ search bar hoặc URL parameters
         const checkInInput = document.getElementById('checkIn');
         const checkOutInput = document.getElementById('checkOut');
@@ -111,7 +113,8 @@ function initializeAddToCart() {
 
         // Tạo đối tượng dữ liệu để gửi đi
         const data = {
-            goiDatPhongId: packageId || roomTypeId, // Nếu không có packageId thì dùng roomTypeId
+            goiDatPhongId: packageId, 
+            tongGiaTien: tongGiaTien,
             ngayBatDau: checkIn,
             ngayKetThuc: checkOut
         };

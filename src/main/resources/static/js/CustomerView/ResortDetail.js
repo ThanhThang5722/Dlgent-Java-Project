@@ -88,6 +88,7 @@ $(document).ready(function () {
         const resortId = button.data('resort-id');
         const roomTypeId = button.data('room-type-id');
         let packageId = button.data('package-id');
+        const tongGiaTien = button.data('tong-gia-tien');
         const checkIn = button.data('check-in');
         const checkOut = button.data('check-out');
         const soNguoi = button.data('so-nguoi');
@@ -99,8 +100,8 @@ $(document).ready(function () {
 
         // Tạo đối tượng dữ liệu để gửi đi
         const data = {
-            // Không cần chỉ định khachHangId, server sẽ lấy từ cookie
-            goiDatPhongId: packageId || roomTypeId, // Nếu không có packageId thì dùng roomTypeId
+            goiDatPhongId: packageId,
+            tongGiaTien: tongGiaTien,
             ngayBatDau: checkIn,
             ngayKetThuc: checkOut
         };

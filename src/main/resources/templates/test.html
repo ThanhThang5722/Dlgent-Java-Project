@@ -790,6 +790,7 @@
                                         <button class="btn btn-success btn-sm add-to-cart text-white"
                                             th:data-package-id="${package.id}" th:data-room-type-id="${roomType.id}"
                                             th:data-resort-id="${resort != null ? resort.id : ''}"
+                                            th:data-tong-gia-tien="${package != null ? package.tongGiaTien : '0'}"
                                             th:data-check-in="${checkIn != null ? #temporals.format(checkIn, 'yyyy-MM-dd') : ''}"
                                             th:data-check-out="${checkOut != null ? #temporals.format(checkOut, 'yyyy-MM-dd') : ''}"
                                             th:data-so-nguoi="${soNguoi != null ? soNguoi : 2}">

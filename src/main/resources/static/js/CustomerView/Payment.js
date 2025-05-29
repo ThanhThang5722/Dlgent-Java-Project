@@ -1,5 +1,5 @@
 // Hàm xử lý thanh toán qua ZaloPay
-function processZaloPayPayment() {
+function processZaloPayPayment(datPhongId) {
     // Lấy tổng số tiền từ trang
     const totalPriceElement = document.querySelector('.text-danger.fs-5 span');
     if (!totalPriceElement) {
@@ -9,21 +9,11 @@ function processZaloPayPayment() {
 
     // Lấy giá trị số tiền và loại bỏ dấu phẩy
     const totalPriceText = totalPriceElement.textContent;
-    // const amount = totalPriceText.replace(/,/g, '');
-    const amount = 100000;
+    const amount = totalPriceText.replace(/,/g, '');
 
-    // Lấy danh sách các ID đặt phòng từ các mục trong giỏ hàng
-    const cartItems = document.querySelectorAll('.cart-item');
-    if (!cartItems || cartItems.length === 0) {
-        alert('Giỏ hàng của bạn đang trống');
-        return;
-    }
 //TODO: sửa lại ID đặt phòng đang bị sai
-    // Lấy ID đặt phòng đầu tiên (hoặc có thể xử lý nhiều ID nếu cần)
-    const firstCartItem = cartItems[0];
-    const idDatPhong = firstCartItem.getAttribute('data-id');
 
-    if (!idDatPhong) {
+    if (!datPhongId) {
         alert('Không thể xác định thông tin đặt phòng');
         return;
     }
@@ -35,7 +25,7 @@ function processZaloPayPayment() {
     paymentButton.disabled = true;
 
     // Gọi API để tạo đơn hàng thanh toán
-    fetch(`/api/zalopay/${idDatPhong}`, {
+    fetch(`/api/zalopay/${datPhongId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -83,8 +73,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const paymentButton = document.getElementById('paymentButton');
     if (paymentButton) {
         paymentButton.addEventListener('click', function(event) {
+            const datPhongId = this.getAttribute('data-dat-phong-id');
+
             event.preventDefault();
-            processZaloPayPayment();
+            processZaloPayPayment(datPhongId);
         });
     }
 });
