@@ -17,6 +17,8 @@ import com.example.IS216_Dlegent.model.HoaDon;
 import com.example.IS216_Dlegent.repository.ChiTietDatPhongRepository;
 import com.example.IS216_Dlegent.repository.DatPhongRepository;
 import com.example.IS216_Dlegent.repository.HoaDonJPA;
+import com.example.IS216_Dlegent.repository.jdbc.JdbcRoomType;
+import com.example.IS216_Dlegent.repository.jdbc.JdbcThoiGianPhongBanRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -31,6 +33,9 @@ public class DatPhongService {
 
     @Autowired
     private HoaDonJPA hoaDonJPA;
+
+    @Autowired
+    private JdbcThoiGianPhongBanRepository jdbcThoiGianPhongBanRepository;
 
     @Transactional
     public List<HoaDon> capNhatTrangThaiVaTaoHoaDon(Long datPhongId, String trangThaiMoi, String hinhThucThanhToan) {
@@ -61,6 +66,8 @@ public class DatPhongService {
 
                 hoaDonList.add(hoaDonJPA.save(hoaDon));
             }
+ 
+            jdbcThoiGianPhongBanRepository.allocateRoomsForBooking(datPhongId);
         }
 
         return hoaDonList;

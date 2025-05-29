@@ -73,9 +73,7 @@ public class WebConfig implements WebMvcConfigurer {
 
                 // Áp dụng CustomerInterceptor cho các đường dẫn của khách hàng
                 registry.addInterceptor(customerInterceptor)
-                                .addPathPatterns("/user/**", 
-                                "/api/cart/**", "/gio-hang/**", "/api/zalopay/**",
-                                "/api/ma-giam-gia/**", "/api/kho-ma-giam-gia/**", "/payment-success/**")
+                                .addPathPatterns("/user/**", "/api/cart/**", "/gio-hang/**", "/api/zalopay/**")
                                 .excludePathPatterns(staticResourcePaths);
 
                 registry.addInterceptor(authInterceptor)
@@ -83,8 +81,7 @@ public class WebConfig implements WebMvcConfigurer {
                                 .excludePathPatterns(publicPaths)
                                 .excludePathPatterns("/admin/**", "/api/admin/**")
                                 .excludePathPatterns("/partner/**", "/api/partner/**")
-                                .excludePathPatterns("/user/**", "/api/cart/**", "/gio-hang/**", "/api/zalopay/**",
-                                                "/api/ma-giam-gia/**", "/api/kho-ma-giam-gia/**", "/payment-success/**", "api/payment")
+                                .excludePathPatterns("/user/**", "/api/cart/**", "/gio-hang/**")
                                 .excludePathPatterns(staticResourcePaths);
 
                 // Add HeaderDataInterceptor for all pages to automatically add authentication
