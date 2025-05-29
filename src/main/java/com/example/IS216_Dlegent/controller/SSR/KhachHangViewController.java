@@ -1,6 +1,7 @@
 package com.example.IS216_Dlegent.controller.SSR;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -273,9 +274,19 @@ public class KhachHangViewController {
         List<ChiTietDatPhongDTO> cartItems = chiTietDatPhongService.getChiTietDatPhongByDatPhongId(khachHangId);
 
         // tổng tiền
-        int totalPrice = cartItems.stream()
-                .mapToInt(item -> item.getTongGiaTien())
-                .sum();
+        int totalPrice = 0;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+        for (ChiTietDatPhongDTO item : cartItems) {
+            LocalDateTime ngayBatDau = LocalDateTime.parse(item.getNgayBatDau(), formatter);
+            LocalDateTime ngayKetThuc = LocalDateTime.parse(item.getNgayKetThuc(), formatter);
+
+            Duration duration = Duration.between(ngayBatDau, ngayKetThuc);
+            Long days = duration.toDays();
+
+            totalPrice = totalPrice + item.getTongGiaTien() * days.intValue();
+        }
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("totalPrice", totalPrice);
 
