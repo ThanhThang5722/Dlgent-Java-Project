@@ -72,7 +72,7 @@ public class DatPhongService {
 
                 hoaDonList.add(hoaDonJPA.save(hoaDon));
             }
- 
+
             jdbcThoiGianPhongBanRepository.allocateRoomsForBooking(datPhongId);
         }
 
@@ -105,23 +105,26 @@ public class DatPhongService {
 
             chiTietDatPhong.setTrangThai("Đã hủy");
             chiTietRepo.save(chiTietDatPhong);
-            capNhatTinhTrangPhong(chiTietDatPhong);
-            
-            return ResponseEntity.ok().body("Hủy đặt phòng thành công");
+            return capNhatTinhTrangPhong(chiTietDatPhong);
         }
         return ResponseEntity.ok().body("Hủy đặt phòng thất bại");
     }
-    
+
     @Autowired
     ThoiGianPhongBanRepository thoiGianPhongBanRepository;
     @Autowired
     HoaDonRepositoryJPA hoaDonRepository;
-    
-    public void capNhatTinhTrangPhong(ChiTietDatPhong chiTietDatPhong) {
+
+    public ResponseEntity<?> capNhatTinhTrangPhong(ChiTietDatPhong chiTietDatPhong) {
         HoaDon hoaDon = hoaDonRepository.findByChiTietDatPhong_Id(chiTietDatPhong.getId());
+
+        logger.info("test chi tiet: " + chiTietDatPhong.toString());
+
         ThoiGianPhongBan thoiGianPhongBan = thoiGianPhongBanRepository.findByHoaDon_Id(hoaDon.getId());
 
         thoiGianPhongBanRepository.delete(thoiGianPhongBan);
+
+        return ResponseEntity.ok().body("Hủy đặt phòng thành công");
     }
 
 }
