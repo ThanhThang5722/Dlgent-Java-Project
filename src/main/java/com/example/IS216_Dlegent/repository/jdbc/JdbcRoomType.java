@@ -25,7 +25,7 @@ import com.example.IS216_Dlegent.model.UtilitiesOfRoomType;
 import com.example.IS216_Dlegent.payload.SSR.RoomTypeDetailsDTO;
 import com.example.IS216_Dlegent.repository.HinhPhongRepo;
 import com.example.IS216_Dlegent.repository.DanhGiaRepository;
-import com.example.IS216_Dlegent.repository.GoiDaiPhongRepository;
+import com.example.IS216_Dlegent.repository.GoiDatPhongRepository;
 import com.example.IS216_Dlegent.repository.UtilitiesOfRoomTypeRepository;
 
 @Repository
@@ -37,7 +37,7 @@ public class JdbcRoomType {
         @Autowired
         private UtilitiesOfRoomTypeRepository utilitiesOfRoomTypeRepository;
         @Autowired
-        private GoiDaiPhongRepository goiDatPhongRepo;
+        private GoiDatPhongRepository goiDatPhongRepo;
         @Autowired
         private DanhGiaRepository danhGiaRepo;
 

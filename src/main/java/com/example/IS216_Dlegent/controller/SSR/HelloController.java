@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-
 @Controller
 public class HelloController {
     @Autowired
     private KhuNghiDuongService khuNghiDuongService;
 
-    @GetMapping("")
+    @GetMapping({ "", "/homepage" })
     public String home(Model model) {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);

@@ -31,6 +31,16 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+
+        String requestPath = request.getRequestURI();
+        logger.info("AuthInterceptor processing request: {}", requestPath);
+
+        // Skip authentication for specific public paths
+        if (requestPath.startsWith("/api/zalopay/") || requestPath.startsWith("/api/payment/")) {
+            logger.info("Skipping auth for public path: {}", requestPath);
+            return true;
+        }
+
         // Get auth token from cookie
         String authToken = CookieUtils.getCookieValue(request, "auth_token");
 

@@ -3,16 +3,20 @@ package com.example.IS216_Dlegent.service;
 import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.IS216_Dlegent.model.ChiTietDatPhong;
 import com.example.IS216_Dlegent.model.GiamGia;
 import com.example.IS216_Dlegent.model.KhoMaGiamGia;
 import com.example.IS216_Dlegent.payload.dto.MaGiamGiaDTO;
+import com.example.IS216_Dlegent.repository.ChiTietDatPhongRepository;
 import com.example.IS216_Dlegent.repository.DoiDiemRepository;
 import com.example.IS216_Dlegent.repository.GiamGiaRepository;
 
@@ -26,6 +30,9 @@ public class MaGiamGiaService {
 
     @Autowired
     private KhoMaGiamGiaService khoMaGiamGiaService;
+
+    @Autowired
+    private ChiTietDatPhongRepository chiTietRepo;
 
     public List<MaGiamGiaDTO> getDanhSach() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -64,5 +71,39 @@ public class MaGiamGiaService {
         khoMaGiamGiaService.save(id, userId);
 
         return ResponseEntity.ok().body("Quy đổi thành công");
+    }
+
+    public ResponseEntity<?> getKhoMaGiamGiaByLoaiPhong(Long loaiPhongId, Long khachHangId) {
+        List<MaGiamGiaDTO> maGiamGiaDTOs = khoMaGiamGiaService.getMaGiamGiaByKhachHangId(khachHangId);
+
+        maGiamGiaDTOs = maGiamGiaDTOs.stream()
+                .filter(mgg -> mgg.getLoaiPhongId().equals(loaiPhongId))
+                .collect(Collectors.toList());
+
+        List<MaGiamGiaDTO> active = maGiamGiaDTOs.stream()
+                .filter(mgg -> mgg.getTrangThai().equals("ACTIVE"))
+                .collect(Collectors.toList());
+
+        List<MaGiamGiaDTO> expired = maGiamGiaDTOs.stream()
+                .filter(mgg -> mgg.getTrangThai().equals("EXPIRED"))
+                .collect(Collectors.toList());
+
+        List<List<MaGiamGiaDTO>> danhSachMaGiamGia = new ArrayList<>();
+        danhSachMaGiamGia = List.of(active, expired);
+
+        return ResponseEntity.ok().body(danhSachMaGiamGia);
+    }
+
+    public ResponseEntity<?> apDungMaGiamGia(Map<String, Object> request) {
+        Long chiTietDatPhongId = Long.parseLong(request.get("chiTietId").toString());
+        Long maGiamGiaId = Long.parseLong(request.get("maGiamGiaId").toString());
+
+        ChiTietDatPhong chiTietDatPhong = chiTietRepo.findById(chiTietDatPhongId).get();
+        GiamGia giamGia = giamGiaRepository.findById(maGiamGiaId).get();
+
+        chiTietDatPhong.setGiamGia(giamGia);
+        chiTietRepo.save(chiTietDatPhong);
+
+        return ResponseEntity.ok().body("Áp dụng mã giảm giá thành công");
     }
 }

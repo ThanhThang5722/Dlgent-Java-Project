@@ -16,6 +16,7 @@ public class ResortSearchResponse {
     private int relevanceScore;
     private List<DichVuDTO> dichVuMacDinhs;
 
+
     public ResortSearchResponse(Long id, String tenResort, String diaChi, BigDecimal giaThapNhat, String imageUrl, Double rate,
      Integer soLuongDanhGia, int relevanceScore) {
         this.id = id;

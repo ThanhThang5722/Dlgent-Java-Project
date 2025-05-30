@@ -85,7 +85,7 @@ public class JdbcResortRepository {
                                         rs.getString("ten_resort"),
                                         rs.getString("dia_chi"),
                                         rs.getBigDecimal("gia_thap_nhat"),
-                                        rs.getString("img_360_url"),
+                                        rs.getString("img_url"),
                                         rs.getDouble("danh_gia"),
                                         rs.getInt("so_luong_danh_gia"),
                                         rs.getInt("relevance_score"));

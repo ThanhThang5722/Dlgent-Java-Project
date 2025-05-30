@@ -1,6 +1,7 @@
 package com.example.IS216_Dlegent.controller.SSR;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -28,12 +31,14 @@ import com.example.IS216_Dlegent.payload.dto.BookedRoomDTO;
 import com.example.IS216_Dlegent.payload.dto.BookingListDTO;
 import com.example.IS216_Dlegent.payload.dto.ChiTietDatPhongDTO;
 import com.example.IS216_Dlegent.payload.dto.DanhGiaDTO;
+import com.example.IS216_Dlegent.payload.dto.DichVuDTO;
 import com.example.IS216_Dlegent.payload.dto.ThongTinCaNhanKhachHangDTO;
 import com.example.IS216_Dlegent.payload.respsonse.ResortSearchResponse;
 import com.example.IS216_Dlegent.repository.DanhGiaRepository;
 import com.example.IS216_Dlegent.service.BookingListService;
 import com.example.IS216_Dlegent.service.ChiTietDatPhongService;
 import com.example.IS216_Dlegent.service.DanhGiaService;
+import com.example.IS216_Dlegent.model.HinhKhuNghiDuong;
 import com.example.IS216_Dlegent.model.KhachHang;
 import com.example.IS216_Dlegent.model.KhoMaGiamGia;
 import com.example.IS216_Dlegent.payload.dto.KhachHangDTO;
@@ -42,19 +47,24 @@ import com.example.IS216_Dlegent.repository.KhachHangRepository;
 import com.example.IS216_Dlegent.service.DichVuMacDinhService;
 import com.example.IS216_Dlegent.service.DiemService;
 import com.example.IS216_Dlegent.service.GoiDatPhongService;
+import com.example.IS216_Dlegent.service.HinhKhuNghiDuongService;
 import com.example.IS216_Dlegent.service.KhoMaGiamGiaService;
 import com.example.IS216_Dlegent.service.KhuNghiDuongService;
 import com.example.IS216_Dlegent.service.LoaiPhongService;
 import com.example.IS216_Dlegent.service.ThongTinTaiKhoanService;
 import com.example.IS216_Dlegent.utils.CookieUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import com.example.IS216_Dlegent.service.MaGiamGiaService;
+import com.example.IS216_Dlegent.service.ServicesOfResortService;
 import com.example.IS216_Dlegent.service.AccountService;
 
 @Controller
 public class KhachHangViewController {
+    public static final Logger logger = LoggerFactory.getLogger(KhachHangViewController.class);
 
     @Autowired
     private HttpServletRequest request;
@@ -92,7 +102,11 @@ public class KhachHangViewController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private ServicesOfResortService servicesOfResortService;
 
+    @Autowired
+    private HinhKhuNghiDuongService hinhKhuNghiDuongService;
 
     @GetMapping("/user/point-redemption")
     public String pointRedemptionPage(Model model) {
@@ -234,16 +248,20 @@ public class KhachHangViewController {
                 soNguoi);
 
         List<DanhGiaDTO> danhGias = danhGiaService.getDanhGiaDTOs(id);
+        List<DichVuDTO> dichVus = servicesOfResortService.getDichVuByResortId(id);
+        List<HinhKhuNghiDuong> hinhAnhs = hinhKhuNghiDuongService.getHinhKhuNghiDuongByResortId(id);
 
         model.addAttribute("resort", khuNghiDuong);
         model.addAttribute("result", roomtypes);
+        model.addAttribute("dichVus", dichVus);
+        model.addAttribute("hinhAnhs", hinhAnhs);
         model.addAttribute("resortId", id);
         model.addAttribute("checkIn", checkIn);
         model.addAttribute("checkOut", checkOut);
         model.addAttribute("soNguoi", soNguoi);
         model.addAttribute("danhGias", danhGias);
 
-        return "CustomerView/ResortDetail";
+        return "test";
     }
 
     @GetMapping("/gio-hang")
@@ -256,10 +274,19 @@ public class KhachHangViewController {
         List<ChiTietDatPhongDTO> cartItems = chiTietDatPhongService.getChiTietDatPhongByDatPhongId(khachHangId);
 
         // tổng tiền
-        int totalPrice = cartItems.stream()
-                .mapToInt(item -> item.getTongGiaTien())
-                .sum();
+        int totalPrice = 0;
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+        for (ChiTietDatPhongDTO item : cartItems) {
+            LocalDateTime ngayBatDau = LocalDateTime.parse(item.getNgayBatDau(), formatter);
+            LocalDateTime ngayKetThuc = LocalDateTime.parse(item.getNgayKetThuc(), formatter);
+
+            Duration duration = Duration.between(ngayBatDau, ngayKetThuc);
+            Long days = duration.toDays();
+
+            totalPrice = totalPrice + item.getTongGiaTien() * days.intValue();
+        }
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("totalPrice", totalPrice);
 
@@ -288,11 +315,20 @@ public class KhachHangViewController {
 
         Long khachHangId = CookieUtils.getUserIdFromCookie(request);
 
-        ThongTinCaNhanKhachHangDTO thongTinCaNhanKhachHangDTO = thongTinTaiKhoanService.getThongTinCaNhanKhachHang(khachHangId);
+        ThongTinCaNhanKhachHangDTO thongTinCaNhanKhachHangDTO = thongTinTaiKhoanService
+                .getThongTinCaNhanKhachHang(khachHangId);
 
-        model.addAttribute("thongTinCaNhanDto", thongTinCaNhanKhachHangDTO);
+        // Map DTO data to model attributes for the new template
+        if (thongTinCaNhanKhachHangDTO != null) {
+            model.addAttribute("khachHang", thongTinCaNhanKhachHangDTO);
+            model.addAttribute("diemTichLuy", thongTinCaNhanKhachHangDTO.getDiemTichLuy());
+        }
 
-        return "Profile/CustomerProfile";
+        // Add login status for header component
+        model.addAttribute("isLoggedIn", khachHangId != null);
+        model.addAttribute("cartCount", 0); // Default cart count, replace with actual data if available
+
+        return "CustomerView/Profile";
     }
 
     @PutMapping("/user/profile/{id}")
@@ -302,7 +338,5 @@ public class KhachHangViewController {
         thongTinTaiKhoanService.setThongTinCaNhanKhachHang(id, thongTinCaNhanKhachHangDTO);
         return ResponseEntity.ok().build();
     }
-
-    
 
 }

@@ -41,7 +41,7 @@
                 if (response.ok) {
                     let data = await response.json();
                     document.cookie = `token=${data.token}; path=/; HttpOnly`;
-                    window.location.href = `http://localhost:8080/partner/${data.roleId}`;
+                    window.location.href = `/partner/${data.roleId}`;
                 } else {
                     // Handle error responses
                     //const errorText = await response.text();

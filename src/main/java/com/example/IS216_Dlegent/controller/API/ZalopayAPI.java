@@ -3,6 +3,8 @@ package com.example.IS216_Dlegent.controller.API;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.example.IS216_Dlegent.service.ZalopayService;
 
@@ -12,11 +14,14 @@ import java.util.Map;
 @RequestMapping("/api/zalopay")
 public class ZalopayAPI {
 
+    private static final Logger logger = LoggerFactory.getLogger(ZalopayAPI.class);
+
     @Autowired
     private ZalopayService zalopayService;
 
     @PostMapping("/{idDatPhong}")
-    public ResponseEntity<String> createPayment(@RequestBody Map<String, Object> orderRequest,@PathVariable Long idDatPhong) {
+    public ResponseEntity<String> createPayment(@RequestBody Map<String, Object> orderRequest,
+            @PathVariable Long idDatPhong) {
         try {
             String response = zalopayService.createOrder(orderRequest, idDatPhong);
             return ResponseEntity.ok(response);
@@ -32,4 +37,3 @@ public class ZalopayAPI {
     }
 
 }
-

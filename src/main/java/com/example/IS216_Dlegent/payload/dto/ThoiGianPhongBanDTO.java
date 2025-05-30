@@ -70,8 +70,8 @@ public class ThoiGianPhongBanDTO {
             entity.getId(),
             entity.getPhong().getMaSo(),
             entity.getPhong().getLoaiPhong().getTenLoaiPhong(),
-            entity.getKhachHang().getId(),
-            entity.getKhachHang().getTaiKhoan().getUsername(),
+            entity.getHoaDon().getKhachHang().getId(),
+            entity.getHoaDon().getKhachHang().getTaiKhoan().getUsername(),
             entity.getNgayBatDau(),
             entity.getNgayKetThuc()
         );

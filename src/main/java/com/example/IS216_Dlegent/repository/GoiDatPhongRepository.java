@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.IS216_Dlegent.model.GoiDatPhong;
 
-public interface GoiDaiPhongRepository extends JpaRepository<GoiDatPhong, Long>{
+public interface GoiDatPhongRepository extends JpaRepository<GoiDatPhong, Long>{
 
     public List<GoiDatPhong> findByLoaiPhong_Id(Long loaiPhongId);
 }

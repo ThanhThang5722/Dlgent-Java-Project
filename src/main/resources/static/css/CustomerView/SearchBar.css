@@ -1,44 +1,193 @@
 /* Search Bar Component Styles */
 .search-bar {
-    background-color: white;
-    padding: 15px 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fffe 100%);
+    padding: 20px 0;
+    box-shadow: 0 4px 20px rgba(25, 135, 84, 0.08);
+    border-bottom: 1px solid rgba(25, 135, 84, 0.1);
+    position: relative;
+}
+
+.search-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(25, 135, 84, 0.02) 50%, transparent 100%);
+    pointer-events: none;
+}
+
+.search-bar .container {
+    position: relative;
+    z-index: 1;
 }
 
 .search-input {
-    border-radius: 4px;
-    padding: 10px 15px;
+    border-radius: 12px;
+    padding: 12px 18px;
     font-size: 14px;
-    height: 50px !important;
+    height: 56px !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid #e0e7e0;
+    background-color: white;
+}
+
+.search-input:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.15);
+    outline: 0;
+    background-color: #fafffe;
+}
+
+.search-input:hover {
+    border-color: #198754;
+    background-color: rgba(25, 135, 84, 0.02);
 }
 
 .rounded-input {
-    border-radius: 6px !important;
-    border: 1.5px solid #aaaaaa !important;
-    padding: 10px 15px !important;
-    height: 50px !important;
+    border-radius: 12px !important;
+    border: 2px solid #e0e7e0 !important;
+    padding: 12px 18px !important;
+    height: 56px !important;
+    transition: all 0.3s ease;
+}
+
+.rounded-input:focus {
+    border-color: #198754 !important;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.15) !important;
+    background-color: #fafffe !important;
+}
+
+.rounded-input:hover {
+    border-color: #198754 !important;
+    background-color: rgba(25, 135, 84, 0.02) !important;
 }
 
 .rounded-start-input {
-    border-radius: 6px 0 0 6px !important;
+    border-radius: 12px 0 0 12px !important;
     border-right: none !important;
 }
 
 .rounded-start-0 {
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
+    border-radius: 0 12px 12px 0 !important;
+}
+
+/* Dropdown select styling giống trang quy đổi mã giảm giá */
+.form-select.search-input {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23198754' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 18px 14px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    height: 56px !important;
+    padding: 0 45px 0 18px !important;
+    font-weight: 500;
+    display: flex !important;
+    align-items: center !important;
+    line-height: 1 !important;
+}
+
+.form-select.search-input:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.15);
+    outline: 0;
+    background-color: #fafffe;
+}
+
+.form-select.search-input:hover {
+    border-color: #198754;
+    background-color: rgba(25, 135, 84, 0.02);
 }
 
 .search-btn {
-    background-color: #2a65db;
+    background: linear-gradient(135deg, #198754 0%, #22c55e 100%);
     color: white;
     border: none;
-    border-radius: 4px;
-    padding: 10px 25px;
-    font-weight: bold;
-    font-size: 14px;
+    border-radius: 12px;
+    padding: 14px 28px;
+    font-weight: 700;
+    font-size: 15px;
     position: relative;
     z-index: 1;
+    transition: all 0.3s ease;
+    height: 56px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(25, 135, 84, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.search-btn:hover {
+    background: linear-gradient(135deg, #157347 0%, #16a34a 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(25, 135, 84, 0.35);
+    color: white;
+}
+
+.search-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(25, 135, 84, 0.3);
+}
+
+.search-btn i {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* Dropdown options styling giống trang quy đổi mã giảm giá */
+.form-select.search-input option {
+    padding: 12px 20px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: white;
+    border-radius: 8px;
+    margin: 2px 8px;
+}
+
+.form-select.search-input option:hover {
+    background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%);
+    color: #198754;
+}
+
+.form-select.search-input option:checked {
+    background: linear-gradient(135deg, #198754 0%, #22c55e 100%);
+    color: white;
+}
+
+/* Input group text styling */
+.input-group-text {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fffe 100%);
+    border: 2px solid #e0e7e0;
+    color: #198754;
+    transition: all 0.3s ease;
+    height: 56px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    border-radius: 12px 0 0 12px;
+}
+
+.input-group-text:hover {
+    background: linear-gradient(135deg, #f8fffe 0%, #f0fff4 100%);
+    border-color: #198754;
+    color: #157347;
+}
+
+.input-group:focus-within .input-group-text {
+    border-color: #198754;
+    color: #157347;
+    background: linear-gradient(135deg, #f8fffe 0%, #f0fff4 100%);
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.15);
 }
 
 /* DateRangePicker Styles */

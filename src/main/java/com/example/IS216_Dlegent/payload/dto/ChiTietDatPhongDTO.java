@@ -2,6 +2,8 @@ package com.example.IS216_Dlegent.payload.dto;
 
 public class ChiTietDatPhongDTO {
     private Long id;
+    private Long loaiPhongId;
+    private Long datPhongId;
     private String tenLoaiPhong;
     // private GiamGia?
     private int soLuongPhong;
@@ -14,10 +16,12 @@ public class ChiTietDatPhongDTO {
     public ChiTietDatPhongDTO() {
     }
 
-    public ChiTietDatPhongDTO(Long id, String tenLoaiPhong, int soLuongPhong, int soLuongDichVuYeuCau,
+    public ChiTietDatPhongDTO(Long id, Long loaiPhongId, Long datPhongId, String tenLoaiPhong, int soLuongPhong, int soLuongDichVuYeuCau,
             int tongGiaTien,
             String ngayBatDau, String ngayKetThuc, String tinhTrang) {
         this.id = id;
+        this.loaiPhongId = loaiPhongId;
+        this.datPhongId = datPhongId;
         this.tenLoaiPhong = tenLoaiPhong;
         this.soLuongPhong = soLuongPhong;
         this.soLuongDichVuYeuCau = soLuongDichVuYeuCau;
@@ -89,6 +93,22 @@ public class ChiTietDatPhongDTO {
 
     public void setTinhTrang(String tinhTrang) {
         this.tinhTrang = tinhTrang;
+    }
+
+    public Long getLoaiPhongId() {
+        return loaiPhongId;
+    }
+
+    public void setLoaiPhongId(Long loaiPhongId) {
+        this.loaiPhongId = loaiPhongId;
+    }
+
+    public Long getDatPhongId() {
+        return datPhongId;
+    }
+
+    public void setDatPhongId(Long datPhongId) {
+        this.datPhongId = datPhongId;
     }
 
 }

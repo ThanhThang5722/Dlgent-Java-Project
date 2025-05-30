@@ -56,6 +56,8 @@ public class ChiTietDatPhongService {
                 .stream()
                 .map(ctdp -> new ChiTietDatPhongDTO(
                         ctdp.getId(),
+                        ctdp.getGoiDatPhong().getLoaiPhong().getId(),
+                        ctdp.getDatPhong().getId(),
                         ctdp.getGoiDatPhong().getLoaiPhong().getTenLoaiPhong(),
                         ctdp.getSoLuongPhong(),
                         ctdp.getSoLuongDichVuYeuCau(),
@@ -118,14 +120,15 @@ public class ChiTietDatPhongService {
         chiTietDatPhong.setNgayBatDau(ngayBatDau.atStartOfDay());
         chiTietDatPhong.setNgayKetThuc(ngayKetThuc.atStartOfDay());
 
-        // Tính tổng tiền, chưa rõ cách tính nên set zero
-        chiTietDatPhong.setTongGiaTien(BigDecimal.ZERO);
+        chiTietDatPhong.setTongGiaTien(insertGioHang.getTongGiaTien());
         chiTietDatPhong.setTrangThai("Pending");
 
         chiTietDatPhong = chiTietDatPhongRepository.save(chiTietDatPhong);
 
         ChiTietDatPhongDTO dto = new ChiTietDatPhongDTO(
                 chiTietDatPhong.getId(),
+                chiTietDatPhong.getGoiDatPhong().getLoaiPhong().getId(),
+                chiTietDatPhong.getDatPhong().getId(),
                 chiTietDatPhong.getGoiDatPhong().getLoaiPhong().getTenLoaiPhong(),
                 chiTietDatPhong.getSoLuongPhong(),
                 chiTietDatPhong.getSoLuongDichVuYeuCau(),

@@ -125,4 +125,12 @@ public class GiamGia {
         this.doiDiem = doiDiem;
     }
 
+    public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
+    }
+
 }

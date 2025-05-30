@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/payment-success")
 public class PaymentSuccessViewController {
-    @PostMapping
+    @GetMapping
     public String getCustomerAccountManagementView() {
         return "PaymentSuccess";
     }

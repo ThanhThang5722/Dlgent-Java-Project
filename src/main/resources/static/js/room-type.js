@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
             khuNghiDuongId: parseInt(document.getElementById("resortId").value)
         };
 
-        fetch(`http://localhost:8080/api/resort/room-type`, {
+        fetch(`/api/resort/room-type`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newRoomType)
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const idsToDelete = {
             ids: Array.from(checkedBoxes).map(box => parseInt(box.dataset.id))
         };
-        fetch(`http://localhost:8080/api/resort/room-type`, {
+        fetch(`/api/resort/room-type`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(idsToDelete)
@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
             gia: parseFloat(document.getElementById("updateRoomTypePrice").value)
         };
 
-        fetch(`http://localhost:8080/api/resort/room-type/${updatedRoomType.id}`, {
+        fetch(`/api/resort/room-type/${updatedRoomType.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedRoomType)

@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.IS216_Dlegent.model.GoiDatPhong;
-import com.example.IS216_Dlegent.repository.GoiDaiPhongRepository;
+import com.example.IS216_Dlegent.repository.GoiDatPhongRepository;
 
 @Service
 public class GoiDatPhongService {
     @Autowired
-    GoiDaiPhongRepository goiDaiPhongRepository;
+    GoiDatPhongRepository goiDaiPhongRepository;
     public List<GoiDatPhong> getListGoiDatPhongByRoomTypeId(Long loaiPhongId) {
         return goiDaiPhongRepository.findByLoaiPhong_Id(loaiPhongId);
     }

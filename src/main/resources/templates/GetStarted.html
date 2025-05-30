@@ -1,143 +1,202 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Get Started</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-    }
-
-    .full-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: stretch;
-      height: 100vh;
-      width: 100vw;
-      background-color: #f8f9fa;
-    }
-
-    .column {
-      width: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .card {
-      width: 100%;
-      height: 100%;
-      border: none;
-      border-radius: 0;
-      box-shadow: none;
-      padding: 40px;
-      background-color: white;
-      display: flex;
-      flex-dsirection: column;
-      justify-content: center;
-      text-align: center;
-      align-items: center;
-    }
-
-    .separator {
-      width: 1px;
-      background-color: #dee2e6;
-      height: 100%;
-    }
-
-    .card p.description {
-      font-size: 0.9rem;
-      color: #444;
-      margin-top: 10px;
-      margin-bottom: 20px;
-    }
-
-    .btn-primary {
-      background-color: #6f42c1;
-      border-color: #6f42c1;
-      padding: 8px 20px;
-      font-size: 0.95rem;
-      border-radius: 4px;
-    }
-
-    .btn-primary:hover {
-      background-color: #563d7c;
-      border-color: #563d7c;
-    }
-
-    .button-group {
-      margin-top: 10px;
-    }
-
-    .button-group small {
-      display: block;
-      margin-top: 12px;
-      font-size: 0.85rem;
-      color: #6c757d;
-    }
-
-    .signup-link {
-      margin-left: 5px;
-      font-weight: 500;
-      color: #6f42c1;
-      text-decoration: none;
-    }
-
-    .signup-link:hover {
-      text-decoration: underline;
-    }
-
-    .description {
-        min-width: 200px;
-        max-width: 500px;
-        justify-content: center;
-        align-content: center;
-        text-align: center;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dlegent - Get Started</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <link href="/css/GetStarted.css" rel="stylesheet" />
 </head>
+
 <body>
-  <div class="full-container">
-    <div class="column">
-      <div class="card">
-        <h3>Khách Hàng</h3>
-        <p class="description">
-          Khách hàng dùng để tìm phòng, đặt chỗ, theo dõi đơn, thanh toán và đánh giá sau khi sử dụng, góp phần cải thiện chất lượng dịch vụ.
-        </p>
-        <div class="button-group">
-          <button class="btn btn-primary" onclick="window.location.href='/customer-signin'">
-            SIGN IN
-          </button>
-          <small>
-            Bạn không có tài khoản?
-            <a href="/customer-signup" class="signup-link">Đăng ký</a>
-          </small>
-        </div>
+  <!-- Header -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-brand">
+        <span class="logo-text">Dlegent</span>
       </div>
     </div>
-    <div class="separator"></div>
-    <div class="column">
-      <div class="card">
-        <h3>Đối Tác</h3>
-        <p class="description">
-          Đối tác cung cấp chỗ lưu trú trên app, quản lý thông tin phòng, giá, tình trạng đặt, xác nhận đơn và nhận phản hồi từ khách để nâng cao dịch vụ.
-        </p>
-        <div class="button-group">
-          <button class="btn btn-primary" onclick="window.location.href='/partner-signin'">SIGN IN</button>
-          <small>
-            Bạn không có tài khoản?
-            <a href="/partner-signup" class="signup-link">Đăng ký</a>
-          </small>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-container">
+    <div class="hero-section">
+      <div class="hero-content">
+        <h1 class="hero-title">Chào mừng đến với <span class="brand-highlight">Dlegent</span></h1>
+        <p class="hero-subtitle">Nền tảng đặt phòng khách sạn và resort hàng đầu Việt Nam</p>
+      </div>
+    </div>
+
+    <div class="selection-container">
+      <div class="row g-4">
+        <!-- Customer Card -->
+        <div class="col-md-6">
+          <div class="user-card customer-card">
+            <div class="card-icon">
+              <i class="fas fa-user"></i>
+            </div>
+            <h3 class="card-title">Khách Hàng</h3>
+            <p class="card-description">
+              Tìm kiếm và đặt phòng khách sạn, resort với giá tốt nhất.
+              Trải nghiệm dịch vụ chất lượng cao và nhận ưu đãi hấp dẫn.
+            </p>
+            <div class="card-actions">
+              <button class="btn btn-signin" onclick="openModal('customer', 'signin')">
+                <i class="fas fa-sign-in-alt"></i> Đăng Nhập
+              </button>
+              <button class="btn btn-signup" onclick="openModal('customer', 'signup')">
+                <i class="fas fa-user-plus"></i> Đăng Ký
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Partner Card -->
+        <div class="col-md-6">
+          <div class="user-card partner-card">
+            <div class="card-icon">
+              <i class="fas fa-handshake"></i>
+            </div>
+            <h3 class="card-title">Đối Tác</h3>
+            <p class="card-description">
+              Quản lý khách sạn, resort của bạn trên nền tảng.
+              Tiếp cận hàng triệu khách hàng và tăng doanh thu.
+            </p>
+            <div class="card-actions">
+              <button class="btn btn-signin" onclick="openModal('partner', 'signin')">
+                <i class="fas fa-sign-in-alt"></i> Đăng Nhập
+              </button>
+              <button class="btn btn-signup" onclick="openModal('partner', 'signup')">
+                <i class="fas fa-user-plus"></i> Đăng Ký
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Authentication Modal -->
+  <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="authModalLabel">Đăng Nhập</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Alert Messages -->
+          <div id="alertMessage" class="alert d-none" role="alert"></div>
+
+          <!-- Sign In Form -->
+          <form id="signinForm" class="auth-form">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-user"></i> Tên đăng nhập
+              </label>
+              <input type="text" id="signin-username" name="username" class="form-control"
+                placeholder="Nhập tên đăng nhập" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-lock"></i> Mật khẩu
+              </label>
+              <input type="password" id="signin-password" name="password" class="form-control"
+                placeholder="Nhập mật khẩu" required />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="fas fa-sign-in-alt"></i> Đăng Nhập
+            </button>
+          </form>
+
+          <!-- Sign Up Form -->
+          <form id="signupForm" class="auth-form d-none">
+            <!-- Common fields for both customer and partner -->
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-user"></i> Họ và tên
+              </label>
+              <input type="text" name="fullName" class="form-control" placeholder="Nhập họ và tên" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-envelope"></i> Email
+              </label>
+              <input type="email" name="email" class="form-control" placeholder="Nhập email" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-phone"></i> Số điện thoại
+              </label>
+              <input type="tel" name="phoneNumber" class="form-control" placeholder="Nhập số điện thoại" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-id-card"></i> CCCD
+              </label>
+              <input type="text" name="cccd" class="form-control" placeholder="Nhập số CCCD" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-map-marker-alt"></i> Địa chỉ
+              </label>
+              <input type="text" name="address" class="form-control" placeholder="Nhập địa chỉ" required />
+            </div>
+
+            <!-- Partner-specific fields -->
+            <div id="partnerFields" class="d-none">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-university"></i> Tên ngân hàng
+                </label>
+                <input type="text" name="bankName" class="form-control" placeholder="Nhập tên ngân hàng" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-credit-card"></i> Số tài khoản ngân hàng
+                </label>
+                <input type="text" name="bankAccountNumber" class="form-control" placeholder="Nhập số tài khoản" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-user-tie"></i> Tên chủ tài khoản
+                </label>
+                <input type="text" name="bankAccountName" class="form-control" placeholder="Nhập tên chủ tài khoản" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-user"></i> Tên đăng nhập
+              </label>
+              <input type="text" name="username" class="form-control" placeholder="Nhập tên đăng nhập" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-lock"></i> Mật khẩu
+              </label>
+              <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="fas fa-user-plus"></i> Đăng Ký
+            </button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="auth-switch">
+            <span id="switchText">Chưa có tài khoản?</span>
+            <button type="button" id="switchBtn" class="btn-link">Đăng ký ngay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/GetStarted.js"></script>
 </body>
+
 </html>

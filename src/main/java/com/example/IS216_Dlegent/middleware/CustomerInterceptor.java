@@ -34,7 +34,7 @@ public class CustomerInterceptor implements HandlerInterceptor {
 
         // Check if token is valid
         if (authToken == null || !verifyTokenService.isValidToken(authToken)) {
-            response.sendRedirect("/customer-signin");
+            response.sendRedirect("/getstarted");
             return false;
         }
 

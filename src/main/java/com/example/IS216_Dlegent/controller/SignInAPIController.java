@@ -3,6 +3,8 @@ package com.example.IS216_Dlegent.controller;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -12,11 +14,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.example.IS216_Dlegent.utils.CookieUtils;
 
@@ -35,6 +40,9 @@ import com.example.IS216_Dlegent.service.AccountService;
 import com.example.IS216_Dlegent.service.CustomerService;
 import com.example.IS216_Dlegent.service.DoiTacService;
 import com.example.IS216_Dlegent.service.UserService;
+import com.example.IS216_Dlegent.service.VerifyTokenService;
+import com.example.IS216_Dlegent.service.ChiTietDatPhongService;
+import com.example.IS216_Dlegent.payload.dto.ChiTietDatPhongDTO;
 
 @RestController
 public class SignInAPIController {
@@ -48,6 +56,10 @@ public class SignInAPIController {
     private DoiTacRepository doiTacRepository;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private VerifyTokenService verifyTokenService;
+    @Autowired
+    private ChiTietDatPhongService chiTietDatPhongService;
 
     private final Logger logger = LoggerFactory.getLogger(SignInController.class);
 
@@ -63,7 +75,7 @@ public class SignInAPIController {
             Account account = accountService.getAccountByUsername(userLogin.getUsername()).get();
             Optional<Customer> checkKhach = customerRepository.findByAccount(account);
 
-            if (isValid && checkKhach.isPresent()){
+            if (isValid && checkKhach.isPresent()) {
                 Customer khachHang = checkKhach.get();
                 if (!khachHang.getTinhTrang().equals("ACTIVE")) {
                     return ResponseEntity.status(406).body(new LoginResponse("Your account is not active", null, null));
@@ -119,6 +131,62 @@ public class SignInAPIController {
             return ResponseEntity.status(500).body(new LoginResponse("Server error during login", null, null));
         }
 
+    }
+
+    @PostMapping("/api/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        try {
+            // Get auth token from cookie
+            String authToken = CookieUtils.getCookieValue(request, "auth_token");
+
+            if (authToken != null) {
+                // Revoke the token in database
+                accountService.revokeToken(authToken);
+                logger.info("Token revoked successfully for logout");
+            }
+
+            // Create expired cookies to clear them
+            ResponseCookie expiredAuthCookie = CookieUtils.createExpiredCookie("auth_token");
+            ResponseCookie expiredUserIdCookie = CookieUtils.createExpiredCookie("user_id");
+            ResponseCookie expiredRoleCookie = CookieUtils.createExpiredCookie("user_role");
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, expiredAuthCookie.toString())
+                    .header(HttpHeaders.SET_COOKIE, expiredUserIdCookie.toString())
+                    .header(HttpHeaders.SET_COOKIE, expiredRoleCookie.toString())
+                    .body(new LoginResponse("Logout successful", null, null));
+
+        } catch (Exception e) {
+            logger.error("Error during logout process: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(new LoginResponse("Server error during logout", null, null));
+        }
+    }
+
+    @GetMapping("/api/cart/count")
+    public ResponseEntity<?> getCartCount(HttpServletRequest request) {
+        try {
+            // Check authentication status
+            String authToken = CookieUtils.getCookieValue(request, "auth_token");
+            boolean isLoggedIn = authToken != null && verifyTokenService.isValidToken(authToken);
+
+            if (!isLoggedIn) {
+                return ResponseEntity.ok().body(Map.of("count", 0));
+            }
+
+            // Get cart count for logged in user
+            Long userId = CookieUtils.getUserIdFromCookie(request);
+            if (userId != null) {
+                List<ChiTietDatPhongDTO> cartItems = chiTietDatPhongService.getChiTietDatPhongByDatPhongId(userId);
+                int cartCount = cartItems != null ? cartItems.size() : 0;
+                return ResponseEntity.ok().body(Map.of("count", cartCount));
+            } else {
+                return ResponseEntity.ok().body(Map.of("count", 0));
+            }
+
+        } catch (Exception e) {
+            logger.error("Error getting cart count: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(Map.of("error", "Server error getting cart count"));
+        }
     }
 
     @PostMapping("/api/partner-signin")

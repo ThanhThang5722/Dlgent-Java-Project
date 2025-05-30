@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 public class MaGiamGiaDTO {
     private Long id;
+    private Long loaiPhongId;
     private String loaiGiamGia;
     private BigDecimal giaTri;
     private BigDecimal mucToiDa;
@@ -26,6 +27,20 @@ public class MaGiamGiaDTO {
     public MaGiamGiaDTO(Long id, String loaiGiamGia, BigDecimal giaTri, BigDecimal mucToiDa, String ngayBatDau,
             String ngayKetThuc, Integer mucQuyDoi, String maCode, String trangThai) {
         this.id = id;
+        this.loaiGiamGia = loaiGiamGia;
+        this.giaTri = giaTri;
+        this.mucToiDa = mucToiDa;
+        this.ngayBatDau = ngayBatDau;
+        this.ngayKetThuc = ngayKetThuc;
+        this.mucQuyDoi = mucQuyDoi;
+        this.maCode = maCode;
+        this.trangThai = trangThai;
+    }
+
+    public MaGiamGiaDTO(Long id, Long loaiPhongId, String loaiGiamGia, BigDecimal giaTri, BigDecimal mucToiDa, String ngayBatDau,
+        String ngayKetThuc, Integer mucQuyDoi, String maCode, String trangThai) {
+        this.id = id;
+        this.loaiPhongId = loaiPhongId;
         this.loaiGiamGia = loaiGiamGia;
         this.giaTri = giaTri;
         this.mucToiDa = mucToiDa;
@@ -106,5 +121,13 @@ public class MaGiamGiaDTO {
 
     public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
+    }
+
+    public Long getLoaiPhongId() {
+        return loaiPhongId;
+    }
+
+    public void setLoaiPhongId(Long loaiPhongId) {
+        this.loaiPhongId = loaiPhongId;
     }
 }

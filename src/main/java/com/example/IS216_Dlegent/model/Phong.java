@@ -22,7 +22,7 @@ public class Phong {
     @Column(name = "MA_SO")
     private Integer maSo;
 
-    @Column(name = "TINH_TRANG", nullable = false)
+    @Column(name = "TRANG_THAI", nullable = false)
     private String tinhTrang;
 
     public Phong() {

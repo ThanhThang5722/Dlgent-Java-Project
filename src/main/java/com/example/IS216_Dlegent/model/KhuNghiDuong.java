@@ -30,18 +30,23 @@ public class KhuNghiDuong {
     @Column(name = "DANH_GIA", nullable = false)
     private Integer danhGia;
 
-    
+    @Column(name = "MO_TA", nullable = true)
+    private String moTa;
+
     // Constructors
     public KhuNghiDuong() {
     }
 
-    public KhuNghiDuong(DoiTac doiTac, String ten, String diaChi, Phuong phuong, String img360Url, int danhGia) {
+    public KhuNghiDuong(Long id, DoiTac doiTac, String ten, String diaChi, Phuong phuong, String img360Url,
+            Integer danhGia, String moTa) {
+        this.id = id;
         this.doiTac = doiTac;
         this.ten = ten;
         this.diaChi = diaChi;
         this.phuong = phuong;
         this.img360Url = img360Url;
         this.danhGia = danhGia;
+        this.moTa = moTa;
     }
 
     public KhuNghiDuong(Long resortId) {
@@ -109,6 +114,18 @@ public class KhuNghiDuong {
     public String toString() {
         return "KhuNghiDuong [id=" + id + ", doiTac=" + doiTac + ", ten=" + ten + ", diaChi=" + diaChi + ", phuong="
                 + phuong + ", img360Url=" + img360Url + ", danhGia=" + danhGia + "]";
+    }
+
+    public void setDanhGia(Integer danhGia) {
+        this.danhGia = danhGia;
+    }
+
+    public String getMoTa() {
+        return moTa;
+    }
+
+    public void setMoTa(String moTa) {
+        this.moTa = moTa;
     }
 
 }

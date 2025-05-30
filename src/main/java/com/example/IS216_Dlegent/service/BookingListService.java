@@ -38,6 +38,8 @@ public class BookingListService {
     LocalDateTime currentDate = LocalDateTime.now();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    LocalDate currentLocalDate = currentDate.toLocalDate();
+
     public BookingListDTO getBookingHistory(Long khachHangId) {
         BookingListDTO bookingListDTO = new BookingListDTO();
         List<DatPhong> datPhongs = datPhongRepository.findByKhachHang_Id(khachHangId);
@@ -56,12 +58,13 @@ public class BookingListService {
             bookingListDTO.setUpcomingRoom(new ArrayList<>());
         }
 
+        
         for (DatPhong datPhong : datPhongs) {
-            List<ChiTietDatPhong> chiTietDatPhongs = chiTietDatPhongRepository.findByDatPhong_Id(datPhong.getId());
-
             if (!datPhong.getTrangThai().equals("Đã thanh toán")) {
                 continue;
             }
+            
+            List<ChiTietDatPhong> chiTietDatPhongs = chiTietDatPhongRepository.findByDatPhong_Id(datPhong.getId());
 
             for (ChiTietDatPhong chiTietDatPhong : chiTietDatPhongs) {
                 System.out.println(chiTietDatPhong.toString());
@@ -81,11 +84,16 @@ public class BookingListService {
 
                 bookedRoomDTO.setHinhPhongUrl(hinhPhong.get(0).getUrl());
 
+                LocalDate startLocalDate = chiTietDatPhong.getNgayBatDau().toLocalDate();
+                LocalDate endLocalDate = chiTietDatPhong.getNgayKetThuc().toLocalDate();
+
                 if (chiTietDatPhong.getTrangThai().equals("Đã hủy")) {
                     bookingListDTO.getCancelledRoom().add(bookedRoomDTO);
-                } else if (chiTietDatPhong.getNgayKetThuc().isBefore(currentDate)) {
+                } else if (endLocalDate.isBefore(currentLocalDate)) {
                     bookingListDTO.getCompletedRoom().add(bookedRoomDTO);
-                } else if (chiTietDatPhong.getNgayBatDau().isAfter(currentDate)) {
+                } else if (startLocalDate.isEqual(currentLocalDate)) {
+                    bookingListDTO.getUpcomingRoom().add(bookedRoomDTO);
+                } else if (startLocalDate.isAfter(currentLocalDate)) {
                     bookingListDTO.getUpcomingRoom().add(bookedRoomDTO);
                 }
 

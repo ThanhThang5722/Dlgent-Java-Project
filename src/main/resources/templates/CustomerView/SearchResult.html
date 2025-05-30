@@ -29,14 +29,14 @@
             <!-- Cột bộ lọc -->
             <div class="col-md-3 text-dark p-3">
                 <!-- Bản đồ vị trí resort -->
-                <div class="map-container position-relative mb-3" style="cursor: pointer;" id="mapPreviewContainer">
+                <!-- <div class="map-container position-relative mb-3" style="cursor: pointer;" id="mapPreviewContainer">
                     <div style="overflow: hidden; border-radius: 8px; height: 200px;">
                         <div id="staticMapPreview" style="width: 100%; height: 200px;"></div>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Thanh trượt ngân sách -->
-                <div class="filter-card" style="background-color: #e6e3e3;">
+                <div class="filter-card">
                     <div class="filter-title">Ngân sách của bạn (mỗi đêm)</div>
                     <div class="budget-slider">
                         <input type="range" class="form-range" min="0" max="5000000" step="100000" id="priceRange">
@@ -166,14 +166,16 @@
                         <div class="row g-0">
                             <!-- Hình ảnh resort -->
                             <div class="col-md-3 position-relative">
-                                <div class="heart-icon">
-                                    <i class="bi bi-heart"></i>
-                                </div>
-                                <img th:if="${resort.imageUrl != null}" th:src="${resort.imageUrl}" class="resort-img"
-                                    alt="Hình ảnh Resort">
-                                <img th:if="${resort.imageUrl == null}"
-                                    src="https://cf.bstatic.com/xdata/images/hotel/square600/261707778.webp?k=fa6b6128468ec15e81f7d076b6f2473fa3a80c255582f155cae35f9edbffdd78"
+                                <!-- Ảnh chính từ imageUrl -->
+                                <img th:src="${resort.imageUrl}"
+                                    th:if="${resort.imageUrl != null && !#strings.isEmpty(resort.imageUrl)}"
                                     class="resort-img" alt="Hình ảnh Resort">
+
+                                <!-- Ảnh mặc định nếu không có imageUrl -->
+                                <img th:unless="${resort.imageUrl != null && !#strings.isEmpty(resort.imageUrl)}"
+                                    src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+                                    class="resort-img" alt="Hình ảnh Resort mặc định">
+
                             </div>
 
                             <!-- Thông tin resort -->
@@ -181,7 +183,7 @@
                                 <div class="d-flex flex-column justify-content-between">
                                     <h5 th:text="${resort.tenResort}" class="property-name mb-1 fs-2">Tên resort</h5>
                                     <div class="">
-                                        <i class="bi bi-geo-alt-fill"></i>
+                                        <i class="bi bi-geo-alt-fill location-icon"></i>
                                         <span th:text="${resort.diaChi}" class="ms-1 address-text">Địa chỉ</span>
                                     </div>
                                     <!-- Dịch vụ -->
@@ -202,7 +204,23 @@
                                         <span class="rating-text me-2" th:if="${resort.rate != null}"
                                             th:text="${resort.rate}">8.9</span>
                                         <span class="rating-text me-2" th:if="${resort.rate == null}">0</span>
-                                        <span class="rating-badge">Tuyệt vời</span>
+
+                                        <!-- Hiển thị text đánh giá tùy theo điểm số (thang 5) -->
+                                        <span th:if="${resort.rate != null and resort.rate >= 4.5}"
+                                            class="rating-badge rating-excellent">Xuất sắc</span>
+                                        <span
+                                            th:if="${resort.rate != null and resort.rate >= 4.0 and resort.rate < 4.5}"
+                                            class="rating-badge rating-very-good">Tuyệt vời</span>
+                                        <span
+                                            th:if="${resort.rate != null and resort.rate >= 3.5 and resort.rate < 4.0}"
+                                            class="rating-badge rating-good">Tốt</span>
+                                        <span
+                                            th:if="${resort.rate != null and resort.rate >= 3.0 and resort.rate < 3.5}"
+                                            class="rating-badge rating-fair">Khá</span>
+                                        <span th:if="${resort.rate != null and resort.rate < 3.0}"
+                                            class="rating-badge rating-average">Trung bình</span>
+                                        <span th:if="${resort.rate == null}" class="rating-badge rating-no-rating">Chưa
+                                            đánh giá</span>
                                     </div>
                                     <!-- Hiển thị sao dựa trên điểm đánh giá -->
                                     <!-- <div class="star-rating-container mb-1"

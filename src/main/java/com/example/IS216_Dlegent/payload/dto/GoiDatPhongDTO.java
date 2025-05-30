@@ -14,19 +14,20 @@ public class GoiDatPhongDTO {
     private String tenLoaiPhong;
     private BigDecimal tongGiaTien;
     private List<DichVuMacDinhDTO> dichVuMacDinhs = new ArrayList<>();
-    
+
     public GoiDatPhongDTO() {
     }
-    
+
     public GoiDatPhongDTO(GoiDatPhong goiDatPhong) {
         this.id = goiDatPhong.getId();
         if (goiDatPhong.getLoaiPhong() != null) {
             this.loaiPhongId = goiDatPhong.getLoaiPhong().getId();
             this.tenLoaiPhong = goiDatPhong.getLoaiPhong().getTenLoaiPhong();
         }
-        
+
         // Tạo danh sách dịch vụ mặc định và tính lại tổng giá tiền
-        BigDecimal tongGia = goiDatPhong.getLoaiPhong().getGia() != null ? goiDatPhong.getTongGiaTien() : BigDecimal.ZERO;
+        BigDecimal tongGia = goiDatPhong.getLoaiPhong().getGia() != null ? goiDatPhong.getTongGiaTien()
+                : BigDecimal.ZERO;
         if (goiDatPhong.getDichVuMacDinhs() != null) {
             for (DichVuMacDinh dvmd : goiDatPhong.getDichVuMacDinhs()) {
                 DichVuMacDinhDTO dichVuDTO = new DichVuMacDinhDTO(dvmd);
@@ -35,11 +36,11 @@ public class GoiDatPhongDTO {
                 tongGia = tongGia.add(dichVuDTO.getGiaSauGiam());
             }
         }
-        
+
         // Cập nhật tổng giá tiền
         this.tongGiaTien = tongGia;
     }
-    
+
     // Getters and Setters
     public Long getId() {
         return id;
@@ -80,9 +81,9 @@ public class GoiDatPhongDTO {
     public void setDichVuMacDinhs(List<DichVuMacDinhDTO> dichVuMacDinhs) {
         this.dichVuMacDinhs = dichVuMacDinhs;
     }
-    
+
     // Nested DTO class for DichVuMacDinh
-    @JsonIgnoreProperties({"goiDatPhong"})
+    @JsonIgnoreProperties({ "goiDatPhong" })
     public static class DichVuMacDinhDTO {
         private Long id;
         private Long dichVuId;
@@ -90,10 +91,10 @@ public class GoiDatPhongDTO {
         private Double giaDichVu;
         private BigDecimal giamGia;
         private BigDecimal giaSauGiam;
-        
+
         public DichVuMacDinhDTO() {
         }
-        
+
         public DichVuMacDinhDTO(DichVuMacDinh dichVuMacDinh) {
             this.id = dichVuMacDinh.getId();
             if (dichVuMacDinh.getDichVuKhuNghiDuong() != null) {
@@ -104,25 +105,25 @@ public class GoiDatPhongDTO {
                 this.giaDichVu = dichVuMacDinh.getDichVuKhuNghiDuong().getGia();
             }
             this.giamGia = dichVuMacDinh.getGIAMGIA();
-            
+
             // Tính giá sau giảm giá
             this.giaSauGiam = calculateGiaSauGiam();
         }
-        
+
         // Tính giá sau khi giảm
         private BigDecimal calculateGiaSauGiam() {
             if (this.giaDichVu == null) {
                 return BigDecimal.ZERO;
             }
-            
+
             BigDecimal giaGoc = BigDecimal.valueOf(this.giaDichVu);
             if (this.giamGia == null || this.giamGia.compareTo(BigDecimal.ZERO) <= 0) {
                 return giaGoc;
             }
-            
+
             // Tính số tiền được giảm (giá gốc * tỷ lệ giảm giá / 100)
             BigDecimal soTienGiam = giaGoc.multiply(this.giamGia).divide(new BigDecimal(100));
-            
+
             // Giá sau giảm = giá gốc - số tiền giảm
             return giaGoc.subtract(soTienGiam);
         }
@@ -167,13 +168,13 @@ public class GoiDatPhongDTO {
         public void setGiamGia(BigDecimal giamGia) {
             this.giamGia = giamGia;
         }
-        
+
         public BigDecimal getGiaSauGiam() {
             return giaSauGiam;
         }
-        
+
         public void setGiaSauGiam(BigDecimal giaSauGiam) {
             this.giaSauGiam = giaSauGiam;
         }
     }
-} 
+}

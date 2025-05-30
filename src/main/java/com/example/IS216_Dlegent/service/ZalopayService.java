@@ -35,7 +35,7 @@ public class ZalopayService {
             return "{\"error\": \"Amount is required\"}";
         }
 
-        String ngrokPrefix = "https://aa10-14-169-92-29.ngrok-free.app";
+        String ngrokPrefix = "https://435f-1-54-87-163.ngrok-free.app";
         String callback_url = ngrokPrefix + "/api/payment/" + idDatphong.toString();
 
         Map<String, Object> order = new HashMap<>();
