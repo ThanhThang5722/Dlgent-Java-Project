@@ -1,5 +1,6 @@
 package com.example.IS216_Dlegent.service;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.IS216_Dlegent.model.ChiTietDatPhong;
 import com.example.IS216_Dlegent.model.DatPhong;
+import com.example.IS216_Dlegent.model.DoiTac;
 import com.example.IS216_Dlegent.model.HoaDon;
 import com.example.IS216_Dlegent.model.ThoiGianPhongBan;
 import com.example.IS216_Dlegent.repository.ChiTietDatPhongRepository;
@@ -105,7 +107,7 @@ public class DatPhongService {
 
             chiTietDatPhong.setTrangThai("Đã hủy");
             chiTietRepo.save(chiTietDatPhong);
-            return capNhatTinhTrangPhong(chiTietDatPhong);
+            return capNhatTinhTrangPhongVaSoDu(chiTietDatPhong);
         }
         return ResponseEntity.ok().body("Hủy đặt phòng thất bại");
     }
@@ -115,15 +117,15 @@ public class DatPhongService {
     @Autowired
     HoaDonRepositoryJPA hoaDonRepository;
 
-    public ResponseEntity<?> capNhatTinhTrangPhong(ChiTietDatPhong chiTietDatPhong) {
+    @Transactional
+    public ResponseEntity<?> capNhatTinhTrangPhongVaSoDu(ChiTietDatPhong chiTietDatPhong) {
         HoaDon hoaDon = hoaDonRepository.findByChiTietDatPhong_Id(chiTietDatPhong.getId());
-
-        logger.info("test chi tiet: " + chiTietDatPhong.toString());
-
+        DoiTac doiTac = hoaDon.getDoiTac();
         ThoiGianPhongBan thoiGianPhongBan = thoiGianPhongBanRepository.findByHoaDon_Id(hoaDon.getId());
 
+        doiTac.setSoDu(doiTac.getSoDu().subtract(hoaDon.getTongGiaTien()));
         thoiGianPhongBanRepository.delete(thoiGianPhongBan);
-
+        
         return ResponseEntity.ok().body("Hủy đặt phòng thành công");
     }
 
