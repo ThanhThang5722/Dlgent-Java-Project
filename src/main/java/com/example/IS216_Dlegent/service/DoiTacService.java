@@ -119,8 +119,6 @@ public class DoiTacService {
         List<DoiTac> doiTacs = doiTacRepository.findAll();
         List<DoiTacDTO> doiTacDTOs = new ArrayList<DoiTacDTO>();
 
-        logger.info("trên");
-
         for (DoiTac doiTac : doiTacs) {
             Optional<User> user = userRepository.findByUserId(doiTac.getAccount().getUserId());
             if(!user.isPresent()){
@@ -136,12 +134,7 @@ public class DoiTacService {
                     user.get().getPhoneNumber(),
                     user.get().getCccd(),
                     user.get().getIsDeleted()));
-
-            logger.info("doi tac dto: " + doiTacDTOs);
         }
-
-        logger.info("dưới");
-        logger.info("Doi tac dto: " + doiTacDTOs);
 
         return doiTacDTOs;
     }
