@@ -10,5 +10,4 @@ import com.example.IS216_Dlegent.model.ChiTietDatPhong;
 @Repository
 public interface ChiTietDatPhongRepository extends JpaRepository<ChiTietDatPhong, Long> {
     List<ChiTietDatPhong> findByDatPhong_Id(Long datPhongId);
-    
 }

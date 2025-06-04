@@ -1,5 +1,7 @@
 package com.example.IS216_Dlegent.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
