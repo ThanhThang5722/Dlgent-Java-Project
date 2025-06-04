@@ -52,7 +52,8 @@ public class WebConfig implements WebMvcConfigurer {
                                 "/partner-signin",
                                 "/partner-signup",
                                 "/api/account/customer", "/api/account/partner",
-                                "/tim-kiem-resort/**", "/resort-detail/**"
+                                "/tim-kiem-resort/**", "/resort-detail/**",
+                                "/verify-email-success"
                 };
 
                 // Định nghĩa các đường dẫn tài nguyên tĩnh cần loại trừ khỏi tất cả các
@@ -82,6 +83,7 @@ public class WebConfig implements WebMvcConfigurer {
                                 .excludePathPatterns("/admin/**", "/api/admin/**")
                                 .excludePathPatterns("/partner/**", "/api/partner/**")
                                 .excludePathPatterns("/user/**", "/api/cart/**", "/gio-hang/**")
+                                .excludePathPatterns("/verify-email-success")
                                 .excludePathPatterns(staticResourcePaths);
 
                 // Add HeaderDataInterceptor for all pages to automatically add authentication

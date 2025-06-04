@@ -103,7 +103,7 @@ public class DoiTacService {
         doiTac.setTaiKhoanNganHang(info.getBankAccountNumber());
         doiTac.setTenNganHang(info.getBankName());
         doiTac.setTenTaiKhoanNganHang(info.getBankAccountName());
-        doiTac.setTinhTrang("INVALID");
+        doiTac.setTinhTrang("INACTIVE");
         doiTacRepository.save(doiTac);
 
         // 1 -> ADMIN
@@ -149,8 +149,8 @@ public class DoiTacService {
             if (!user.isPresent() || user.get().getIsDeleted() == 1) {
                 continue;
             }
-
-            if (doiTac.getAccount().getStatus().equals("INACTIVE")) {
+            System.out.println("DoiTac: " + doiTac.getId() + ", Status: " + doiTac.getAccount().getStatus());
+            if (doiTac.getTinhTrang().equals("INACTIVE")) {
                 doiTacDTOs.add(new DoiTacDTO(
                         doiTac.getId(),
                         doiTac.getDiaChi(),

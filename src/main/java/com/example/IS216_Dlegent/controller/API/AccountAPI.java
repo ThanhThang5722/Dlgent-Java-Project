@@ -54,7 +54,7 @@ public class AccountAPI {
             mail.setMailTo("zero2272005@gmail.com");
             mail.setMailSubject("DLEGENT - XÁC NHẬN ĐỊA CHỈ EMAIL");    
             
-            String confirmationUrl = "/verify-email-success?username=" + request.getUsername();
+            String confirmationUrl = "http://localhost:8080/verify-email-success?username=" + request.getUsername();
             emailService.sendConfirmationEmail(mail, confirmationUrl);
 
             return ResponseEntity.status(HttpStatus.CREATED).body("Tạo tài khoản thành công, vui lòng xác nhận email");
