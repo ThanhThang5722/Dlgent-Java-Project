@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -111,12 +113,17 @@ public class DoiTacService {
         accountRoleGroupRepo.saveAccountRoleGroup(accountRoleGroup);
     }
 
+    Logger logger = LoggerFactory.getLogger(getClass());
+
     public List<DoiTacDTO> getDoiTacDTO() {
         List<DoiTac> doiTacs = doiTacRepository.findAll();
         List<DoiTacDTO> doiTacDTOs = new ArrayList<DoiTacDTO>();
 
         for (DoiTac doiTac : doiTacs) {
             Optional<User> user = userRepository.findByUserId(doiTac.getAccount().getUserId());
+            if(!user.isPresent()){
+                continue;
+            }
             doiTacDTOs.add(new DoiTacDTO(
                     doiTac.getId(),
                     doiTac.getDiaChi(),
