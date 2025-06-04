@@ -54,7 +54,7 @@ public class WebConfig implements WebMvcConfigurer {
                                 "/api/account/customer", "/api/account/partner",
                                 "/tim-kiem-resort/**", "/resort-detail/**",
                                 "/verify-email-success",
-                                "api/customer/**/activate"
+                                "/api/customer/**/activate"
                 };
 
                 // Định nghĩa các đường dẫn tài nguyên tĩnh cần loại trừ khỏi tất cả các
