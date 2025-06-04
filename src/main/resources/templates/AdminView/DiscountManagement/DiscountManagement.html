@@ -5,60 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Mã Giảm Giá</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/AdminView/adminDashboard.css}"/>
     <style>
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 250px;
-            height: 100%;
-            background-color: #343a40;
-            padding-top: 20px;
-        }
-        .sidebar h4 {
-            color: white;
-            padding-left: 1rem;
-        }
-        .sidebar ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        .sidebar ul li {
-            margin: 15px 0;
-        }
-        .sidebar ul li a {
-            color: white;
-            text-decoration: none;
-            padding: 10px;
-            display: block;
-        }
-        .sidebar ul li a:hover {
-            background-color: #007bff;
-        }
-        .main-content {
-            margin-left: 260px;
-            padding: 20px;
-        }
         .form-container {
             background: #f8f9fa;
             padding: 15px;
             border-radius: 8px;
         }
+        .sidebar a:hover {
+            background-color: #5da182; /* Màu nền khi hover */
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h4>Admin Dashboard</h4>
-        <ul>
-            <li><a href="#">Quản lý tài khoản khách hàng</a></li>
-            <li><a href="#">Quản lý tài khoản</a></li>
-            <li><a href="#">Quản lý mã giảm giá</a></li>
-            <li><a href="#">Duyệt rút tiền</a></li>
+        <h4 class="text-center text-white">Admin Dashboard</h4>
+        <ul class="list-unstyled">
+            <li><a href="/admin/customerAccount"><i class="bi bi-people"></i> Quản lý tài khoản khách hàng</a></li>
+            <li><a href="/admin/partnerAccount"><i class="bi bi-building"></i> Quản lý tài khoản đối tác</a></li>
+            <li><a href="/admin/partnerApproval"><i class="bi bi-check-circle"></i> Phê duyệt đối tác</a></li>
+            <li><a href="/admin/withdraw"><i class="bi bi-cash-coin"></i> Duyệt rút tiền</a></li>
+            <li style="background-color: #198754;"><a href="/admin/discount"><i class="bi bi-tag"></i> Quản lý khuyến mãi</a></li>
         </ul>
     </div>
 
     <!-- MAIN CONTENT -->
-    <div class="main-content">
+    <div class="content">
         <div class="container">
             <h4 class="text-center mb-4">Quản lý Mã Giảm Giá</h4>
 
@@ -113,7 +86,7 @@
                 </div>
                 <button type="submit" class="btn btn-success">Lưu</button>
                 <button type="button" class="btn btn-secondary" id="cancelBtn">Hủy</button>
-        </form>
+            </form>
         </div>
 
         <!-- FORM Cập nhật -->
