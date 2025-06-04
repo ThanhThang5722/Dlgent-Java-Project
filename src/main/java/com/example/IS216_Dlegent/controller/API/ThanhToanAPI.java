@@ -48,14 +48,17 @@ public class ThanhToanAPI {
             emailContent.append("<p>Kính gửi <strong>").append(dtos.get(0).getTenKhachHang()).append("</strong>,</p>");
             emailContent.append("<p>Cảm ơn bạn đã đặt phòng tại DLEGENT. Dưới đây là thông tin chi tiết về đặt phòng của bạn:</p>");
             
-            for (HoaDonResponse hoaDon : dtos) {
+            for (int i = 0; i < dtos.size(); i++) {
+                HoaDonResponse hoaDonResponse = dtos.get(i);
+                HoaDon hoaDon = hoaDons.get(i);
                 String tenResort = hoaDon.getChiTietDatPhong().getGoiDatPhong().getLoaiPhong().getKhuNghiDuong().getTen();
+                
                 emailContent.append("<div style='background-color: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 5px;'>");
-                emailContent.append("<p><strong>Mã hóa đơn:</strong> ").append(hoaDon.getId()).append("</p>");
+                emailContent.append("<p><strong>Mã hóa đơn:</strong> ").append(hoaDonResponse.getId()).append("</p>");
                 emailContent.append("<p><strong>Resort:</strong> ").append(tenResort).append("</p>");
-                emailContent.append("<p><strong>Tổng tiền:</strong> ").append(hoaDon.getTongGiaTien()).append(" VND</p>");
-                emailContent.append("<p><strong>Thời gian thanh toán:</strong> ").append(hoaDon.getThoiGianThanhToan().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))).append("</p>");
-                emailContent.append("<p><strong>Hình thức thanh toán:</strong> ").append(hoaDon.getHinhThucThanhToan()).append("</p>");
+                emailContent.append("<p><strong>Tổng tiền:</strong> ").append(hoaDonResponse.getTongGiaTien()).append(" VND</p>");
+                emailContent.append("<p><strong>Thời gian thanh toán:</strong> ").append(hoaDonResponse.getThoiGianThanhToan().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))).append("</p>");
+                emailContent.append("<p><strong>Hình thức thanh toán:</strong> ").append(hoaDonResponse.getHinhThucThanhToan()).append("</p>");
                 emailContent.append("</div>");
             }
             
