@@ -39,10 +39,10 @@
                 <div class="filter-card">
                     <div class="filter-title">Ngân sách của bạn (mỗi đêm)</div>
                     <div class="budget-slider">
-                        <input type="range" class="form-range" min="0" max="5000000" step="100000" id="priceRange">
+                        <input type="range" class="form-range" min="0" max="30000000" step="100000" id="priceRange" value="30000000">
                         <div class="price-range">
                             <span>0₫</span>
-                            <span>5.000.000₫</span>
+                            <span id="priceRangeValue">5.000.000₫</span>
                         </div>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                     <div class="filter-title">Bộ lọc phổ biến</div>
                     <div class="filter-item">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="freeCancel">
+                            <input class="form-check-input filter-check" type="checkbox" id="freeCancel">
                             <label class="form-check-label" for="freeCancel">
                                 Hủy miễn phí
                             </label>
@@ -60,7 +60,7 @@
                     </div>
                     <div class="filter-item">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="breakfast">
+                            <input class="form-check-input filter-check" type="checkbox" id="breakfast">
                             <label class="form-check-label" for="breakfast">
                                 Bữa sáng miễn phí
                             </label>
@@ -68,7 +68,7 @@
                     </div>
                     <div class="filter-item">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="wifi">
+                            <input class="form-check-input filter-check" type="checkbox" id="wifi">
                             <label class="form-check-label" for="wifi">
                                 WiFi miễn phí
                             </label>
@@ -76,7 +76,7 @@
                     </div>
                     <div class="filter-item">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="pool">
+                            <input class="form-check-input filter-check" type="checkbox" id="pool">
                             <label class="form-check-label" for="pool">
                                 Hồ bơi
                             </label>
@@ -84,17 +84,9 @@
                     </div>
                     <div class="filter-item">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="aircon">
-                            <label class="form-check-label" for="aircon">
-                                Máy lạnh
-                            </label>
-                        </div>
-                    </div>
-                    <div class="filter-item">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="balcony">
-                            <label class="form-check-label" for="balcony">
-                                Ban công/sân hiên
+                            <input class="form-check-input filter-check" type="checkbox" id="parking">
+                            <label class="form-check-label" for="parking">
+                                Bãi đậu xe miễn phí
                             </label>
                         </div>
                     </div>
@@ -135,6 +127,19 @@
                                 <i class="bi bi-star-fill text-warning"></i>
                             </label>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Add filter results info -->
+                <div class="filter-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span id="visibleCount">0</span> trong <span id="totalCount">0</span> kết quả
+                        </div>
+                        <button id="resetFilters" class="btn btn-sm btn-outline-secondary">Đặt lại</button>
+                    </div>
+                    <div id="noResultsMessage" style="display: none;" class="alert alert-info mt-2 mb-0">
+                        Không tìm thấy kết quả phù hợp với bộ lọc. Vui lòng điều chỉnh lại bộ lọc.
                     </div>
                 </div>
             </div>
@@ -275,6 +280,7 @@
             </div>
         </div>
     </div>
+    <script src="/js/filter-search-results.js"></script>
 </body>
 
 </html>

@@ -1,4 +1,5 @@
 package com.example.IS216_Dlegent.service;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -9,6 +10,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.IS216_Dlegent.config.ZalopayConfig;
@@ -46,26 +48,10 @@ public class ZalopayService {
     }
 
     public String createOrder(Map<String, Object> orderRequest, Long idDatphong) {
-        //kiem tra neu con phong trong
-        try {
-            // Lấy thông tin đặt phòng theo ID
-            DatPhong datPhong = datPhongRepository.findById(idDatphong).get();
-            
-            // Lấy danh sách chi tiết đặt phòng
-            List<ChiTietDatPhong> chiTietList = chiTietDatPhongRepository.findByDatPhong_Id(datPhong.getId());
-
-            // Kiểm tra từng phòng trong chi tiết đặt phòng
-            for (ChiTietDatPhong chiTiet : chiTietList) {
-                List<Phong> phongs = phongService.getPhongKhongBanTrongKhoangThoiGian(chiTiet.getNgayBatDau(), chiTiet.getNgayKetThuc());
-                phongs = phongs.stream()
-                    .filter(p -> p.getTinhTrang().equals("Available") && p.getLoaiPhong().getId().equals(chiTiet.getGoiDatPhong().getLoaiPhong().getId()))
-                    .collect(Collectors.toList());
-                if (phongs.isEmpty()) {
-                    return "{\"error\": \"Phòng " + chiTiet.getGoiDatPhong().getLoaiPhong().getTenLoaiPhong() + " không còn\"}";
-                }
-            }
-        } catch (Exception e) {
-            return "{\"error\": \"Lỗi khi kiểm tra tình trạng phòng: " + e.getMessage() + "\"}";
+        Map<Boolean, String> check = kiemTraPhongTrong(orderRequest, idDatphong);
+        
+        if (!check.containsKey(true)) {
+            return "{\"error\": \"" + check.get(false) + "\"}";
         }
 
         Random rand = new Random();
@@ -76,7 +62,7 @@ public class ZalopayService {
             return "{\"error\": \"Amount can't be zero\"}";
         }
 
-        String ngrokPrefix = "https://181c-183-81-19-211.ngrok-free.app";
+        String ngrokPrefix = "https://edf5-2402-800-6311-456c-9d19-4e07-16bf-bfd3.ngrok-free.app";
         String callback_url = ngrokPrefix + "/api/payment/" + idDatphong.toString();
 
         Map<String, Object> order = new HashMap<>();
@@ -89,8 +75,8 @@ public class ZalopayService {
         order.put("bank_code", "");
         order.put("item", "[{}]");
         order.put("embed_data", "{}");
-        order.put("callback_url",callback_url);
-        
+        order.put("callback_url", callback_url);
+
         System.out.println(order.get("callback_url"));
         String data = order.get("app_id") + "|" + order.get("app_trans_id") + "|" + order.get("app_user") + "|"
                 + order.get("amount") + "|" + order.get("app_time") + "|" + order.get("embed_data") + "|"
@@ -159,4 +145,75 @@ public class ZalopayService {
         }
     }
 
+    public Map<Boolean, String> kiemTraPhongTrong(Map<String, Object> orderRequest, Long idDatphong) {
+        // kiem tra neu con phong trong
+        try {
+            // Lấy thông tin đặt phòng theo ID
+            DatPhong datPhong = datPhongRepository.findById(idDatphong).get();
+
+            // Lấy danh sách chi tiết đặt phòng
+            List<ChiTietDatPhong> chiTietList = chiTietDatPhongRepository.findByDatPhong_Id(datPhong.getId());
+
+            // Kiểm tra từng phòng trong chi tiết đặt phòng
+            for (ChiTietDatPhong chiTiet : chiTietList) {
+                List<Phong> phongs = phongService.getPhongKhongBanTrongKhoangThoiGian(chiTiet.getNgayBatDau(),
+                        chiTiet.getNgayKetThuc());
+                phongs = phongs.stream()
+                        .filter(p -> p.getTinhTrang().equals("Available")
+                                && p.getLoaiPhong().getId().equals(chiTiet.getGoiDatPhong().getLoaiPhong().getId()))
+                        .collect(Collectors.toList());
+                if (phongs.isEmpty()) {
+                    return Map.of(false, "Phòng " + chiTiet.getGoiDatPhong().getLoaiPhong().getTenLoaiPhong()
+                            + " không còn");
+                }
+            }
+
+            // Kiểm tra số lượng phòng còn trống có đủ với số lượng chi tiết đặt phòng của
+            // cùng loại
+            Map<Long, Integer> loaiPhongCount = new HashMap<>();
+            Map<Long, Integer> availableRoomCount = new HashMap<>();
+
+            // Đếm số lượng chi tiết đặt phòng cho mỗi loại phòng
+            for (ChiTietDatPhong chiTiet : chiTietList) {
+                Long loaiPhongId = chiTiet.getGoiDatPhong().getLoaiPhong().getId();
+                loaiPhongCount.put(loaiPhongId, loaiPhongCount.getOrDefault(loaiPhongId, 0) + 1);
+            }
+
+            // Đếm số lượng phòng còn trống cho mỗi loại phòng
+            for (ChiTietDatPhong chiTiet : chiTietList) {
+                Long loaiPhongId = chiTiet.getGoiDatPhong().getLoaiPhong().getId();
+                if (!availableRoomCount.containsKey(loaiPhongId)) {
+                    List<Phong> phongs = phongService.getPhongKhongBanTrongKhoangThoiGian(chiTiet.getNgayBatDau(),
+                            chiTiet.getNgayKetThuc());
+                    phongs = phongs.stream()
+                            .filter(p -> p.getTinhTrang().equals("Available")
+                                    && p.getLoaiPhong().getId().equals(loaiPhongId))
+                            .collect(Collectors.toList());
+                    availableRoomCount.put(loaiPhongId, phongs.size());
+                }
+            }
+
+            // Kiểm tra từng loại phòng
+            for (Map.Entry<Long, Integer> entry : loaiPhongCount.entrySet()) {
+                Long loaiPhongId = entry.getKey();
+                Integer requiredCount = entry.getValue();
+                Integer availableCount = availableRoomCount.get(loaiPhongId);
+
+                if (availableCount < requiredCount) {
+                    // Lấy tên loại phòng
+                    String tenLoaiPhong = chiTietList.stream()
+                            .filter(ct -> ct.getGoiDatPhong().getLoaiPhong().getId().equals(loaiPhongId))
+                            .findFirst()
+                            .get()
+                            .getGoiDatPhong().getLoaiPhong().getTenLoaiPhong();
+
+                    return Map.of(false, "Chỉ còn " + availableCount + " phòng " + tenLoaiPhong
+                            + " trống, không đủ số lượng " + requiredCount + " phòng yêu cầu");
+                }
+            }
+        } catch (Exception e) {
+            return Map.of(false, "Lỗi khi kiểm tra tình trạng phòng: " + e.getMessage());
+        }
+        return Map.of(true, "Có đủ phòng");
+    }
 }
