@@ -46,12 +46,8 @@ public class ZalopayService {
     }
 
     public String createOrder(Map<String, Object> orderRequest, Long idDatphong) {
-        //viết đoạn mã kiểm tra nếu có Phong nào thuộc Chi tiết đặt phòng trong DatPhong mà không còn thì báo lỗi hết phòng "tên phòng"
-        // Kiểm tra tình trạng phòng trước khi tạo đơn hàng
+        //kiem tra neu con phong trong
         try {
-            // Giả sử bạn có các service để truy vấn database
-            // Bạn cần inject các service này vào ZalopayService
-            
             // Lấy thông tin đặt phòng theo ID
             DatPhong datPhong = datPhongRepository.findById(idDatphong).get();
             
@@ -60,9 +56,7 @@ public class ZalopayService {
 
             // Kiểm tra từng phòng trong chi tiết đặt phòng
             for (ChiTietDatPhong chiTiet : chiTietList) {
-                logger.info("ddur ma {}", chiTiet);
                 List<Phong> phongs = phongService.getPhongKhongBanTrongKhoangThoiGian(chiTiet.getNgayBatDau(), chiTiet.getNgayKetThuc());
-                logger.info("phong {}", phongs);
                 phongs = phongs.stream()
                     .filter(p -> p.getTinhTrang().equals("Available") && p.getLoaiPhong().getId().equals(chiTiet.getGoiDatPhong().getLoaiPhong().getId()))
                     .collect(Collectors.toList());
