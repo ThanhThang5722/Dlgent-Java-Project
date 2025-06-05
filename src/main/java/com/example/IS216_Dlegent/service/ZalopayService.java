@@ -72,8 +72,8 @@ public class ZalopayService {
         int randomId = rand.nextInt(1000000);
 
         Object amount = orderRequest.get("amount");
-        if (amount == null) {
-            return "{\"error\": \"Amount is required\"}";
+        if (Integer.parseInt(amount.toString()) == 0) {
+            return "{\"error\": \"Amount can't be zero\"}";
         }
 
         String ngrokPrefix = "https://181c-183-81-19-211.ngrok-free.app";
