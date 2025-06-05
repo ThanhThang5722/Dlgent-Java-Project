@@ -21,6 +21,7 @@ import com.example.IS216_Dlegent.model.HoaDon;
 import com.example.IS216_Dlegent.model.ThoiGianPhongBan;
 import com.example.IS216_Dlegent.repository.ChiTietDatPhongRepository;
 import com.example.IS216_Dlegent.repository.DatPhongRepository;
+import com.example.IS216_Dlegent.repository.DoiTacRepository;
 import com.example.IS216_Dlegent.repository.HoaDonJPA;
 import com.example.IS216_Dlegent.repository.HoaDonRepository;
 import com.example.IS216_Dlegent.repository.HoaDonRepositoryJPA;
@@ -45,6 +46,9 @@ public class DatPhongService {
     @Autowired
     private JdbcThoiGianPhongBanRepository jdbcThoiGianPhongBanRepository;
 
+    @Autowired 
+    private DoiTacRepository doiTacRepository;
+
     @Transactional
     public List<HoaDon> capNhatTrangThaiVaTaoHoaDon(Long datPhongId, String trangThaiMoi, String hinhThucThanhToan) {
         DatPhong datPhong = datPhongRepo.findById(datPhongId)
@@ -67,16 +71,26 @@ public class DatPhongService {
                 hoaDon.setChiTietDatPhong(ct);
                 hoaDon.setKhachHang(datPhong.getKhachHang());
                 hoaDon.setDoiTac(ct.getGoiDatPhong().getLoaiPhong().getKhuNghiDuong().getDoiTac());
-                hoaDon.setTongGiaTien(ct.getTongGiaTien());
+                //tính tổng giá tiền dựa trên số ngày checkin/checkout
+                Long days = ct.getNgayKetThuc().toLocalDate().toEpochDay() - ct.getNgayBatDau().toLocalDate().toEpochDay();
+                BigDecimal tongGiaTien = ct.getTongGiaTien().multiply(BigDecimal.valueOf(days));
+                hoaDon.setTongGiaTien(tongGiaTien);
+
                 hoaDon.setThoiGianThanhToan(LocalDateTime.now());
                 hoaDon.setHinhThucThanhToan(hinhThucThanhToan);
                 System.out.println(hoaDon);
 
                 hoaDonList.add(hoaDonJPA.save(hoaDon));
+
+                DoiTac doiTac = hoaDon.getDoiTac();
+                doiTac.setSoDu(doiTac.getSoDu().add(hoaDon.getTongGiaTien()));
+                doiTacRepository.save(doiTac);
             }
 
             jdbcThoiGianPhongBanRepository.allocateRoomsForBooking(datPhongId);
         }
+
+
 
         return hoaDonList;
     }

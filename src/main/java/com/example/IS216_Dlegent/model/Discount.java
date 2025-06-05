@@ -37,7 +37,7 @@ public class Discount {
     @Column(name = "NGAY_KET_THUC", nullable = false)
     private LocalDateTime ngayKetThuc;
 
-    @Column(name = "TINH_TRANG", nullable = false)
+    @Column(name = "TRANG_THAI", nullable = false)
     private String trangThai;
 
     // === Getters và Setters ===

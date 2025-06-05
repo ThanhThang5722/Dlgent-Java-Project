@@ -62,7 +62,7 @@ public class AdminViewController {
     }
 
     @GetMapping("/withdraw")
-    public String WithdrawManagementView(@RequestParam Long adminId, Model model) {
+    public String WithdrawManagementView(Model model) {
         String bootstrapUrl = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
         model.addAttribute("bootstrapUrl", bootstrapUrl);
         List<LichSuRutTienAdminDTO> danhSachRutTien = lichSuRutTienService.getAllRutTienWithDoiTacInfo();

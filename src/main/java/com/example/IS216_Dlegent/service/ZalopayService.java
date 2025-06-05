@@ -6,18 +6,37 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.IS216_Dlegent.config.ZalopayConfig;
+import com.example.IS216_Dlegent.model.ChiTietDatPhong;
+import com.example.IS216_Dlegent.model.DatPhong;
+import com.example.IS216_Dlegent.model.Phong;
+import com.example.IS216_Dlegent.repository.ChiTietDatPhongRepository;
+import com.example.IS216_Dlegent.repository.DatPhongRepository;
 import com.example.IS216_Dlegent.utils.HMACUtil;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ZalopayService {
+    @Autowired
+    DatPhongRepository datPhongRepository;
+
+    @Autowired
+    ChiTietDatPhongRepository chiTietDatPhongRepository;
+
+    @Autowired
+    PhongService phongService;
+
+    Logger logger = LoggerFactory.getLogger(ZalopayService.class);
 
     private static String getCurrentTimeString(String format) {
         Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT+7"));
@@ -27,6 +46,28 @@ public class ZalopayService {
     }
 
     public String createOrder(Map<String, Object> orderRequest, Long idDatphong) {
+        //kiem tra neu con phong trong
+        try {
+            // Lấy thông tin đặt phòng theo ID
+            DatPhong datPhong = datPhongRepository.findById(idDatphong).get();
+            
+            // Lấy danh sách chi tiết đặt phòng
+            List<ChiTietDatPhong> chiTietList = chiTietDatPhongRepository.findByDatPhong_Id(datPhong.getId());
+
+            // Kiểm tra từng phòng trong chi tiết đặt phòng
+            for (ChiTietDatPhong chiTiet : chiTietList) {
+                List<Phong> phongs = phongService.getPhongKhongBanTrongKhoangThoiGian(chiTiet.getNgayBatDau(), chiTiet.getNgayKetThuc());
+                phongs = phongs.stream()
+                    .filter(p -> p.getTinhTrang().equals("Available") && p.getLoaiPhong().getId().equals(chiTiet.getGoiDatPhong().getLoaiPhong().getId()))
+                    .collect(Collectors.toList());
+                if (phongs.isEmpty()) {
+                    return "{\"error\": \"Phòng " + chiTiet.getGoiDatPhong().getLoaiPhong().getTenLoaiPhong() + " không còn\"}";
+                }
+            }
+        } catch (Exception e) {
+            return "{\"error\": \"Lỗi khi kiểm tra tình trạng phòng: " + e.getMessage() + "\"}";
+        }
+
         Random rand = new Random();
         int randomId = rand.nextInt(1000000);
 
@@ -35,7 +76,7 @@ public class ZalopayService {
             return "{\"error\": \"Amount is required\"}";
         }
 
-        String ngrokPrefix = "https://435f-1-54-87-163.ngrok-free.app";
+        String ngrokPrefix = "https://181c-183-81-19-211.ngrok-free.app";
         String callback_url = ngrokPrefix + "/api/payment/" + idDatphong.toString();
 
         Map<String, Object> order = new HashMap<>();

@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.core.env.Environment;
 
 
 @RestController
@@ -27,6 +28,8 @@ public class AccountAPI {
 
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private Environment env;
 
     @PostMapping("/customer")
     public ResponseEntity<?> dangKyTaiKhoanKhach(@RequestBody UserRegistrationDTO request) {
@@ -53,8 +56,11 @@ public class AccountAPI {
             mail.setMailFrom("nthanhthangclone001@gmail.com");
             mail.setMailTo("zero2272005@gmail.com");
             mail.setMailSubject("DLEGENT - XÁC NHẬN ĐỊA CHỈ EMAIL");    
-            
-            String confirmationUrl = "/verify-email-success?username=" + request.getUsername();
+            String ngrok = env.getProperty("ngrok.url");
+            if (ngrok == null) {
+                ngrok = "http://localhost:8080"; // Default to localhost if ngrok URL is not set
+            }
+            String confirmationUrl = ngrok +  "/verify-email-success?username=" + request.getUsername();
             emailService.sendConfirmationEmail(mail, confirmationUrl);
 
             return ResponseEntity.status(HttpStatus.CREATED).body("Tạo tài khoản thành công, vui lòng xác nhận email");
@@ -62,6 +68,7 @@ public class AccountAPI {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    
     @PostMapping("/partner")
     public ResponseEntity<?> dangKyTaiKhoanDoiTac(@RequestBody PartnerRegistrationDTO request) {
         try {

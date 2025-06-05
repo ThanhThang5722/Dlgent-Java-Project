@@ -45,7 +45,7 @@ function processZaloPayPayment(datPhongId,totalPrice) {
         
         // Kiểm tra nếu có lỗi từ ZaloPay
         if (data.error) {
-            alert('Lỗi từ cổng thanh toán: ' + data.error);
+            alert('Lỗi: ' + data.error);
             paymentButton.textContent = originalButtonText;
             paymentButton.disabled = false;
             return;

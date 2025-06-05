@@ -1,5 +1,6 @@
 package com.example.IS216_Dlegent.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -129,11 +130,14 @@ public class BookingListService {
         } else {
             tinhTrang = "upcoming";
         }
+        //tính tổng giá tiền của chi tiết tùy theo ngày checkin và checkout
+        Long days = chiTietDatPhong.getNgayKetThuc().toLocalDate().toEpochDay() - chiTietDatPhong.getNgayBatDau().toLocalDate().toEpochDay();
+        BigDecimal tongGiaTien = chiTietDatPhong.getTongGiaTien().multiply(BigDecimal.valueOf(days));
 
         ChiTietDatPhongDTO2 chiTietDatPhong2 = new ChiTietDatPhongDTO2(
                 chiTietDatPhong.getId(),
                 chiTietDatPhong.getSoLuongPhong(),
-                chiTietDatPhong.getTongGiaTien(),
+                tongGiaTien,
                 ngayBatDau,
                 ngayKetThuc,
                 dichVuYeuCaus,
