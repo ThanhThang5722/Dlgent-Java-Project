@@ -1,16 +1,36 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f6f8;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Gradient ở góc phải dưới */
+body::before {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 60%;
+    height: 60%;
+    background: linear-gradient(135deg, transparent 0%, rgba(25, 135, 84, 0.15) 50%, rgba(34, 197, 94, 0.1) 100%);
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 100% 0 0 0;
 }
 
 .cart-container {
     padding: 40px 0;
+    flex: 1 0 auto;
 }
 
 h1 {
     font-weight: bold;
     text-align: center;
     margin-bottom: 40px;
+    color: #198754;
 }
 
 .cart-item {
@@ -18,28 +38,49 @@ h1 {
     border-radius: 12px;
     background-color: #fff;
     transition: box-shadow 0.3s ease;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border: none;
 }
 
 .cart-item:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(25, 135, 84, 0.12);
 }
 
 .cart-summary {
     background-color: #ffffff;
-    border: 1px solid #dee2e6;
+    border: 1px solid rgba(25, 135, 84, 0.1);
     border-radius: 12px;
     padding: 30px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.cart-summary:hover {
+    box-shadow: 0 16px 48px rgba(25, 135, 84, 0.12);
+    border-color: rgba(25, 135, 84, 0.2);
 }
 
 .empty-cart i {
     font-size: 6rem;
-    color: #ced4da;
+    color: #198754;
 }
 
 .btn-primary {
     border-radius: 30px;
     padding: 10px 20px;
+    background: linear-gradient(135deg, #198754 0%, #22c55e 100%);
+    border-color: #198754;
+    box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #157347;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
 }
 
 .text-danger {
@@ -48,22 +89,25 @@ h1 {
 
 footer {
     font-size: 0.9rem;
+    margin-top: auto;
+    flex-shrink: 0;
 }
 
 footer h5 {
     font-size: 1rem;
     font-weight: bold;
+    color: #198754;
 }
 
 .top-header {
     padding: 10px 0;
     font-size: 0.9rem;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid rgba(25, 135, 84, 0.1);
 }
 
 .top-link {
     margin-left: 15px;
-    color: #495057;
+    color: #198754;
     text-decoration: none;
 }
 
@@ -75,29 +119,30 @@ footer h5 {
     margin-left: 10px;
     border-radius: 20px;
     padding: 5px 15px;
-    border: 1px solid #007bff;
-    color: #007bff;
+    border: 1px solid #198754;
+    color: #198754;
     background-color: transparent;
     transition: 0.3s;
 }
 
 .auth-buttons button:hover {
-    background-color: #007bff;
+    background-color: #198754;
     color: #fff;
 }
 
 .date-badge {
-    background-color: #f1f3f5;
+    background-color: rgba(25, 135, 84, 0.1);
     padding: 5px 12px;
     border-radius: 6px;
     font-size: 0.85rem;
     font-weight: 500;
-    color: #495057;
+    color: #198754;
 }
 
 .card-title {
     font-weight: bold;
     font-size: 1.1rem;
+    color: #198754;
 }
 
 .fw-bold {
@@ -115,4 +160,40 @@ footer h5 {
 
 .bi {
     vertical-align: middle;
+}
+
+/* Thêm CSS cho footer */
+.bg-primary-gradient {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(25, 135, 84, 0.2) 100%);
+}
+
+footer a {
+    color: #198754;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #157347;
+    text-decoration: underline;
+}
+
+footer .bs-icon {
+    background-color: #198754;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+footer .list-inline-item {
+    margin-right: 15px;
+}
+
+footer .list-inline-item svg {
+    color: #198754;
+    font-size: 1.2rem;
+}
+
+footer hr {
+    border-color: rgba(25, 135, 84, 0.2);
 }
