@@ -116,14 +116,14 @@ public class DatPhongService {
             logger.info("Day: " + day);
 
             if (day < 3) {
-                return ResponseEntity.ok().body("Đã quá thời gian hủy phòng");
+                return ResponseEntity.badRequest().body("Đã quá thời gian hủy phòng");
             }
 
             chiTietDatPhong.setTrangThai("Đã hủy");
             chiTietRepo.save(chiTietDatPhong);
             return capNhatTinhTrangPhongVaSoDu(chiTietDatPhong);
         }
-        return ResponseEntity.ok().body("Hủy đặt phòng thất bại");
+        return ResponseEntity.badRequest().body("Hủy đặt phòng thất bại");
     }
 
     @Autowired
