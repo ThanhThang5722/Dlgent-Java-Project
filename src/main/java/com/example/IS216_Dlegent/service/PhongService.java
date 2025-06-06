@@ -79,4 +79,16 @@ public class PhongService {
         }
         return false;
     }
+
+    public boolean verifyPhongBelongsToPartner(Long phongId, Long doiTacId) {
+        return phongRepository.findById(phongId)
+            .map(phong -> phong.getKhuNghiDuong().getDoiTac().getId().equals(doiTacId))
+            .orElse(false);
+    }
+
+    public boolean verifyResortBelongsToPartner(Long resortId, Long doiTacId) {
+        return khuNghiDuongRepository.findById(resortId)
+            .map(resort -> resort.getDoiTac().getId().equals(doiTacId))
+            .orElse(false);
+    }
 }
