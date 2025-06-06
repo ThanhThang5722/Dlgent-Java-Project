@@ -238,8 +238,9 @@
 
             const batDau = document.getElementById('batDau').value;
             const ketThuc = document.getElementById('ketThuc').value;
+            const doiTacId = new URLSearchParams(window.location.search).get('doiTacId');
 
-            fetch('/api/resort/phong/kiem-tra', {
+            fetch(`/api/resort/phong/partner/kiem-tra?doiTacId=${doiTacId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -249,7 +250,14 @@
                     ngayKetThuc: ketThuc
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.error || 'Lỗi khi kiểm tra phòng');
+                    });
+                }
+                return response.json();
+            })
             .then(data => {
                 // Danh sách phòng không bận
                 const danhSachPhong = data.phongKhongBan;
@@ -290,13 +298,6 @@
                 } else {
                     phongBanList.forEach(item => {
                         const row = document.createElement('tr');
-
-                        const khachHangHtml = item.khachHangId && item.tenTaiKhoan
-                            ? `<a href="/customer/${item.khachHangId}" class="text-dark text-decoration-underline">
-                                    ${item.tenTaiKhoan}
-                            </a>`
-                            : '';
-
                         row.innerHTML = `
                             <td>${item.maSoPhong}</td>
                             <td>${item.tenLoaiPhong}</td>
@@ -316,7 +317,8 @@
                 }
             })
             .catch(error => {
-                console.error('Lỗi khi gọi API:', error);
+                console.error('Lỗi:', error);
+                alert(error.message);
             });
         });
 
@@ -339,6 +341,7 @@
             const loaiPhongId = document.getElementById('loaiPhongSelect').value;
             const maSo = document.getElementById('maSo').value;
             const tinhTrang = document.getElementById('tinhTrang').value;
+            const doiTacId = new URLSearchParams(window.location.search).get('doiTacId');
 
             if (!khuNghiDuongId || !loaiPhongId || !maSo || !tinhTrang) {
                 alert("Vui lòng điền đầy đủ thông tin trước khi gửi.");
@@ -352,7 +355,7 @@
                 tinhTrang: tinhTrang
             };
 
-            fetch('/api/resort/phong', {
+            fetch(`/api/resort/phong/partner?doiTacId=${doiTacId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -361,7 +364,9 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Lỗi khi thêm phòng');
+                    return response.json().then(err => {
+                        throw new Error(err.error || 'Lỗi khi thêm phòng');
+                    });
                 }
                 return response.json();
             })
@@ -369,13 +374,11 @@
                 alert("Thêm phòng thành công!");
                 document.getElementById('insertFormContainer').style.display = 'none';
                 document.getElementById('insertPhongForm').reset();
-                console.log(result);
                 themPhongVaoBang(result);
-                
             })
             .catch(error => {
-                console.error('Lỗi khi thêm phòng:', error);
-                alert("Đã xảy ra lỗi khi thêm phòng.");
+                console.error('Lỗi:', error);
+                alert(error.message);
             });
         });
         function themPhongVaoBang(phong) {
@@ -432,22 +435,29 @@
 
             checkboxes.forEach(cb => {
                 const phongId = parseInt(cb.value);
+                const doiTacId = new URLSearchParams(window.location.search).get('doiTacId');
 
-                fetch('/api/resort/phong', {
+                fetch(`/api/resort/phong/partner?doiTacId=${doiTacId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(phongId)
                 })
-                .then(res => {
-                    if (!res.ok) throw new Error("Không thể xóa");
-                    // Xoá khỏi bảng nếu thành công
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.error || 'Lỗi khi xóa phòng');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(() => {
                     cb.closest('tr').remove();
                 })
-                .catch(err => {
-                    console.error(`Lỗi khi xóa phòng ID ${phongId}:`, err);
-                    alert(`Không thể xóa phòng ID ${phongId}`);
+                .catch(error => {
+                    console.error('Lỗi:', error);
+                    alert(error.message);
                 });
             });
         });
@@ -476,8 +486,9 @@
 
             const phongId = document.getElementById('hiddenUpdatePhongId').value;
             const newTinhTrang = document.getElementById('selectTinhTrang').value;
+            const doiTacId = new URLSearchParams(window.location.search).get('doiTacId');
 
-            fetch('/api/resort/phong', {
+            fetch(`/api/resort/phong/partner?doiTacId=${doiTacId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -487,8 +498,13 @@
                     tinhTrang: newTinhTrang
                 })
             })
-            .then(res => {
-                if (!res.ok) throw new Error("Lỗi cập nhật");
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.error || 'Lỗi khi cập nhật trạng thái phòng');
+                    });
+                }
+                return response.json();
             })
             .then(() => {
                 alert('Cập nhật tình trạng phòng thành công!');
@@ -496,9 +512,9 @@
                 const modal = bootstrap.Modal.getInstance(document.getElementById('updateTinhTrangModal'));
                 modal.hide();
             })
-            .catch(err => {
-                console.error(err);
-                alert('Cập nhật thất bại.');
+            .catch(error => {
+                console.error('Lỗi:', error);
+                alert(error.message);
             });
         });
         function capNhatTrangThaiPhongUI(phongId, tinhTrang) {
@@ -538,6 +554,7 @@
         function filterTables() {
             const selectedResort = document.getElementById('filterResort').value;
             const selectedRoomType = document.getElementById('filterRoomType').value;
+            const doiTacId = new URLSearchParams(window.location.search).get('doiTacId');
 
             // Lọc bảng danh sách phòng
             const phongRows = document.querySelectorAll('#phongTableBody tr');
