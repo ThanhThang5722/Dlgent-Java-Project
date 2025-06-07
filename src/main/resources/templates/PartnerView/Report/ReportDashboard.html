@@ -429,11 +429,6 @@
             // Tải dữ liệu ban đầu
             loadAllData();
             
-            // Xử lý sự kiện nút làm mới
-            document.getElementById('refreshBtn').addEventListener('click', function() {
-                loadAllData();
-            });
-            
             // Xử lý sự kiện nút xuất Excel
             document.getElementById('exportExcelBtn').addEventListener('click', function() {
                 exportToExcel();
@@ -445,7 +440,41 @@
         
         // Hàm xuất Excel
         function exportToExcel() {
-            window.location.href = `/api/resort/report/invoices/export?doiTacId=${doiTacId}`;
+            // Hiển thị thông báo đang tải
+            const exportBtn = document.getElementById('exportExcelBtn');
+            const originalText = exportBtn.innerHTML;
+            exportBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Đang xuất...';
+            exportBtn.disabled = true;
+
+            fetch(`/api/resort/report/invoices/export?doiTacId=${doiTacId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Lỗi khi xuất file Excel');
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    // Tạo URL cho file
+                    const url = window.URL.createObjectURL(blob);
+                    // Tạo thẻ a để tải file
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `hoa_don_${new Date().toISOString().split('T')[0]}.xlsx`;
+                    document.body.appendChild(a);
+                    a.click();
+                    // Dọn dẹp
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                })
+                .catch(error => {
+                    console.error('Lỗi khi xuất Excel:', error);
+                    alert('Có lỗi xảy ra khi xuất file Excel. Vui lòng thử lại sau.');
+                })
+                .finally(() => {
+                    // Khôi phục trạng thái nút
+                    exportBtn.innerHTML = originalText;
+                    exportBtn.disabled = false;
+                });
         }
     </script>
 </body>

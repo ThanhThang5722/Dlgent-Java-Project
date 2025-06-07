@@ -153,10 +153,29 @@
             document.getElementById("withdrawForm").reset();
             const tbody = document.querySelector("table tbody");
             const row = document.createElement("tr");
+            
+            // Format the date from ISO string to local format
+            const thoiGianTao = new Date(result.thoiGianTao);
+            const formattedDate = thoiGianTao.toLocaleString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+
             row.innerHTML = `
-                <td>${formatDateTime(data.thoiGianTao)}</td>
-                <td>${formatCurrency(data.soTien)}</td>
-                <td>${data.thoiGianRutTien ? formatDateTime(data.thoiGianRutTien) : ""}</td>
+                <td>${formattedDate}</td>
+                <td>${formatCurrency(result.soTien)}</td>
+                <td>${result.thoiGianRutTien ? new Date(result.thoiGianRutTien).toLocaleString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                }) : ""}</td>
                 <td>Chờ phê duyệt</td>
             `;
             tbody.prepend(row); // chèn đầu bảng
@@ -178,12 +197,15 @@
             const rows = document.querySelectorAll("table tbody tr");
         
             rows.forEach(row => {
-                const thoiGianTaoText = row.cells[0].textContent.trim(); // Lấy text cột thời gian tạo (ô đầu tiên)
+                const thoiGianTaoText = row.cells[0].textContent.trim();
                 
-                // Parse text dd/MM/yyyy HH:mm
-                const [day, month, yearAndTime] = thoiGianTaoText.split('/');
-                const [year, time] = yearAndTime.split(' ');
-                const thoiGianTao = new Date(`${year}-${month}-${day}T${time}`);
+                // Parse the date string in format "dd/MM/yyyy HH:mm"
+                const [datePart, timePart] = thoiGianTaoText.split(' ');
+                const [day, month, year] = datePart.split('/');
+                const [hours, minutes] = timePart.split(':');
+                
+                // Create date object with local timezone
+                const thoiGianTao = new Date(year, month - 1, day, hours, minutes);
         
                 if (thoiGianTao >= batDau && thoiGianTao <= ketThuc) {
                     row.style.display = ""; // Hiện dòng

@@ -48,77 +48,77 @@ let markers = [];
 let staticMap;
 let staticMarkers = [];
 
-function initMap() {
-    // Khởi tạo bản đồ tĩnh cho phần preview
-    staticMap = new google.maps.Map(document.getElementById("staticMapPreview"), {
-        center: { lat: 10.346, lng: 107.084 }, // Tọa độ Vũng Tàu
-        zoom: 11,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        disableDefaultUI: true,
-        scrollwheel: false,
-        clickableIcons: false
-    });
+// function initMap() {
+//     // Khởi tạo bản đồ tĩnh cho phần preview
+//     staticMap = new google.maps.Map(document.getElementById("staticMapPreview"), {
+//         center: { lat: 10.346, lng: 107.084 }, // Tọa độ Vũng Tàu
+//         zoom: 11,
+//         mapTypeId: google.maps.MapTypeId.ROADMAP,
+//         disableDefaultUI: true,
+//         scrollwheel: false,
+//         clickableIcons: false
+//     });
 
-    // Khởi tạo bản đồ tại vị trí mặc định (Việt Nam)
-    map = new google.maps.Map(document.getElementById("mapContainer"), {
-        center: { lat: 10.8231, lng: 106.6297 }, // Tọa độ TP.HCM
-        zoom: 7,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    });
+//     // Khởi tạo bản đồ tại vị trí mặc định (Việt Nam)
+//     map = new google.maps.Map(document.getElementById("mapContainer"), {
+//         center: { lat: 10.8231, lng: 106.6297 }, // Tọa độ TP.HCM
+//         zoom: 7,
+//         mapTypeId: google.maps.MapTypeId.ROADMAP
+//     });
 
-    // Tạo searchbox cho bản đồ
-    const input = document.getElementById("searchTerm");
-    searchBox = new google.maps.places.SearchBox(input);
+//     // Tạo searchbox cho bản đồ
+//     const input = document.getElementById("searchTerm");
+//     searchBox = new google.maps.places.SearchBox(input);
 
-    // Hiển thị tất cả các resort trên cả hai bản đồ
-    displayResortsOnMaps();
+//     // Hiển thị tất cả các resort trên cả hai bản đồ
+//     displayResortsOnMaps();
 
-    // Thêm sự kiện khi người dùng chọn địa điểm từ suggestions
-    searchBox.addListener("places_changed", () => {
-        const places = searchBox.getPlaces();
+//     // Thêm sự kiện khi người dùng chọn địa điểm từ suggestions
+//     searchBox.addListener("places_changed", () => {
+//         const places = searchBox.getPlaces();
 
-        if (places.length == 0) {
-            return;
-        }
+//         if (places.length == 0) {
+//             return;
+//         }
 
-        // Xóa markers cũ
-        clearMarkers();
+//         // Xóa markers cũ
+//         clearMarkers();
 
-        // Thêm marker mới cho kết quả tìm được
-        const bounds = new google.maps.LatLngBounds();
-        places.forEach((place) => {
-            if (!place.geometry || !place.geometry.location) {
-                console.log("Không tìm thấy thông tin địa điểm");
-                return;
-            }
+//         // Thêm marker mới cho kết quả tìm được
+//         const bounds = new google.maps.LatLngBounds();
+//         places.forEach((place) => {
+//             if (!place.geometry || !place.geometry.location) {
+//                 console.log("Không tìm thấy thông tin địa điểm");
+//                 return;
+//             }
 
-            // Tạo marker mới
-            markers.push(
-                new google.maps.Marker({
-                    map,
-                    title: place.name,
-                    position: place.geometry.location,
-                })
-            );
+//             // Tạo marker mới
+//             markers.push(
+//                 new google.maps.Marker({
+//                     map,
+//                     title: place.name,
+//                     position: place.geometry.location,
+//                 })
+//             );
 
-            if (place.geometry.viewport) {
-                bounds.union(place.geometry.viewport);
-            } else {
-                bounds.extend(place.geometry.location);
-            }
-        });
-        map.fitBounds(bounds);
-    });
+//             if (place.geometry.viewport) {
+//                 bounds.union(place.geometry.viewport);
+//             } else {
+//                 bounds.extend(place.geometry.location);
+//             }
+//         });
+//         map.fitBounds(bounds);
+//     });
 
-    // Xử lý sự kiện click vào bản đồ tĩnh
-    document.getElementById('mapPreviewContainer').addEventListener('click', function () {
-        $('#mapModal').modal('show');
-        // Khởi tạo lại bản đồ khi modal hiển thị
-        $('#mapModal').on('shown.bs.modal', function () {
-            google.maps.event.trigger(map, 'resize');
-        });
-    });
-}
+//     // Xử lý sự kiện click vào bản đồ tĩnh
+//     document.getElementById('mapPreviewContainer').addEventListener('click', function () {
+//         $('#mapModal').modal('show');
+//         // Khởi tạo lại bản đồ khi modal hiển thị
+//         $('#mapModal').on('shown.bs.modal', function () {
+//             google.maps.event.trigger(map, 'resize');
+//         });
+//     });
+// }
 
 // Hàm hiển thị tất cả các resort trên cả hai bản đồ
 function displayResortsOnMaps() {

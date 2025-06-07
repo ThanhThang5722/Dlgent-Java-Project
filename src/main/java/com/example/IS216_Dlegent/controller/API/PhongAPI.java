@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.cloudinary.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +27,9 @@ import com.example.IS216_Dlegent.payload.request.UpdatePhongRequest;
 import com.example.IS216_Dlegent.service.PhongService;
 import com.example.IS216_Dlegent.service.ThoiGianPhongBanService;
 
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
 
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -138,7 +143,8 @@ public class PhongAPI {
                         .body(Map.of("error", "Không có quyền truy cập vào khu nghỉ dưỡng này"));
             }
             Phong phong = phongService.createPhong(entity);
-            return ResponseEntity.status(HttpStatus.CREATED).body(phong);
+            PhongDTO phongDTO = new PhongDTO().convertToDTO(phong);
+            return ResponseEntity.status(HttpStatus.CREATED).body(phongDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Lỗi khi tạo phòng: " + e.getMessage()));
@@ -154,7 +160,8 @@ public class PhongAPI {
                         .body(Map.of("error", "Không có quyền truy cập vào phòng này"));
             }
             phongService.updateTinhTrangPhong(entity.getPhongId(), entity.getTinhTrang());
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(Map.of("message", "Cập nhật trạng thái phòng thành công"));
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Lỗi khi cập nhật trạng thái phòng: " + e.getMessage()));
@@ -164,18 +171,17 @@ public class PhongAPI {
     @DeleteMapping("/partner")
     public ResponseEntity<?> xoaPhongPartner(@RequestBody Long idPhong, @RequestParam Long doiTacId) {
         try {
-            // Verify that the room belongs to the partner
-            if (!phongService.verifyPhongBelongsToPartner(idPhong, doiTacId)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(Map.of("error", "Không có quyền truy cập vào phòng này"));
-            }
             if (phongService.xoaPhongTheoId(idPhong)) {
-                return ResponseEntity.ok().build();
+                return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Map.of("message", "Xóa phòng thành công"));
             }
             return ResponseEntity.badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
                     .body(Map.of("error", "Không thể xóa phòng"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .contentType(MediaType.APPLICATION_JSON)
                     .body(Map.of("error", "Lỗi khi xóa phòng: " + e.getMessage()));
         }
     }

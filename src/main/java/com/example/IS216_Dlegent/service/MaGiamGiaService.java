@@ -81,11 +81,11 @@ public class MaGiamGiaService {
                 .collect(Collectors.toList());
 
         List<MaGiamGiaDTO> active = maGiamGiaDTOs.stream()
-                .filter(mgg -> mgg.getTrangThai().equals("ACTIVE"))
+                .filter(mgg -> mgg.getTrangThai().equals("Active"))
                 .collect(Collectors.toList());
 
         List<MaGiamGiaDTO> expired = maGiamGiaDTOs.stream()
-                .filter(mgg -> mgg.getTrangThai().equals("EXPIRED"))
+                .filter(mgg -> mgg.getTrangThai().equals("Expired"))
                 .collect(Collectors.toList());
 
         List<List<MaGiamGiaDTO>> danhSachMaGiamGia = new ArrayList<>();
