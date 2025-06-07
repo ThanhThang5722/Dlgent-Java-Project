@@ -55,6 +55,7 @@ public class ThanhToanAPI {
                 
                 emailContent.append("<div style='background-color: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 5px;'>");
                 emailContent.append("<p><strong>Mã hóa đơn:</strong> ").append(hoaDonResponse.getId()).append("</p>");
+                emailContent.append("<p><strong>Mã số thuế: 5958219421</strong> ").append("</p>");
                 emailContent.append("<p><strong>Resort:</strong> ").append(tenResort).append("</p>");
                 emailContent.append("<p><strong>Tổng tiền:</strong> ").append(hoaDonResponse.getTongGiaTien()).append(" VND</p>");
                 emailContent.append("<p><strong>Thời gian thanh toán:</strong> ").append(hoaDonResponse.getThoiGianThanhToan().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))).append("</p>");

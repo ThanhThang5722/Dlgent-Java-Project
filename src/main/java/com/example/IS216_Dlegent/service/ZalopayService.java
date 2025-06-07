@@ -62,7 +62,7 @@ public class ZalopayService {
             return "{\"error\": \"Amount can't be zero\"}";
         }
 
-        String ngrokPrefix = "https://edf5-2402-800-6311-456c-9d19-4e07-16bf-bfd3.ngrok-free.app";
+        String ngrokPrefix = "https://1194-2402-800-6311-456c-6557-2e4a-9f63-61f5.ngrok-free.app";
         String callback_url = ngrokPrefix + "/api/payment/" + idDatphong.toString();
 
         Map<String, Object> order = new HashMap<>();
