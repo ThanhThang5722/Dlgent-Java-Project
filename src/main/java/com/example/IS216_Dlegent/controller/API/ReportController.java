@@ -15,6 +15,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -88,7 +89,7 @@ public class ReportController {
     }
     
     @GetMapping("/balance-changes")
-    public ResponseEntity<Map<String, Object>> getBalanceChanges(@RequestParam Long doiTacId) {
+    public ResponseEntity<Map<String, Object>> bienDongSoDu(@RequestParam Long doiTacId) {
         Map<String, Object> response = new HashMap<>();
         
         List<Object[]> bienDong = hoaDonService.getBalanceChanges(doiTacId);
@@ -129,6 +130,10 @@ public class ReportController {
             // Lấy danh sách hóa đơn
             List<HoaDonDTO> invoices = hoaDonService.getHoaDonByDoiTac(doiTacId);
             
+            if (invoices == null || invoices.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            
             // Tạo file Excel
             ByteArrayInputStream excelFile = excelExportService.exportHoaDonToExcel(invoices);
             
@@ -141,8 +146,10 @@ public class ReportController {
                     .headers(headers)
                     .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                     .body(new InputStreamResource(excelFile));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
         } catch (IOException e) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     
@@ -172,53 +179,5 @@ public class ReportController {
         response.put("data", percentages);
         
         return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/api/resort/report/balance-changes")
-    public ResponseEntity<Map<String, Object>> bienDongSoDu(@RequestParam Long doiTacId) {
-        Map<String, Object> response = new HashMap<>();
-        
-        List<Object[]> bienDong = hoaDonService.getBalanceChanges(doiTacId);
-        
-        List<String> labels = new ArrayList<>();
-        List<BigDecimal> data = new ArrayList<>();
-        
-        for (Object[] row : bienDong) {
-            Timestamp timestamp = (Timestamp) row[0];
-            LocalDate ngay = timestamp.toLocalDateTime().toLocalDate();
-            BigDecimal soDu = (BigDecimal) row[1];
-            
-            labels.add(ngay.format(DateTimeFormatter.ofPattern("dd/MM")));
-            data.add(soDu);
-        }
-        
-        response.put("labels", labels);
-        response.put("data", data);
-        
-        return ResponseEntity.ok(response);
-    }
-
-
-    @GetMapping("/api/resort/report/invoices/export")
-    public ResponseEntity<InputStreamResource> xuatFileExcel(@RequestParam Long doiTacId) {
-        try {
-            // Lấy danh sách hóa đơn
-            List<HoaDonDTO> invoices = hoaDonService.getHoaDonByDoiTac(doiTacId);
-            
-            // Tạo file Excel
-            ByteArrayInputStream excelFile = excelExportService.exportHoaDonToExcel(invoices);
-            
-            // Thiết lập response headers
-            HttpHeaders headers = new HttpHeaders();
-            String filename = "hoa_don_" + LocalDate.now().format(DateTimeFormatter.ofPattern("ddMMyyyy")) + ".xlsx";
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
-            
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-                    .body(new InputStreamResource(excelFile));
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
     }
 } 

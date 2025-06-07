@@ -420,17 +420,6 @@
                 return;
             }
 
-            const selectedLoaiPhongIds = new Set();
-            checkboxes.forEach(cb => {
-                const loaiPhongId = cb.getAttribute('data-loaiphong-id');
-                if (loaiPhongId) selectedLoaiPhongIds.add(loaiPhongId);
-            });
-
-            if (selectedLoaiPhongIds.size > 1) {
-                alert("Chỉ được xóa các phòng thuộc cùng một loại!");
-                return;
-            }
-
             if (!confirm("Bạn có chắc chắn muốn xóa các phòng đã chọn không?")) return;
 
             checkboxes.forEach(cb => {
@@ -440,7 +429,8 @@
                 fetch(`/api/resort/phong/partner?doiTacId=${doiTacId}`, {
                     method: 'DELETE',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify(phongId)
                 })
@@ -452,7 +442,8 @@
                     }
                     return response.json();
                 })
-                .then(() => {
+                .then(data => {
+                    alert(data.message || 'Xóa phòng thành công!');
                     cb.closest('tr').remove();
                 })
                 .catch(error => {
@@ -514,7 +505,7 @@
             })
             .catch(error => {
                 console.error('Lỗi:', error);
-                alert(error.message);
+                //alert(error.message);
             });
         });
         function capNhatTrangThaiPhongUI(phongId, tinhTrang) {
