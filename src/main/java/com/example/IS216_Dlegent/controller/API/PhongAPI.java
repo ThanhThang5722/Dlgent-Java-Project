@@ -161,6 +161,7 @@ public class PhongAPI {
             }
             phongService.updateTinhTrangPhong(entity.getPhongId(), entity.getTinhTrang());
             return ResponseEntity.ok().body(Map.of("message", "Cập nhật trạng thái phòng thành công"));
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Lỗi khi cập nhật trạng thái phòng: " + e.getMessage()));
