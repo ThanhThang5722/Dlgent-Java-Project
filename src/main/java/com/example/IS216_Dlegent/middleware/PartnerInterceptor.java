@@ -37,14 +37,14 @@ public class PartnerInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        // Check if user has partner role
+        /* // Check if user has partner role
         String userRole = CookieUtils.getUserRoleFromCookie(request);
         if (!"PARTNER".equals(userRole)) {
             logger.warn("Forbidden request - User does not have Partner role");
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden - Partner role required");
             return false;
         }
-
+        */
         return true;
     }
 }

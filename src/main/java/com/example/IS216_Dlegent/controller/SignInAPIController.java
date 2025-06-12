@@ -41,6 +41,7 @@ import com.example.IS216_Dlegent.service.CustomerService;
 import com.example.IS216_Dlegent.service.DoiTacService;
 import com.example.IS216_Dlegent.service.UserService;
 import com.example.IS216_Dlegent.service.VerifyTokenService;
+import com.example.IS216_Dlegent.service.WorkerAccountService;
 import com.example.IS216_Dlegent.service.ChiTietDatPhongService;
 import com.example.IS216_Dlegent.payload.dto.ChiTietDatPhongDTO;
 
@@ -60,6 +61,8 @@ public class SignInAPIController {
     private VerifyTokenService verifyTokenService;
     @Autowired
     private ChiTietDatPhongService chiTietDatPhongService;
+    @Autowired
+    WorkerAccountService workerAccountService;;
 
     private final Logger logger = LoggerFactory.getLogger(SignInController.class);
 
@@ -106,11 +109,13 @@ public class SignInAPIController {
                 // Create user role cookie
                 ResponseCookie roleCookie = CookieUtils.createSecureCookie("user_role", "CUSTOMER", 10);
 
+                ResponseCookie accountIdCookie = CookieUtils.createSecureCookie("account_id", account.getAccountId().toString(), 10);
                 // Create Return success API and set cookies with the token and user info
                 return ResponseEntity.ok()
                         .header(HttpHeaders.SET_COOKIE, authCookie.toString())
                         .header(HttpHeaders.SET_COOKIE, userIdCookie.toString())
                         .header(HttpHeaders.SET_COOKIE, roleCookie.toString())
+                        .header(HttpHeaders.SET_COOKIE, accountIdCookie.toString())
                         .body(new LoginResponse("Login successful", token, khachHang.getId()));
             }
 
@@ -149,7 +154,7 @@ public class SignInAPIController {
             ResponseCookie expiredAuthCookie = CookieUtils.createExpiredCookie("auth_token");
             ResponseCookie expiredUserIdCookie = CookieUtils.createExpiredCookie("user_id");
             ResponseCookie expiredRoleCookie = CookieUtils.createExpiredCookie("user_role");
-
+            
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, expiredAuthCookie.toString())
                     .header(HttpHeaders.SET_COOKIE, expiredUserIdCookie.toString())
@@ -229,13 +234,49 @@ public class SignInAPIController {
 
                 // Create user role cookie
                 ResponseCookie roleCookie = CookieUtils.createSecureCookie("user_role", "PARTNER", 10);
-
+                ResponseCookie accountIdCookie = CookieUtils.createSecureCookie("account_id", account.getAccountId().toString(), 10);
                 // Create Return success API and set cookies with the token and user info
                 return ResponseEntity.ok()
                         .header(HttpHeaders.SET_COOKIE, authCookie.toString())
                         .header(HttpHeaders.SET_COOKIE, userIdCookie.toString())
                         .header(HttpHeaders.SET_COOKIE, roleCookie.toString())
+                        .header(HttpHeaders.SET_COOKIE, accountIdCookie.toString())
                         .body(new LoginResponse("Login successful", token, doiTac.getId()));
+            }
+
+            if(isValid) {
+                Long doiTacId = workerAccountService.getPartnerIdOfWorker(account.getAccountId());
+                if (doiTacId != null) {
+                    Optional<DoiTac> doiTacOptional = doiTacRepository.findById(doiTacId);
+                    if (doiTacOptional.isPresent()) {
+                        DoiTac doiTac = doiTacOptional.get();
+                        if (!doiTac.getTinhTrang().equals("ACTIVE")) {
+                            return ResponseEntity.status(401).body(new LoginResponse("Your account is not active", null, null));
+                        }
+                    }
+                }
+                Date currentTime = new Date(System.currentTimeMillis());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+                String formattedDate = dateFormat.format(currentTime);
+                String token = userLogin.getUsername() + '_' + formattedDate;
+
+                try {
+                    accountService.saveToken(userLogin.getUsername(), token, Duration.ofMinutes(10));
+                    logger.info("Token saved successfully");
+                } catch (Exception e) {
+                    logger.error("Error saving token: {}", e.getMessage(), e);
+                    return ResponseEntity.status(500).body(new LoginResponse("Error creating session", null, null));
+                }
+                ResponseCookie authCookie = CookieUtils.createSecureCookie("auth_token", token, 10);
+                ResponseCookie userIdCookie = CookieUtils.createSecureCookie("user_id", doiTacId.toString(), 10);
+                ResponseCookie roleCookie = CookieUtils.createSecureCookie("user_role", "PARTNER", 10);
+                ResponseCookie accountIdCookie = CookieUtils.createSecureCookie("account_id", account.getAccountId().toString(), 10);
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.SET_COOKIE, authCookie.toString())
+                        .header(HttpHeaders.SET_COOKIE, userIdCookie.toString())
+                        .header(HttpHeaders.SET_COOKIE, roleCookie.toString())
+                        .header(HttpHeaders.SET_COOKIE, accountIdCookie.toString())
+                        .body(new LoginResponse("Login successful", token, doiTacId));
             }
 
             return ResponseEntity.status(401).body(new LoginResponse("Invalid username or password", null, null));
