@@ -18,9 +18,9 @@
     <div class="booking-container">
         <!-- Tab Navigation -->
         <div class="tab-header">
-            <div class="tab-item" id="tab-upcoming">Upcoming</div>
-            <div class="tab-item active" id="tab-completed">Completed</div>
-            <div class="tab-item" id="tab-cancelled">Cancelled</div>
+            <div class="tab-item" id="tab-upcoming">Sắp tới</div>
+            <div class="tab-item active" id="tab-completed">Đã hoàn thành</div>
+            <div class="tab-item" id="tab-cancelled">Đã hủy</div>
         </div>
 
         <!-- Completed Tab -->
@@ -30,7 +30,7 @@
                 <div class="booking-card">
                     <div class="booking-id">
                         <span>ID: <span th:text="${booking.bookingId}"></span></span>
-                        <span class="booking-status status-completed">Completed</span>
+                        <span class="booking-status status-completed">Đã hoàn thành</span>
                     </div>
                     <div class="booking-details">
                         <div class="booking-image">
@@ -42,10 +42,10 @@
                                 th:text="${(booking.tenResort != null ? booking.tenResort : 'Resort') + ' - ' + (booking.tenLoaiPhong != null ? booking.tenLoaiPhong : 'Room')}">
                             </h5>
                             <div class="booking-dates">
-                                <div>Check in: <span
+                                <div>Check in:<span
                                         th:text="${booking.ngayBatDau != null ? booking.ngayBatDau : 'N/A'}"></span>
                                 </div>
-                                <div>Check out: <span
+                                <div>Check out:<span
                                         th:text="${booking.ngayKetThuc != null ? booking.ngayKetThuc : 'N/A'}"></span>
                                 </div>
                             </div>
@@ -53,7 +53,7 @@
                     </div>
                     <div class="booking-actions">
                         <a th:href="@{/user/booking-history/booking-detail(id=${booking.bookingId})}"
-                            class="btn-manage">View booking</a>
+                            class="btn-manage">Xem chi tiết</a>
                     </div>
                 </div>
             </div>
@@ -70,7 +70,7 @@
                 <div class="booking-card">
                     <div class="booking-id">
                         <span>ID: <span th:text="${booking.bookingId}"></span></span>
-                        <span class="booking-status status-upcoming">Upcoming</span>
+                        <span class="booking-status status-upcoming">Sắp tới</span>
                     </div>
                     <div class="booking-details">
                         <div class="booking-image">
@@ -82,10 +82,10 @@
                                 th:text="${(booking.tenResort != null ? booking.tenResort : 'Resort') + ' - ' + (booking.tenLoaiPhong != null ? booking.tenLoaiPhong : 'Room')}">
                             </h5>
                             <div class="booking-dates">
-                                <div>Check in: <span
+                                <div>Check in:<span
                                         th:text="${booking.ngayBatDau != null ? booking.ngayBatDau : 'N/A'}"></span>
                                 </div>
-                                <div>Check out: <span
+                                <div>Check out:<span
                                         th:text="${booking.ngayKetThuc != null ? booking.ngayKetThuc : 'N/A'}"></span>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
                     </div>
                     <div class="booking-actions">
                         <a th:href="@{/user/booking-history/booking-detail(id=${booking.bookingId})}"
-                            class="btn-manage">View booking</a>
+                            class="btn-manage">Xem chi tiết</a>
                     </div>
                 </div>
             </div>
@@ -109,7 +109,7 @@
                 <div class="booking-card">
                     <div class="booking-id">
                         <span>ID: <span th:text="${booking.bookingId}"></span></span>
-                        <span class="booking-status status-cancelled">Cancelled</span>
+                        <span class="booking-status status-cancelled">Đã hủy</span>
                     </div>
                     <div class="booking-details">
                         <div class="booking-image">
@@ -121,10 +121,10 @@
                                 th:text="${(booking.tenResort != null ? booking.tenResort : 'Resort') + ' - ' + (booking.tenLoaiPhong != null ? booking.tenLoaiPhong : 'Room')}">
                             </h5>
                             <div class="booking-dates">
-                                <div>Check in: <span
+                                <div>Check in:<span
                                         th:text="${booking.ngayBatDau != null ? booking.ngayBatDau : 'N/A'}"></span>
                                 </div>
-                                <div>Check out: <span
+                                <div>Check out:<span
                                         th:text="${booking.ngayKetThuc != null ? booking.ngayKetThuc : 'N/A'}"></span>
                                 </div>
                             </div>
@@ -132,7 +132,7 @@
                     </div>
                     <div class="booking-actions">
                         <a th:href="@{/user/booking-history/booking-detail(id=${booking.bookingId})}"
-                            class="btn-manage">View booking</a>
+                            class="btn-manage">Xem chi tiết</a>
                     </div>
                 </div>
             </div>

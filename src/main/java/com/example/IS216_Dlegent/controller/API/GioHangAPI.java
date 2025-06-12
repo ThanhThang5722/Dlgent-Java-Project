@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,5 +57,18 @@ public class GioHangAPI {
     @DeleteMapping
     public ResponseEntity<?> deleteCart(@RequestParam("id") Long id) {
         return chiTietDatPhongService.deleteChiTietDatPhong(id);
+    }
+
+    @PutMapping("/update-quantity")
+    public ResponseEntity<?> updateCartQuantity(@RequestParam("id") Long id,
+            @RequestParam("quantity") Integer quantity) {
+        logger.info("Updating cart item {} with quantity: {}", id, quantity);
+        return chiTietDatPhongService.updateCartQuantity(id, quantity);
+    }
+
+    @GetMapping("/verify/{id}")
+    public ResponseEntity<?> verifyCartItem(@PathVariable Long id) {
+        logger.info("Verifying cart item data for ID: {}", id);
+        return chiTietDatPhongService.verifyCartItemData(id);
     }
 }

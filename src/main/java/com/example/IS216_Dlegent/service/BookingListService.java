@@ -59,12 +59,11 @@ public class BookingListService {
             bookingListDTO.setUpcomingRoom(new ArrayList<>());
         }
 
-        
         for (DatPhong datPhong : datPhongs) {
             if (!datPhong.getTrangThai().equals("Đã thanh toán")) {
                 continue;
             }
-            
+
             List<ChiTietDatPhong> chiTietDatPhongs = chiTietDatPhongRepository.findByDatPhong_Id(datPhong.getId());
 
             for (ChiTietDatPhong chiTietDatPhong : chiTietDatPhongs) {
@@ -98,6 +97,9 @@ public class BookingListService {
                     bookingListDTO.getUpcomingRoom().add(bookedRoomDTO);
                 }
 
+                bookingListDTO.getUpcomingRoom().sort((a, b) -> b.getBookingId().compareTo(a.getBookingId()));
+                bookingListDTO.getCompletedRoom().sort((a, b) -> b.getBookingId().compareTo(a.getBookingId()));
+                bookingListDTO.getCancelledRoom().sort((a, b) -> b.getBookingId().compareTo(a.getBookingId()));
             }
         }
 
@@ -130,8 +132,9 @@ public class BookingListService {
         } else {
             tinhTrang = "upcoming";
         }
-        //tính tổng giá tiền của chi tiết tùy theo ngày checkin và checkout
-        Long days = chiTietDatPhong.getNgayKetThuc().toLocalDate().toEpochDay() - chiTietDatPhong.getNgayBatDau().toLocalDate().toEpochDay();
+        // tính tổng giá tiền của chi tiết tùy theo ngày checkin và checkout
+        Long days = chiTietDatPhong.getNgayKetThuc().toLocalDate().toEpochDay()
+                - chiTietDatPhong.getNgayBatDau().toLocalDate().toEpochDay();
         BigDecimal tongGiaTien = chiTietDatPhong.getTongGiaTien().multiply(BigDecimal.valueOf(days));
 
         ChiTietDatPhongDTO2 chiTietDatPhong2 = new ChiTietDatPhongDTO2(
