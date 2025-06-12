@@ -1,6 +1,7 @@
 package com.example.IS216_Dlegent.service;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -143,5 +144,113 @@ public class ChiTietDatPhongService {
     public ResponseEntity<?> deleteChiTietDatPhong(Long id) {
         chiTietDatPhongRepository.deleteById(id);
         return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<?> updateCartQuantity(Long id, Integer quantity) {
+        try {
+            logger.info("Updating cart item {} with quantity: {}", id, quantity);
+
+            // Tìm chi tiết đặt phòng
+            ChiTietDatPhong chiTietDatPhong = chiTietDatPhongRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy mục trong giỏ hàng"));
+
+            // Kiểm tra số lượng hợp lệ
+            if (quantity <= 0) {
+                return ResponseEntity.badRequest().body("Số lượng phòng phải lớn hơn 0");
+            }
+
+            // Lấy giá gốc từ gói đặt phòng (giá cho 1 ngày)
+            BigDecimal giaGocPerNgay = chiTietDatPhong.getGoiDatPhong().getTongGiaTien();
+
+            // Tính số ngày ở lại
+            LocalDateTime ngayBatDau = chiTietDatPhong.getNgayBatDau();
+            LocalDateTime ngayKetThuc = chiTietDatPhong.getNgayKetThuc();
+            long soNgay = Duration.between(ngayBatDau, ngayKetThuc).toDays();
+
+            // Đảm bảo ít nhất 1 ngày
+            if (soNgay <= 0) {
+                soNgay = 1;
+            }
+
+            // Cập nhật số lượng phòng
+            chiTietDatPhong.setSoLuongPhong(quantity);
+
+            // Tính lại tổng giá tiền = giá gốc per ngày * số lượng phòng * số ngày
+            BigDecimal tongGiaTienMoi = giaGocPerNgay
+                    .multiply(BigDecimal.valueOf(quantity))
+                    .multiply(BigDecimal.valueOf(soNgay));
+            chiTietDatPhong.setTongGiaTien(tongGiaTienMoi);
+
+            logger.info("Price calculation: Base price per day: {}, Quantity: {}, Days: {}, Total: {}",
+                    giaGocPerNgay, quantity, soNgay, tongGiaTienMoi);
+
+            // Lưu thay đổi vào database
+            chiTietDatPhong = chiTietDatPhongRepository.save(chiTietDatPhong);
+            logger.info(
+                    "Successfully saved to database - CHI_TIET_DAT_PHONG ID: {}, New quantity: {}, New total price: {}",
+                    chiTietDatPhong.getId(), chiTietDatPhong.getSoLuongPhong(), chiTietDatPhong.getTongGiaTien());
+
+            // Verify data was saved correctly by re-fetching from database
+            ChiTietDatPhong verifyData = chiTietDatPhongRepository.findById(id).orElse(null);
+            if (verifyData != null) {
+                logger.info("Database verification - Quantity: {}, Price: {}",
+                        verifyData.getSoLuongPhong(), verifyData.getTongGiaTien());
+            }
+
+            // Trả về DTO đã cập nhật
+            ChiTietDatPhongDTO dto = new ChiTietDatPhongDTO(
+                    chiTietDatPhong.getId(),
+                    chiTietDatPhong.getGoiDatPhong().getLoaiPhong().getId(),
+                    chiTietDatPhong.getDatPhong().getId(),
+                    chiTietDatPhong.getGoiDatPhong().getLoaiPhong().getTenLoaiPhong(),
+                    chiTietDatPhong.getSoLuongPhong(),
+                    chiTietDatPhong.getSoLuongDichVuYeuCau(),
+                    chiTietDatPhong.getTongGiaTien().intValue(),
+                    chiTietDatPhong.getNgayBatDau().toString(),
+                    chiTietDatPhong.getNgayKetThuc().toString(),
+                    chiTietDatPhong.getTrangThai());
+
+            logger.info("Successfully updated cart item {} with new quantity: {} and price: {}",
+                    id, quantity, tongGiaTienMoi);
+
+            return ResponseEntity.ok(dto);
+
+        } catch (Exception e) {
+            logger.error("Error updating cart quantity: ", e);
+            return ResponseEntity.badRequest().body("Cập nhật số lượng thất bại: " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<?> verifyCartItemData(Long id) {
+        try {
+            ChiTietDatPhong chiTietDatPhong = chiTietDatPhongRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy mục trong giỏ hàng"));
+
+            // Tạo response với thông tin chi tiết
+            String response = String.format(
+                    "Database Verification for CHI_TIET_DAT_PHONG ID: %d\n" +
+                            "- Số lượng phòng: %d\n" +
+                            "- Tổng giá tiền: %s VND\n" +
+                            "- Ngày bắt đầu: %s\n" +
+                            "- Ngày kết thúc: %s\n" +
+                            "- Trạng thái: %s\n" +
+                            "- Gói đặt phòng ID: %d\n" +
+                            "- Loại phòng: %s",
+                    chiTietDatPhong.getId(),
+                    chiTietDatPhong.getSoLuongPhong(),
+                    chiTietDatPhong.getTongGiaTien(),
+                    chiTietDatPhong.getNgayBatDau(),
+                    chiTietDatPhong.getNgayKetThuc(),
+                    chiTietDatPhong.getTrangThai(),
+                    chiTietDatPhong.getGoiDatPhong().getId(),
+                    chiTietDatPhong.getGoiDatPhong().getLoaiPhong().getTenLoaiPhong());
+
+            logger.info("Verification result: {}", response);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("Error verifying cart item data: ", e);
+            return ResponseEntity.badRequest().body("Lỗi khi kiểm tra dữ liệu: " + e.getMessage());
+        }
     }
 }

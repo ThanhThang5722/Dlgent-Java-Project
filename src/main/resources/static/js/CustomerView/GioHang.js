@@ -5,8 +5,23 @@ function deleteCartItem(id) {
         })
             .then(response => {
                 if (response.ok) {
-                    // Reload trang sau khi xóa thành công
-                    window.location.reload();
+                    // Xóa item khỏi DOM
+                    const cartItem = document.querySelector(`[data-id="${id}"]`);
+                    if (cartItem) {
+                        cartItem.remove();
+                    }
+
+                    // Cập nhật tổng tiền
+                    updateCartTotal();
+
+                    // Cập nhật số lượng item trong giỏ hàng
+                    updateCartCount();
+
+                    // Kiểm tra nếu giỏ hàng trống thì hiển thị thông báo
+                    const remainingItems = document.querySelectorAll('.cart-item');
+                    if (remainingItems.length === 0) {
+                        window.location.reload(); // Reload để hiển thị empty cart message
+                    }
                 } else {
                     alert('Có lỗi xảy ra khi xóa mục khỏi giỏ hàng');
                 }
@@ -39,6 +54,82 @@ function updateCartCount() {
         .catch(error => {
             console.error('Lỗi khi lấy số lượng mục trong giỏ hàng:', error);
         });
+}
+
+// Cập nhật số lượng phòng
+function updateQuantity(cartItemId, change) {
+    const quantityElement = document.getElementById('quantity-' + cartItemId);
+    const currentQuantity = parseInt(quantityElement.textContent);
+    const newQuantity = currentQuantity + change;
+
+    // Kiểm tra số lượng tối thiểu
+    if (newQuantity <= 0) {
+        alert('Số lượng phòng phải lớn hơn 0');
+        return;
+    }
+
+    // Gọi API để cập nhật số lượng
+    fetch('/api/cart/update-quantity?id=' + cartItemId + '&quantity=' + newQuantity, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Cập nhật thất bại');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Cập nhật số lượng hiển thị
+        quantityElement.textContent = data.soLuongPhong;
+
+        // Cập nhật giá tiền hiển thị (backend đã tính sẵn theo số ngày)
+        const priceElement = document.getElementById('price-' + cartItemId);
+        if (priceElement) {
+            priceElement.textContent = new Intl.NumberFormat('vi-VN').format(data.tongGiaTien);
+        }
+
+        // Cập nhật tổng giá tiền của giỏ hàng
+        updateCartTotal();
+
+        console.log('Cập nhật số lượng thành công:', data);
+        console.log('Giá mới (đã bao gồm số ngày):', data.tongGiaTien);
+    })
+    .catch(error => {
+        console.error('Lỗi khi cập nhật số lượng:', error);
+        alert('Có lỗi xảy ra khi cập nhật số lượng phòng');
+    });
+}
+
+// Cập nhật tổng giá tiền giỏ hàng
+function updateCartTotal() {
+    let total = 0;
+
+    // Tính tổng từ tất cả các item trong giỏ hàng
+    document.querySelectorAll('[id^="price-"]').forEach(priceElement => {
+        const priceText = priceElement.textContent.replace(/[,\.]/g, '');
+        const price = parseInt(priceText) || 0;
+        total += price;
+    });
+
+    // Cập nhật hiển thị tổng tiền trong cart summary
+    const totalPriceDisplay = document.getElementById('total-price-display');
+    const finalTotalDisplay = document.getElementById('final-total-display');
+
+    if (totalPriceDisplay) {
+        totalPriceDisplay.textContent = new Intl.NumberFormat('vi-VN').format(total);
+    }
+    if (finalTotalDisplay) {
+        finalTotalDisplay.textContent = new Intl.NumberFormat('vi-VN').format(total);
+    }
+
+    // Cập nhật data attribute cho nút thanh toán
+    const paymentButton = document.getElementById('paymentButton');
+    if (paymentButton) {
+        paymentButton.setAttribute('data-total-price', total);
+    }
 }
 
 // Gọi hàm cập nhật khi trang được tải
@@ -201,7 +292,7 @@ function createCouponCard(coupon, isActive, loaiPhongId) {
                         <h4 class="card-title">${coupon.maSo}</h4>
                     </div>
                     <div class="text-end">
-                        <span class="fs-3 fw-bold text-primary">${coupon.giaTri}%</span>
+                        <span class="fs-3 fw-bold text-primary">${coupon.giaTri}${coupon.loaiGiamGia === 'AMOUNT' ? 'VNĐ' : '%'}</span>
                         <p class="text-muted small">GIẢM</p>
                     </div>
                 </div>
